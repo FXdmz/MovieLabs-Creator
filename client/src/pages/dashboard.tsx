@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { useOntologyStore } from "@/lib/store";
-import { JsonEditor } from "@/components/json-editor";
 import { DynamicForm } from "@/components/dynamic-form";
 import { Logo } from "@/components/logo";
 import { ENTITY_TYPES, EntityType } from "@/lib/constants";
@@ -19,8 +18,6 @@ import {
   ChevronRight,
   Save,
   Download,
-  FormInput,
-  Braces,
   CheckCircle,
   AlertTriangle,
   Upload
@@ -33,7 +30,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,7 +81,6 @@ export default function Dashboard() {
   const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState<"form" | "json">("form");
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
@@ -343,17 +338,7 @@ export default function Dashboard() {
               </div>
               
               <div className="flex items-center gap-3">
-                 <ToggleGroup type="single" value={viewMode} onValueChange={(v) => v && setViewMode(v as any)} className="border border-border rounded-md p-0.5 bg-card">
-                   <ToggleGroupItem value="form" size="sm" className="h-7 px-3 text-xs gap-1.5 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-                     <FormInput className="h-3.5 w-3.5" /> Form
-                   </ToggleGroupItem>
-                   <ToggleGroupItem value="json" size="sm" className="h-7 px-3 text-xs gap-1.5 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-                     <Braces className="h-3.5 w-3.5" /> JSON
-                   </ToggleGroupItem>
-                 </ToggleGroup>
-
-                <Separator orientation="vertical" className="h-6" />
-
+                 
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -377,7 +362,6 @@ export default function Dashboard() {
 
             {/* Editor Area */}
             <div className="flex-1 overflow-hidden flex flex-col bg-muted/10">
-              {viewMode === 'form' ? (
                 <ScrollArea className="flex-1 p-6">
                   <div className="max-w-4xl mx-auto pb-20">
                     <div className="bg-card border border-border rounded-xl shadow-sm p-6">
@@ -395,21 +379,6 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </ScrollArea>
-              ) : (
-                <div className="flex-1 p-0 relative">
-                  {schema ? (
-                    <JsonEditor
-                      value={selectedEntity.content}
-                      onChange={(val) => updateEntity(selectedEntity.id, val)}
-                      schema={schema}
-                    />
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-muted-foreground">
-                      Loading Schema...
-                    </div>
-                  )}
-                </div>
-              )}
               
               <div className="h-8 border-t border-border bg-card flex items-center justify-between px-4 text-[10px] text-muted-foreground">
                 <div className="flex items-center gap-2">
