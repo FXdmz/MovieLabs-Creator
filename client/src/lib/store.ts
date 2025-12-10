@@ -13,6 +13,7 @@ interface OntologyStore {
   entities: Entity[];
   selectedEntityId: string | null;
   addEntity: (type: EntityType) => void;
+  addEntityFromContent: (type: EntityType, id: string, content: any) => void;
   updateEntity: (id: string, content: any) => void;
   removeEntity: (id: string) => void;
   selectEntity: (id: string | null) => void;
@@ -59,6 +60,18 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       type,
       name: `New ${type}`,
       content: defaultContent
+    };
+    set((state) => ({
+      entities: [...state.entities, newEntity],
+      selectedEntityId: id
+    }));
+  },
+  addEntityFromContent: (type, id, content) => {
+    const newEntity: Entity = {
+      id,
+      type,
+      name: content.name || `New ${type}`,
+      content
     };
     set((state) => ({
       entities: [...state.entities, newEntity],

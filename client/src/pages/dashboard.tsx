@@ -22,8 +22,11 @@ import {
   FormInput,
   Braces,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Upload
 } from "lucide-react";
+import { FileDropZone } from "@/components/file-drop-zone";
+import { ExtractedMetadata } from "@/lib/file-metadata";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -53,13 +56,24 @@ import {
 import { Copy } from "lucide-react";
 
 export default function Dashboard() {
-  const { entities, addEntity, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
+  const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"form" | "json">("form");
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
+  const [showFileDropZone, setShowFileDropZone] = useState(false);
   const { toast } = useToast();
+
+  const handleFileAssetCreated = (asset: any, metadata: ExtractedMetadata) => {
+    const id = asset.identifier[0].identifierValue;
+    addEntityFromContent('Asset', id, asset);
+    setShowFileDropZone(false);
+    toast({
+      title: "Asset Created",
+      description: `Created Asset from "${metadata.fileName}" with detected structural type: ${metadata.structuralType || 'unknown'}`,
+    });
+  };
 
   const ajv = useMemo(() => {
     const ajvInstance = new Ajv({ strict: false, allErrors: true });
@@ -262,6 +276,10 @@ export default function Dashboard() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto">
+              <DropdownMenuItem onClick={() => { selectEntity(null); setShowFileDropZone(true); }} className="text-primary font-medium">
+                <Upload className="h-4 w-4 mr-2" /> Import Asset from File
+              </DropdownMenuItem>
+              <Separator className="my-1" />
               {ENTITY_TYPES.map((type) => (
                 <DropdownMenuItem key={type} onClick={() => addEntity(type)}>
                   {type}
@@ -376,6 +394,19 @@ export default function Dashboard() {
               </div>
             </div>
           </>
+        ) : showFileDropZone ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-muted/5">
+            <div className="w-full max-w-xl">
+              <h2 className="text-2xl font-bold mb-2 text-foreground text-center">Import Asset from File</h2>
+              <p className="text-center text-muted-foreground mb-6">
+                Drop a media file to automatically detect its structural type and properties.
+              </p>
+              <FileDropZone 
+                onAssetCreated={handleFileAssetCreated}
+                onCancel={() => setShowFileDropZone(false)}
+              />
+            </div>
+          </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8 bg-muted/5">
             <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center mb-6 ring-1 ring-primary/20">
@@ -385,9 +416,14 @@ export default function Dashboard() {
             <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
               Select an entity from the sidebar or create a new one to start building your media creation ontology.
             </p>
-            <Button onClick={() => addEntity("Asset")} size="lg" className="gap-2 shadow-lg shadow-primary/20">
-              <Plus className="h-5 w-5" /> Create First Asset
-            </Button>
+            <div className="flex gap-4">
+              <Button onClick={() => setShowFileDropZone(true)} variant="outline" size="lg" className="gap-2">
+                <Upload className="h-5 w-5" /> Import from File
+              </Button>
+              <Button onClick={() => addEntity("Asset")} size="lg" className="gap-2 shadow-lg shadow-primary/20">
+                <Plus className="h-5 w-5" /> Create Asset
+              </Button>
+            </div>
           </div>
         )}
       </main>
