@@ -22,6 +22,7 @@ import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
 import { AssetSCHeader } from "./asset-sc-header";
 import { DurationInput } from "./duration-input";
+import { DimensionInput } from "./dimension-input";
 
 const ISO8601_DURATION_PATTERN = /^\(-\?\)P\(\?=\.\)/;
 
@@ -345,14 +346,10 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           <span className="text-sm text-muted-foreground">{value ? 'Yes' : 'No'}</span>
         </div>
       ) : isDimensionField ? (
-        <Input 
-          value={value || ''} 
-          onChange={(e) => {
-            const val = e.target.value;
-            onChange(val === '' ? null : val);
-          }}
-          placeholder="e.g., 1920px, 10cm, or 6ft"
-          className="bg-background"
+        <DimensionInput 
+          value={value}
+          onChange={onChange}
+          placeholder="Enter value"
         />
       ) : (
         <Input 
