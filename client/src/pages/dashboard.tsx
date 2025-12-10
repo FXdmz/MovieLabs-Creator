@@ -85,10 +85,16 @@ export default function Dashboard() {
 
     try {
       // Improved validation logic:
-      // 1. Try to find the specific definition for this entity type to avoid root schema complexity/recursion issues
-      let entitySchema = schema.$defs?.[selectedEntity.type];
+      // OMC Schema structure: $defs[Type].properties[Type] contains the actual entity schema
+      // First try the nested path: $defs.Asset.properties.Asset
+      let entitySchema = schema.$defs?.[selectedEntity.type]?.properties?.[selectedEntity.type];
       
-      // Fallback searches for nested definitions
+      // Fallback: try direct definition (for simpler schemas)
+      if (!entitySchema) {
+         entitySchema = schema.$defs?.[selectedEntity.type];
+      }
+      
+      // Fallback searches for nested definitions in MediaCreationContext, Utility, Participant
       if (!entitySchema) {
          entitySchema = schema.$defs?.MediaCreationContext?.properties?.[selectedEntity.type];
       }
