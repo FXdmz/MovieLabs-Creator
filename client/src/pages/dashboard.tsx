@@ -224,7 +224,10 @@ export default function Dashboard() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "omc-ontology.json";
+    const fileName = selectedEntity 
+      ? `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.json`
+      : "omc-ontology.json";
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   };
