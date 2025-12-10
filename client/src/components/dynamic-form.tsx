@@ -294,7 +294,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           <Badge variant="secondary" className="text-xs whitespace-nowrap">Read-only</Badge>
         </div>
       ) : schema.enum ? (
-        <Select value={value || undefined} onValueChange={onChange}>
+        <Select value={value ?? ""} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select..." />
           </SelectTrigger>
@@ -307,7 +307,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
       ) : isDurationField ? (
         <DurationInput value={value || ''} onChange={onChange} />
       ) : isLanguageField ? (
-        <Select value={value || undefined} onValueChange={onChange}>
+        <Select value={value ?? ""} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select language..." />
           </SelectTrigger>
@@ -322,7 +322,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           </SelectContent>
         </Select>
       ) : isCountryField ? (
-        <Select value={value || undefined} onValueChange={onChange}>
+        <Select value={value ?? ""} onValueChange={onChange}>
           <SelectTrigger data-testid="select-country">
             <SelectValue placeholder="Select country..." />
           </SelectTrigger>
@@ -337,7 +337,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           </SelectContent>
         </Select>
       ) : isAssetStructuralType ? (
-        <Select value={value || undefined} onValueChange={onChange}>
+        <Select value={value ?? ""} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select structural type..." />
           </SelectTrigger>
@@ -352,7 +352,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           </SelectContent>
         </Select>
       ) : isAssetFunctionalType ? (
-        <Select value={value || undefined} onValueChange={onChange}>
+        <Select value={value ?? ""} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select functional type..." />
           </SelectTrigger>
