@@ -1,0 +1,105 @@
+[
+  {
+    "instancePath": "/schemaVersion",
+    "schemaPath": "#/properties/schemaVersion/enum",
+    "keyword": "enum",
+    "params": {
+      "allowedValues": [
+        "https://movielabs.com/omc/json/schema/v2.0",
+        "https://movielabs.com/omc/json/schema/v2.1",
+        "https://movielabs.com/omc/json/schema/v2.6"
+      ]
+    },
+    "message": "must be equal to one of the allowed values"
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/height",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/height/oneOf/0/type",
+    "keyword": "type",
+    "params": {
+      "type": "null"
+    },
+    "message": "must be null"
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/height",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/height/oneOf/1/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^-?(\\d+km)?(\\d+m)?(\\d+cm)?(\\d+mm)?$"
+    },
+    "message": "must match pattern \"^-?(\\d+km)?(\\d+m)?(\\d+cm)?(\\d+mm)?$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/height",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/height/oneOf/2/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^-?(\\d+mi)?(\\d+ft)?(\\d+in)?$"
+    },
+    "message": "must match pattern \"^-?(\\d+mi)?(\\d+ft)?(\\d+in)?$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/height",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/height/oneOf/3/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^(\\d+px)$"
+    },
+    "message": "must match pattern \"^(\\d+px)$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/height",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/height/oneOf",
+    "keyword": "oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "message": "must match exactly one schema in oneOf"
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/width",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/width/oneOf/0/type",
+    "keyword": "type",
+    "params": {
+      "type": "null"
+    },
+    "message": "must be null"
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/width",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/width/oneOf/1/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^-?(\\d+km)?(\\d+m)?(\\d+cm)?(\\d+mm)?$"
+    },
+    "message": "must match pattern \"^-?(\\d+km)?(\\d+m)?(\\d+cm)?(\\d+mm)?$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/width",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/width/oneOf/2/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^-?(\\d+mi)?(\\d+ft)?(\\d+in)?$"
+    },
+    "message": "must match pattern \"^-?(\\d+mi)?(\\d+ft)?(\\d+in)?$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/width",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/width/oneOf/3/pattern",
+    "keyword": "pattern",
+    "params": {
+      "pattern": "^(\\d+px)$"
+    },
+    "message": "must match pattern \"^(\\d+px)$\""
+  },
+  {
+    "instancePath": "/structuralProperties/dimensions/width",
+    "schemaPath": "#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions/properties/width/oneOf",
+    "keyword": "oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "message": "must match exactly one schema in oneOf"
+  }
+]

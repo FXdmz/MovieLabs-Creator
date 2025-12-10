@@ -196,6 +196,22 @@ export const ASSET_SC_FIELD_DESCRIPTIONS: Record<string, { description: string; 
     description: "A set of properties that describe the asset in this form, including codec, dimensions, file details, and more.",
     required: false
   },
+  dimensions: {
+    description: "Physical or digital dimensions of the asset.",
+    required: false
+  },
+  height: {
+    description: "Height in format: pixels (1080px), metric (10cm, 5m), or imperial (6ft, 12in). Leave empty if not applicable.",
+    required: false
+  },
+  width: {
+    description: "Width in format: pixels (1920px), metric (10cm, 5m), or imperial (6ft, 12in). Leave empty if not applicable.",
+    required: false
+  },
+  depth: {
+    description: "Depth in format: pixels (100px), metric (10cm, 5m), or imperial (6ft, 12in). Leave empty if not applicable.",
+    required: false
+  },
   isAnalog: {
     description: "True if the Asset is an analog (non-digital) asset.",
     required: false

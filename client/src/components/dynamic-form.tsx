@@ -264,6 +264,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // functionalType appears in Asset.assetFC
   const isAssetFunctionalType = fieldKey === 'functionalType' && 
     (entityType === 'Asset' || path.includes('assetFC'));
+  // Dimension fields need special format hints
+  const isDimensionField = ['height', 'width', 'depth'].includes(fieldKey) && 
+    path.includes('dimensions');
 
   return (
     <div className="space-y-1.5">
@@ -341,6 +344,16 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           <Switch checked={value} onCheckedChange={onChange} />
           <span className="text-sm text-muted-foreground">{value ? 'Yes' : 'No'}</span>
         </div>
+      ) : isDimensionField ? (
+        <Input 
+          value={value || ''} 
+          onChange={(e) => {
+            const val = e.target.value;
+            onChange(val === '' ? null : val);
+          }}
+          placeholder="e.g., 1920px, 10cm, or 6ft"
+          className="bg-background"
+        />
       ) : (
         <Input 
           value={value || ''} 
