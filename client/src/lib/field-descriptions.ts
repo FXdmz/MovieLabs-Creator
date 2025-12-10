@@ -175,6 +175,69 @@ export const BASE_ENTITY_FIELD_DESCRIPTIONS: Record<string, { description: strin
   }
 };
 
+export const LOCATION_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Locations, this is always 'Location'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Location. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for this Location, such as 'Main Studio' or 'Beach Location'.",
+    required: false
+  },
+  description: {
+    description: "A textual description of this Location.",
+    required: false
+  },
+  address: {
+    description: "The postal address of this Location, including street, locality, region, postal code, and country.",
+    required: false
+  },
+  street: {
+    description: "The street address, including building number and street name.",
+    required: false
+  },
+  locality: {
+    description: "The city, town, or locality where this Location is situated.",
+    required: false
+  },
+  region: {
+    description: "The state, province, or region where this Location is situated.",
+    required: false
+  },
+  postalCode: {
+    description: "The postal or ZIP code for this Location.",
+    required: false
+  },
+  country: {
+    description: "The ISO 3166-1 alpha-2 country code (e.g., 'US' for United States, 'GB' for United Kingdom).",
+    required: false
+  },
+  coordinates: {
+    description: "GPS coordinates for this Location in WGS 84 format.",
+    required: false
+  },
+  latitude: {
+    description: "The latitude coordinate (between -90 and 90 degrees).",
+    required: false
+  },
+  longitude: {
+    description: "The longitude coordinate (between -180 and 180 degrees).",
+    required: false
+  },
+  Context: {
+    description: "Links to Context entities that provide additional metadata and relationships for this Location.",
+    required: false
+  }
+};
+
 export const ASSET_SC_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
   entityType: {
     description: "The type of OMC entity. For Asset Structural Classes, this is always 'AssetSC'.",
@@ -240,6 +303,9 @@ export function getFieldDescription(entityType: string, fieldKey: string, path?:
       return ASSET_SC_FIELD_DESCRIPTIONS[fieldKey] || ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
     }
     return ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Location') {
+    return LOCATION_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }

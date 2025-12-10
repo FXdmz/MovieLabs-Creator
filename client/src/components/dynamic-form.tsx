@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
+import { ISO_COUNTRY_CODES } from "@/lib/country-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
@@ -251,6 +252,11 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   const isLanguageField = fieldKey.toLowerCase().includes('language') || 
                           schema.description?.toLowerCase().includes('ietf') ||
                           schema.description?.toLowerCase().includes('bcp 47');
+  
+  // Check if this is a country field (ISO 3166-1 alpha-2)
+  const isCountryField = fieldKey === 'country' ||
+                         schema.description?.toLowerCase().includes('iso 3166') ||
+                         schema.pattern === '^[A-Z][A-Z]$';
 
   // Check if this is a duration field (ISO 8601 duration pattern)
   const isDurationField = fieldKey.toLowerCase().includes('length') ||
@@ -308,6 +314,21 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
               {IETF_LANGUAGE_CODES.map((lang) => (
                 <SelectItem key={lang.code} value={lang.code}>
                   {lang.code} - {lang.name}
+                </SelectItem>
+              ))}
+            </ScrollArea>
+          </SelectContent>
+        </Select>
+      ) : isCountryField ? (
+        <Select value={value || undefined} onValueChange={onChange}>
+          <SelectTrigger data-testid="select-country">
+            <SelectValue placeholder="Select country..." />
+          </SelectTrigger>
+          <SelectContent>
+            <ScrollArea className="h-60">
+              {ISO_COUNTRY_CODES.map((country) => (
+                <SelectItem key={country.code} value={country.code}>
+                  {country.code} - {country.name}
                 </SelectItem>
               ))}
             </ScrollArea>
