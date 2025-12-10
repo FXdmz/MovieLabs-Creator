@@ -3,7 +3,7 @@ export const STRUCTURAL_PROPERTIES_BY_TYPE: Record<string, string[]> = {
   "digital": ["fileDetails", "codec"],
   "digital.audio": ["audioBitRate", "audioSampleRate", "audioSampleSize", "fileDetails", "codec"],
   "digital.audio.object": ["audioBitRate", "audioSampleRate", "audioSampleSize", "fileDetails", "codec"],
-  "digital.audioVisual": ["audioBitRate", "audioSampleRate", "audioSampleSize", "fileDetails", "codec"],
+  "digital.audioVisual": ["dimensions", "length", "audioBitRate", "audioSampleRate", "audioSampleSize", "fileDetails", "codec"],
   "digital.data": ["fileDetails"],
   "digital.document": ["fileDetails"],
   "digital.image": ["dimensions", "fileDetails", "codec"],
@@ -36,10 +36,12 @@ export const ALL_STRUCTURAL_PROPERTIES = [
   "dimensions",
   "fileDetails",
   "geometryType",
+  "length",
   "levelOfDetail",
   "linkset",
   "numberPoints",
   "purpose",
+  "resolution",
   "scale"
 ];
 

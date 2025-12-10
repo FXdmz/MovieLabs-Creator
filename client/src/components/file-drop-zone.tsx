@@ -115,6 +115,11 @@ export function FileDropZone({ onAssetCreated, onCancel }: FileDropZoneProps) {
                       <span className="font-medium">Duration:</span> {Math.floor(metadata.duration / 60)}:{String(Math.floor(metadata.duration % 60)).padStart(2, '0')}
                     </div>
                   )}
+                  {asset.assetFC?.functionalType && (
+                    <div data-testid="text-functional-type">
+                      <span className="font-medium">Functional Type:</span> {asset.assetFC.functionalType}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

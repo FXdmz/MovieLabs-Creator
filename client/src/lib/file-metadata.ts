@@ -16,7 +16,7 @@ export interface ExtractedMetadata {
 
 export function getStructuralTypeFromMime(mimeType: string): string | null {
   if (mimeType.startsWith('image/')) return 'digital.image';
-  if (mimeType.startsWith('video/')) return 'digital.video';
+  if (mimeType.startsWith('video/')) return 'digital.audioVisual';
   if (mimeType.startsWith('audio/')) return 'digital.audio';
   if (mimeType.startsWith('application/pdf')) return 'digital.document';
   if (mimeType.startsWith('text/')) return 'digital.document';
@@ -24,6 +24,38 @@ export function getStructuralTypeFromMime(mimeType: string): string | null {
     return 'digital.document';
   }
   if (mimeType.includes('json') || mimeType.includes('xml')) return 'digital.data';
+  return null;
+}
+
+export function getFunctionalTypeFromMime(mimeType: string, fileName: string): string | null {
+  const lowerName = fileName.toLowerCase();
+  
+  if (mimeType.startsWith('video/')) {
+    if (lowerName.includes('proxy') || lowerName.includes('daily')) return 'proxy.daily';
+    if (lowerName.includes('edit')) return 'shot.editorial';
+    if (lowerName.includes('vfx')) return 'shot.vfx';
+    return 'capture.ocf';
+  }
+  
+  if (mimeType.startsWith('audio/')) {
+    if (lowerName.includes('music') || lowerName.includes('score')) return 'audio.track';
+    if (lowerName.includes('mix')) return 'audio.onSetMix';
+    return 'capture.audio';
+  }
+  
+  if (mimeType.startsWith('image/')) {
+    if (lowerName.includes('storyboard')) return 'artwork.storyboard.frame';
+    if (lowerName.includes('concept')) return 'artwork.conceptArt';
+    if (lowerName.includes('reference')) return 'creativeReferenceMaterial';
+    if (lowerName.includes('texture') || lowerName.includes('map')) return 'map';
+    return 'capture.cameraProxy';
+  }
+  
+  if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.startsWith('text/')) {
+    if (lowerName.includes('script')) return 'script';
+    return 'script';
+  }
+  
   return null;
 }
 
@@ -134,6 +166,8 @@ export async function extractFileMetadata(file: File): Promise<ExtractedMetadata
 }
 
 export function mapMetadataToAsset(metadata: ExtractedMetadata, id: string): any {
+  const functionalType = getFunctionalTypeFromMime(metadata.mimeType, metadata.fileName);
+  
   const asset: any = {
     entityType: 'Asset',
     name: metadata.fileName,
@@ -144,7 +178,7 @@ export function mapMetadataToAsset(metadata: ExtractedMetadata, id: string): any
       combinedForm: `me-nexus:${id}`
     }],
     assetFC: {
-      functionalType: null
+      functionalType: functionalType
     },
     AssetSC: {
       structuralType: metadata.structuralType,
@@ -170,6 +204,21 @@ export function mapMetadataToAsset(metadata: ExtractedMetadata, id: string): any
     
     if (metadata.duration) {
       structProps.length = formatDuration(metadata.duration);
+    }
+    
+    if (metadata.structuralType === 'digital.audio') {
+      if (metadata.sampleRate) {
+        structProps.audioSampleRate = metadata.sampleRate;
+      }
+      if (metadata.channels) {
+        structProps.audioChannelCount = metadata.channels;
+      }
+    }
+    
+    if (metadata.structuralType === 'digital.audioVisual' || metadata.structuralType === 'digital.image') {
+      if (metadata.width && metadata.height) {
+        structProps.resolution = `${metadata.width}x${metadata.height}`;
+      }
     }
   }
   
