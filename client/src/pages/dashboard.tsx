@@ -25,6 +25,7 @@ import {
   AlertTriangle,
   Upload
 } from "lucide-react";
+
 import { FileDropZone } from "@/components/file-drop-zone";
 import { ExtractedMetadata } from "@/lib/file-metadata";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,22 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Copy } from "lucide-react";
+
+const LocationIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 46" className={className} fill="currentColor">
+    <g>
+      <path d="M25,10a6,6,0,1,0,6,6A6,6,0,0,0,25,10Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,25,20Z" transform="translate(-11 -2)"/>
+      <path d="M25,2A14,14,0,0,0,11,16c0,9,14,32,14,32S39,25,39,16A14,14,0,0,0,25,2ZM13,16a12,12,0,0,1,24,0c0,6-7.55,20.37-12,28.07C20.55,36.37,13,22,13,16Z" transform="translate(-11 -2)"/>
+    </g>
+  </svg>
+);
+
+const getEntityIcon = (entityType: string) => {
+  if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
+    return <LocationIcon className="h-3.5 w-3.5" />;
+  }
+  return <Database className="h-3.5 w-3.5" />;
+};
 
 export default function Dashboard() {
   const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
@@ -240,7 +257,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className={`p-1.5 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
-                  <Database className="h-3.5 w-3.5" />
+                  {getEntityIcon(entity.type)}
                 </div>
                 <div className="flex-1 text-left truncate">
                   <div className="truncate">{entity.name}</div>
