@@ -68,7 +68,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("/schema.json")
+    fetch("/schema.json?v=2.8&t=" + Date.now())
       .then((res) => res.json())
       .then((data) => setSchema(data));
   }, []);

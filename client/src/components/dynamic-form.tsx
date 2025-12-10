@@ -13,6 +13,7 @@ import { Plus, Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { getFieldDescription } from "@/lib/field-descriptions";
 
 // This is a simplified recursive form generator
 // In a real production app, we would parse the full JSON Schema to generate Zod schemas dynamically
@@ -25,22 +26,32 @@ interface SchemaFieldProps {
   onChange: (value: any) => void;
   path?: string;
   level?: number;
+  entityType?: string;
 }
 
 const FieldLabel = ({ label, required, description }: { label: string, required?: boolean, description?: string }) => (
   <div className="flex flex-col gap-1 mb-2">
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <Label className="text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-destructive ml-1">*</span>}
       </Label>
+      {required && (
+        <Badge variant="destructive" className="text-[9px] h-4 px-1.5 font-medium">
+          Required
+        </Badge>
+      )}
     </div>
-    {description && <span className="text-xs text-muted-foreground">{description}</span>}
+    {description && <span className="text-xs text-muted-foreground leading-relaxed">{description}</span>}
   </div>
 );
 
-export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema }: SchemaFieldProps & { rootSchema?: any }) {
+export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema, entityType }: SchemaFieldProps & { rootSchema?: any }) {
   const [isOpen, setIsOpen] = useState(level < 1); // Open top level by default
+  
+  // Get field description from our descriptions file (for enhanced UX)
+  const fieldMeta = entityType ? getFieldDescription(entityType, fieldKey) : undefined;
+  const enhancedDescription = fieldMeta?.description || schema.description;
+  const isRequired = fieldMeta?.required || false;
 
   if (!schema) return null;
 
@@ -66,7 +77,8 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           onChange={onChange} 
           path={path} 
           level={level} 
-          rootSchema={rootSchema} 
+          rootSchema={rootSchema}
+          entityType={entityType}
         />;
       }
   }
@@ -82,7 +94,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
     return (
       <div className="space-y-2 mt-4">
         <div className="flex items-center justify-between">
-          <FieldLabel label={schema.title || fieldKey} description={schema.description} />
+          <FieldLabel label={schema.title || fieldKey} description={enhancedDescription} required={isRequired} />
           <Button 
             variant="outline" 
             size="sm" 
@@ -122,6 +134,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  path={`${path}[${index}]`}
                  level={level + 1}
                  rootSchema={rootSchema}
+                 entityType={entityType}
                />
             </div>
           ))}
@@ -149,6 +162,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  path={`${path}.${key}`}
                  level={level + 1}
                  rootSchema={rootSchema}
+                 entityType={entityType}
                />
             </div>
           ))}
@@ -182,6 +196,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                    path={`${path}.${key}`}
                    level={level + 1}
                    rootSchema={rootSchema}
+                   entityType={entityType}
                  />
               ))}
             </CardContent>
@@ -205,7 +220,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   if ((typeof value === 'object' && value !== null) && schemaType !== 'object' && schemaType !== 'array') {
     return (
       <div className="space-y-1.5">
-        <FieldLabel label={schema.title || fieldKey} description={schema.description} />
+        <FieldLabel label={schema.title || fieldKey} description={enhancedDescription} required={isRequired} />
         <div className="text-xs text-muted-foreground italic p-2 bg-muted/30 rounded">
           Complex value (use JSON editor)
         </div>
@@ -215,7 +230,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
 
   return (
     <div className="space-y-1.5">
-      <FieldLabel label={schema.title || fieldKey} required={false} description={schema.description} />
+      <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
       
       {schema.enum ? (
         <Select value={value} onValueChange={onChange}>
@@ -353,6 +368,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         value={value} 
         onChange={onChange} 
         rootSchema={schema} // Pass full schema for lookups
+        entityType={value.entityType} // Pass entity type for field descriptions
       />
     </div>
   );
