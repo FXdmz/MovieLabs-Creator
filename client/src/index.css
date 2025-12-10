@@ -37,87 +37,98 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'Montserrat', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius: 0.5rem;
 }
 
 :root {
-  /* Dark mode by default for that "Pro Tool" feel */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  /* FX-DMZ Colors */
+  /* Dark Blue: #232073 -> HSL(242, 57%, 29%) */
+  /* Light Blue: #CEECF2 -> HSL(190, 56%, 88%) */
+  /* Green: #3AA608 -> HSL(101, 91%, 34%) */
+  /* Orange: #D97218 -> HSL(28, 79%, 47%) */
+  /* Yellow: #F2C53D -> HSL(45, 88%, 59%) */
 
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
+  /* Light Mode */
+  --background: 0 0% 100%;
+  --foreground: 242 57% 29%; /* Dark Blue Text */
 
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
+  --card: 0 0% 100%;
+  --card-foreground: 242 57% 29%;
 
-  /* MovieLabs-ish Blue */
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 242 57% 29%;
 
-  --secondary: 217 32% 17%;
-  --secondary-foreground: 210 40% 98%;
+  --primary: 242 57% 29%; /* Dark Blue */
+  --primary-foreground: 190 56% 88%; /* Light Blue Text on Dark Blue */
 
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20% 65%;
+  --secondary: 190 56% 88%; /* Light Blue */
+  --secondary-foreground: 242 57% 29%;
 
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
 
-  --destructive: 0 62% 30%;
+  --accent: 190 56% 88%;
+  --accent-foreground: 242 57% 29%;
+
+  --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 224 76% 48%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 242 57% 29%;
 
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+  --radius: 0.5rem;
 
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 11%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-ring: 217 91% 60%;
+  --sidebar: 242 57% 29%; /* Dark Blue Sidebar */
+  --sidebar-foreground: 190 56% 88%;
+  --sidebar-primary: 190 56% 88%;
+  --sidebar-primary-foreground: 242 57% 29%;
+  --sidebar-accent: 242 50% 35%; /* Slightly lighter dark blue */
+  --sidebar-accent-foreground: 190 56% 88%;
+  --sidebar-border: 242 50% 40%;
+  --sidebar-ring: 190 56% 88%;
 }
 
 .dark {
-  /* Same as root since we default to dark */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
-  --secondary: 217 32% 17%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 224 76% 48%;
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 11%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-ring: 217 91% 60%;
+  /* Dark Mode - Inverting for usability while keeping brand identity */
+  --background: 242 57% 10%; /* Very Dark Blue */
+  --foreground: 190 56% 88%; /* Light Blue Text */
+
+  --card: 242 57% 15%;
+  --card-foreground: 190 56% 88%;
+
+  --popover: 242 57% 15%;
+  --popover-foreground: 190 56% 88%;
+
+  --primary: 190 56% 88%; /* Light Blue Primary in Dark Mode */
+  --primary-foreground: 242 57% 29%;
+
+  --secondary: 242 50% 25%;
+  --secondary-foreground: 190 56% 88%;
+
+  --muted: 242 50% 25%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 242 50% 25%;
+  --accent-foreground: 190 56% 88%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 190 56% 88%;
+
+  --border: 242 50% 25%;
+  --input: 242 50% 25%;
+  --ring: 190 56% 88%;
+  
+  --sidebar: 242 57% 8%; /* Even Darker Blue */
+  --sidebar-foreground: 190 56% 88%;
+  --sidebar-primary: 190 56% 88%;
+  --sidebar-primary-foreground: 242 57% 29%;
+  --sidebar-accent: 242 50% 20%;
+  --sidebar-accent-foreground: 190 56% 88%;
+  --sidebar-border: 242 50% 20%;
+  --sidebar-ring: 190 56% 88%;
 }
 
 @layer base {
