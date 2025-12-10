@@ -84,7 +84,31 @@ export default function Dashboard() {
     if (!schema || !selectedEntity) return;
 
     try {
-      const validate = ajv.compile(schema);
+      // Improved validation logic:
+      // 1. Try to find the specific definition for this entity type to avoid root schema complexity/recursion issues
+      let entitySchema = schema.$defs?.[selectedEntity.type];
+      
+      // Fallback searches for nested definitions
+      if (!entitySchema) {
+         entitySchema = schema.$defs?.MediaCreationContext?.properties?.[selectedEntity.type];
+      }
+      if (!entitySchema) {
+         entitySchema = schema.$defs?.Utility?.properties?.[selectedEntity.type];
+      }
+      if (!entitySchema) {
+         entitySchema = schema.$defs?.Participant?.properties?.[selectedEntity.type];
+      }
+      
+      // If we found a specific schema, wrap it in a standalone schema object for AJV
+      // We need to keep the $defs from the root so references work
+      const schemaToValidate = entitySchema ? {
+        ...entitySchema,
+        $defs: schema.$defs
+      } : schema; // Fallback to full schema if specific one not found
+
+      console.log("Validating against schema for:", selectedEntity.type);
+
+      const validate = ajv.compile(schemaToValidate);
       const valid = validate(selectedEntity.content);
 
       if (valid) {
@@ -97,14 +121,14 @@ export default function Dashboard() {
         setValidationErrors(null);
       } else {
         console.error("Validation errors:", validate.errors);
-        setValidationErrors(validate.errors || null);
+        setValidationErrors(validate.errors || []);
         setShowValidationDialog(true);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Validation exception:", e);
       toast({
         title: "Validation Error",
-        description: "An error occurred during validation.",
+        description: e.message || "An error occurred during validation.",
         variant: "destructive",
       });
     }
