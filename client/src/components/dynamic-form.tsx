@@ -250,11 +250,23 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                           schema.pattern?.includes('P(?=.)') ||
                           schema.description?.toLowerCase().includes('iso 8601');
 
+  // Check if this is a read-only field (entityType is required and shouldn't be changed)
+  const isReadOnlyField = fieldKey === 'entityType';
+
   return (
     <div className="space-y-1.5">
       <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
       
-      {schema.enum ? (
+      {isReadOnlyField ? (
+        <div className="flex items-center gap-2">
+          <Input 
+            value={value || ''} 
+            disabled
+            className="bg-muted/50 text-muted-foreground cursor-not-allowed"
+          />
+          <Badge variant="secondary" className="text-xs whitespace-nowrap">Read-only</Badge>
+        </div>
+      ) : schema.enum ? (
         <Select value={value || undefined} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select..." />
