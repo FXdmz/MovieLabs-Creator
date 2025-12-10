@@ -17,6 +17,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { CreativeWorkHeader } from "./creative-work-header";
+import { DurationInput } from "./duration-input";
+
+const ISO8601_DURATION_PATTERN = /^\(-\?\)P\(\?=\.\)/;
 
 const EPISODIC_FIELDS = ['seasonNumber', 'episodeSequence', 'Series', 'Season', 'Episode'];
 const SERIES_FIELDS = ['Season', 'Episode'];
@@ -241,6 +244,12 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                           schema.description?.toLowerCase().includes('ietf') ||
                           schema.description?.toLowerCase().includes('bcp 47');
 
+  // Check if this is a duration field (ISO 8601 duration pattern)
+  const isDurationField = fieldKey.toLowerCase().includes('length') ||
+                          fieldKey.toLowerCase().includes('duration') ||
+                          schema.pattern?.includes('P(?=.)') ||
+                          schema.description?.toLowerCase().includes('iso 8601');
+
   return (
     <div className="space-y-1.5">
       <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
@@ -256,6 +265,8 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
             ))}
           </SelectContent>
         </Select>
+      ) : isDurationField ? (
+        <DurationInput value={value || ''} onChange={onChange} />
       ) : isLanguageField ? (
         <Select value={value || undefined} onValueChange={onChange}>
           <SelectTrigger>
