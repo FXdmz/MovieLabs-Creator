@@ -284,7 +284,9 @@ export default function Dashboard() {
                       className="h-8 text-lg font-bold border-transparent hover:border-border focus:border-input px-0 bg-transparent w-[300px]"
                     />
                     <Badge variant="outline" className="font-mono text-[10px] h-5 bg-muted/50">
-                      {selectedEntity.content.identifier}
+                      {Array.isArray(selectedEntity.content.identifier) 
+                        ? selectedEntity.content.identifier[0]?.combinedForm || selectedEntity.content.identifier[0]?.identifierValue || 'No ID'
+                        : selectedEntity.content.identifier || 'No ID'}
                     </Badge>
                   </div>
                 </div>
