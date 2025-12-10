@@ -65,9 +65,18 @@ const LocationIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const InfrastructureIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 264.57 149.92" xmlns="http://www.w3.org/2000/svg" className={className} fill="currentColor">
+    <path d="M 207.698 5.208 C 234.978 5.208 257.087 36.529 257.087 75.167 C 257.087 113.805 234.968 145.126 207.698 145.126 L 59.538 145.126 C 32.286 145.126 10.167 113.805 10.167 75.167 C 10.167 36.529 32.286 5.208 59.538 5.208 L 207.698 5.208 Z" strokeWidth="4" stroke="currentColor"/>
+  </svg>
+);
+
 const getEntityIcon = (entityType: string) => {
   if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
     return <LocationIcon className="h-3.5 w-3.5" />;
+  }
+  if (entityType === 'Infrastructure') {
+    return <InfrastructureIcon className="h-3.5 w-3.5" />;
   }
   return <Database className="h-3.5 w-3.5" />;
 };

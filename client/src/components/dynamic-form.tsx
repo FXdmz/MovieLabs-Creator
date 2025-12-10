@@ -22,6 +22,7 @@ import { getRelevantStructuralProperties } from "@/lib/structural-properties-map
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { LocationHeader } from "./location-header";
+import { InfrastructureHeader } from "./infrastructure-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
 import { DimensionInput } from "./dimension-input";
@@ -587,6 +588,8 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <AssetHeader />;
       case 'Location':
         return <LocationHeader />;
+      case 'Infrastructure':
+        return <InfrastructureHeader />;
       default:
         return null;
     }
