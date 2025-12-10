@@ -298,7 +298,18 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     
     // OMC Schema structure: $defs[Type].properties[Type]
     const def = schema.$defs?.[value.entityType];
-    if (!def) return null;
+    
+    // Fallback: Check if it's nested in MediaCreationContext or Utility
+    if (!def) {
+      // Try to find it in nested definitions
+      const mediaContext = schema.$defs?.MediaCreationContext?.properties?.[value.entityType];
+      if (mediaContext) return resolveRef(mediaContext);
+      
+      const utility = schema.$defs?.Utility?.properties?.[value.entityType];
+      if (utility) return resolveRef(utility);
+      
+      return null;
+    }
 
     // Usually nested like Asset -> Asset
     const inner = def.properties?.[value.entityType];
