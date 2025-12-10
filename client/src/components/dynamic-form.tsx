@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { CreativeWorkHeader } from "./creative-work-header";
+import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
 
 const ISO8601_DURATION_PATTERN = /^\(-\?\)P\(\?=\.\)/;
@@ -443,9 +444,20 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
 
   const filteredSchema = getFilteredSchema();
 
+  const renderEntityHeader = () => {
+    switch (value.entityType) {
+      case 'CreativeWork':
+        return <CreativeWorkHeader />;
+      case 'Asset':
+        return <AssetHeader />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="p-1">
-      {value.entityType === 'CreativeWork' && <CreativeWorkHeader />}
+      {renderEntityHeader()}
       <SchemaField 
         fieldKey="root" 
         schema={filteredSchema} 

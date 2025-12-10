@@ -77,6 +77,69 @@ export const CREATIVE_WORK_FIELD_DESCRIPTIONS: Record<string, { description: str
   }
 };
 
+export const ASSET_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Assets, this is always 'Asset'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Asset. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for the Asset used for display purposes.",
+    required: false
+  },
+  description: {
+    description: "A textual description of this Asset.",
+    required: false
+  },
+  functionalType: {
+    description: "The functional purpose of an Asset. Examples include 'digital.image', 'digital.audio', 'digital.video', 'physical.prop', 'physical.camera', etc.",
+    required: false
+  },
+  structuralType: {
+    description: "The internal structure of an Asset: 'atomic' for indivisible assets, 'set' for unordered collections, 'sequence' for ordered collections, or 'complex' for structured containers.",
+    required: false
+  },
+  assetFC: {
+    description: "The Functional Characteristics of the Asset, describing its specific technical or operational properties.",
+    required: false
+  },
+  assetSC: {
+    description: "The Structural Characteristics of the Asset, describing its physical or data structure properties.",
+    required: false
+  },
+  AssetGroup: {
+    description: "Reference to an Asset Group that this Asset belongs to, used for organizing related assets.",
+    required: false
+  },
+  provenance: {
+    description: "Information about the origin or source of this Asset.",
+    required: false
+  },
+  Asset: {
+    description: "For container Assets: the child Assets contained within this Asset.",
+    required: false
+  },
+  Context: {
+    description: "Links to Context entities that provide additional metadata and relationships for this Asset.",
+    required: false
+  },
+  customData: {
+    description: "A user-defined set of custom data in the payload of the instance.",
+    required: false
+  },
+  notes: {
+    description: "Human readable commentary, explanation, or information about this Asset.",
+    required: false
+  }
+};
+
 export const BASE_ENTITY_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
   entityType: {
     description: "The type of OMC entity being described.",
@@ -111,6 +174,9 @@ export const BASE_ENTITY_FIELD_DESCRIPTIONS: Record<string, { description: strin
 export function getFieldDescription(entityType: string, fieldKey: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Asset') {
+    return ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }
