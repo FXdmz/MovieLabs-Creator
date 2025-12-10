@@ -1,0 +1,81 @@
+ssue
+
+What was Found
+
+JSON Pointer Types
+
+JSON Pointers
+
+Entity validation failed
+
+{'Status': 'ready'} is not valid under any of the given schemas
+
+Failed validating 'oneOf' in schema['properties']['taskFC']['properties']['functionalProperties']['properties']['customData']:
+    {'description': 'A user defined set of custom data in the payload of '
+                    'the instance, used where the formal schema lacks '
+                    'required properties.',
+     'oneOf': [{'type': 'null'},
+               {'deprecated': True,
+                'description': 'Deprecated in favor of an array objects, '
+                               'with explicit provenance to allow for '
+                               'disambiguation.',
+                'maxProperties': 0,
+                'type': 'object'},
+               {'items': {'additionalProperties': False,
+                          'properties': {'domain': {'description': 'Indicates '
+                                                                   'the '
+                                                                   'set or '
+                                                                   'system '
+                                                                   'in '
+                                                                   'which '
+                                                                   'the '
+                                                                   'Custom '
+                                                                   'Data '
+                                                                   'is '
+                                                                   'relevant '
+                                                                   'or '
+                                                                   'defined',
+                                                    'title': 'Custom Data '
+                                                             'Domain',
+                                                    'type': 'string'},
+                                         'namespace': {'description': 'The '
+                                                                      'namespace '
+                                                                      'used '
+                                                                      'by '
+                                                                      'the '
+                                                                      'Custom '
+                                                                      'Data',
+                                                       'title': 'Custom '
+                                                                'Data '
+                                                                'Namespace',
+                                                       'type': 'string'},
+                                         'schema': {'description': 'URL '
+                                                                   'for '
+                                                                   'the '
+                                                                   'schema '
+                                                                   'used '
+                                                                   'by the '
+                                                                   'Custom '
+                                                                   'Data',
+                                                    'title': 'Custom Data '
+                                                             'Schema',
+                                                    'type': 'string'},
+                                         'value': {'description': 'The '
+                                                                  'user '
+                                                                  'defined '
+                                                                  'custom '
+                                                                  'data',
+                                                   'title': 'Custom Data '
+                                                            'Value',
+                                                   'type': ['object',
+                                                            'array',
+                                                            'string',
+                                                            'number',
+                                                            'null']}},
+                          'type': 'object'},
+                'type': 'array'}],
+     'title': 'Custom Data'}
+
+On instance['taskFC']['functionalProperties']['customData']:
+    {'Status': 'ready'}
+entity
