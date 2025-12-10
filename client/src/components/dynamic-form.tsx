@@ -18,6 +18,7 @@ import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
+import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
@@ -61,7 +62,10 @@ const FieldLabel = ({ label, required, description }: { label: string, required?
 );
 
 export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema, entityType }: SchemaFieldProps & { rootSchema?: any }) {
-  const [isOpen, setIsOpen] = useState(level < 1); // Open top level by default
+  // Open by default if: top level, OR if the field has data (e.g., from file import)
+  const hasData = value && typeof value === 'object' && Object.keys(value).length > 0;
+  const isAssetSection = ['AssetSC', 'assetFC'].includes(fieldKey);
+  const [isOpen, setIsOpen] = useState(level < 1 || hasData || isAssetSection);
   
   // Get field description from our descriptions file (for enhanced UX)
   const fieldMeta = entityType ? getFieldDescription(entityType, fieldKey, path) : undefined;
@@ -501,35 +505,48 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return { ...rootSchema, properties: filteredProperties };
     }
 
-    // For Asset, filter AssetSC.structuralProperties based on AssetSC.structuralType
+    // For Asset, filter both structural and functional properties based on selected types
     if (value.entityType === 'Asset') {
       const structuralType = value.AssetSC?.structuralType;
-      const relevantProps = getRelevantStructuralProperties(structuralType);
+      const functionalType = value.assetFC?.functionalType;
+      const relevantStructProps = getRelevantStructuralProperties(structuralType);
+      const relevantFuncProps = getRelevantFunctionalProperties(functionalType);
       
-      // Deep clone and filter AssetSC.structuralProperties
-      const filteredProperties: any = { ...rootSchema.properties };
+      // Deep clone to avoid mutating the original schema
+      const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
       
-      if (filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
-        const assetSCSchema = { ...filteredProperties.AssetSC };
-        const structPropsSchema = assetSCSchema.properties.structuralProperties;
+      // Filter AssetSC.structuralProperties only if we have a specific structural type with properties
+      if (structuralType && relevantStructProps.length > 0 && filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
+        const structPropsSchema = filteredProperties.AssetSC.properties.structuralProperties;
         const filteredStructProps: any = {};
         
         Object.entries(structPropsSchema.properties || {}).forEach(([key, propSchema]) => {
-          if (relevantProps.includes(key)) {
+          if (relevantStructProps.includes(key)) {
             filteredStructProps[key] = propSchema;
           }
         });
         
-        filteredProperties.AssetSC = {
-          ...assetSCSchema,
-          properties: {
-            ...assetSCSchema.properties,
-            structuralProperties: {
-              ...structPropsSchema,
-              properties: filteredStructProps
-            }
+        // Only apply filter if we have relevant properties
+        if (Object.keys(filteredStructProps).length > 0) {
+          filteredProperties.AssetSC.properties.structuralProperties.properties = filteredStructProps;
+        }
+      }
+      
+      // Filter assetFC.functionalProperties only if we have a specific functional type with properties
+      if (functionalType && relevantFuncProps.length > 0 && filteredProperties.assetFC?.properties?.functionalProperties?.properties) {
+        const funcPropsSchema = filteredProperties.assetFC.properties.functionalProperties;
+        const filteredFuncProps: any = {};
+        
+        Object.entries(funcPropsSchema.properties || {}).forEach(([key, propSchema]) => {
+          if (relevantFuncProps.includes(key)) {
+            filteredFuncProps[key] = propSchema;
           }
-        };
+        });
+        
+        // Only apply filter if we have relevant properties, otherwise show all
+        if (Object.keys(filteredFuncProps).length > 0) {
+          filteredProperties.assetFC.properties.functionalProperties.properties = filteredFuncProps;
+        }
       }
 
       return { ...rootSchema, properties: filteredProperties };
