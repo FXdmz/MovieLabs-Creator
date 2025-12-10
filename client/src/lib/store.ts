@@ -89,6 +89,25 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
        defaultContent.Context = null;
     }
 
+    if (type === "Participant") {
+       const participantScId = uuidv4();
+       defaultContent.ParticipantSC = {
+         entityType: "Person",
+         schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+         identifier: [{
+           identifierScope: "me-nexus",
+           identifierValue: participantScId,
+           combinedForm: `me-nexus:${participantScId}`
+         }],
+         structuralType: "person",
+         personName: null,
+         gender: null,
+         contact: null
+       };
+       defaultContent.participantFC = null;
+       defaultContent.Context = null;
+    }
+
     const newEntity: Entity = {
       id,
       type,

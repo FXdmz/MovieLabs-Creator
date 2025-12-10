@@ -1,0 +1,45 @@
+export function ParticipantHeader() {
+  return (
+    <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
+      <div className="flex items-start gap-4">
+        <div className="p-3 bg-primary/10 rounded-lg">
+          <svg 
+            viewBox="0 0 24 24" 
+            xmlns="http://www.w3.org/2000/svg"
+            width="48" 
+            height="48" 
+            className="text-primary"
+            fill="currentColor"
+          >
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <div className="flex-1">
+          <h2 className="text-xl font-bold text-foreground mb-2 flex items-center gap-2">
+            <svg 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+              width="20" 
+              height="20" 
+              className="text-primary"
+              fill="currentColor"
+            >
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            Participant
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <strong>Entities responsible for the production of a Creative Work.</strong> Participants 
+            include People (individuals contracted or employed), Organizations (groups or legal entities 
+            with a production purpose), and Services (computer-driven agents that perform tasks). 
+            Select a structural type to define whether this is a Person, Organization, Department, or Service.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
+            <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full">MovieLabs Ontology</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

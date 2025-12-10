@@ -407,6 +407,77 @@ export const INFRASTRUCTURE_FIELD_DESCRIPTIONS: Record<string, { description: st
   }
 };
 
+export const PARTICIPANT_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Participants, this is always 'Participant'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Participant. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for this Participant.",
+    required: false
+  },
+  ParticipantSC: {
+    description: "Participant Structural Characteristics: Defines whether this is a Person, Organization, Department, or Service, with type-specific properties.",
+    required: false
+  },
+  participantFC: {
+    description: "Participant Functional Characteristics: Describes the functional role and job title of the Participant.",
+    required: false
+  },
+  structuralType: {
+    description: "The type of Participant: person, organization, department, or service.",
+    required: false
+  },
+  personName: {
+    description: "The canonical name or set of names and titles for a Person.",
+    required: false
+  },
+  organizationName: {
+    description: "The official name of an Organization.",
+    required: false
+  },
+  departmentName: {
+    description: "The name of a Department.",
+    required: false
+  },
+  serviceName: {
+    description: "The name of a Service.",
+    required: false
+  },
+  gender: {
+    description: "The gender of a Person participant.",
+    required: false
+  },
+  contact: {
+    description: "Contact information for the Participant.",
+    required: false
+  },
+  jobTitle: {
+    description: "A formal name for the position a Person holds in relation to the production.",
+    required: false
+  },
+  functionalType: {
+    description: "The functional type or role of the Participant.",
+    required: false
+  },
+  Role: {
+    description: "The combination of a Task and the Participant responsible for it.",
+    required: false
+  },
+  Context: {
+    description: "Links to Context entities that provide additional metadata and relationships.",
+    required: false
+  }
+};
+
 export function getFieldDescription(entityType: string, fieldKey: string, path?: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
@@ -425,6 +496,9 @@ export function getFieldDescription(entityType: string, fieldKey: string, path?:
   }
   if (entityType === 'Infrastructure') {
     return INFRASTRUCTURE_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Participant') {
+    return PARTICIPANT_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }

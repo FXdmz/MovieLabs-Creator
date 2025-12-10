@@ -20,10 +20,12 @@ import { ISO_COUNTRY_CODES } from "@/lib/country-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
+import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults } from "@/lib/participant-types";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { LocationHeader } from "./location-header";
 import { InfrastructureHeader } from "./infrastructure-header";
 import { TaskHeader } from "./task-header";
+import { ParticipantHeader } from "./participant-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
 import { DimensionInput } from "./dimension-input";
@@ -268,7 +270,8 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                           schema.description?.toLowerCase().includes('iso 8601');
 
   // Check if this is a read-only field (entityType is required and shouldn't be changed)
-  const isReadOnlyField = fieldKey === 'entityType';
+  // But NOT if it's within ParticipantSC where entityType is the structural class selector
+  const isReadOnlyField = fieldKey === 'entityType' && !path.includes('ParticipantSC');
 
   // Check if this is an Asset structuralType or functionalType field
   // structuralType appears in AssetSC entities
@@ -277,6 +280,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // functionalType appears in Asset.assetFC
   const isAssetFunctionalType = fieldKey === 'functionalType' && 
     (entityType === 'Asset' || path.includes('assetFC'));
+  // Check if this is a Participant structural class selector (entityType within ParticipantSC)
+  const isParticipantStructuralClass = fieldKey === 'entityType' && 
+    path.includes('ParticipantSC') && entityType === 'Participant';
   // Dimension fields need special format hints
   const isDimensionField = ['height', 'width', 'depth'].includes(fieldKey) && 
     path.includes('dimensions');
@@ -365,6 +371,19 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                 </SelectItem>
               ))}
             </ScrollArea>
+          </SelectContent>
+        </Select>
+      ) : isParticipantStructuralClass ? (
+        <Select value={value ?? ""} onValueChange={onChange}>
+          <SelectTrigger data-testid="select-participant-structural-class">
+            <SelectValue placeholder="Select participant type..." />
+          </SelectTrigger>
+          <SelectContent>
+            {PARTICIPANT_STRUCTURAL_TYPES.map((type) => (
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       ) : schemaType === 'boolean' ? (
@@ -582,6 +601,35 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return { ...rootSchema, properties: filteredProperties };
     }
 
+    // For Participant, filter ParticipantSC properties based on selected structural class
+    if (value.entityType === 'Participant') {
+      const structuralClass = value.ParticipantSC?.entityType;
+      const relevantProps = getParticipantStructuralProperties(structuralClass);
+      
+      if (structuralClass && relevantProps.length > 0) {
+        // Deep clone to avoid mutating the original schema
+        const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
+        
+        if (filteredProperties.ParticipantSC?.properties) {
+          // Keep only the relevant properties for the selected structural class
+          // Always keep entityType, schemaVersion, identifier, structuralType
+          const baseFields = ['entityType', 'schemaVersion', 'identifier', 'structuralType'];
+          const allowedFields = [...baseFields, ...relevantProps];
+          
+          const filteredSCProps: any = {};
+          Object.entries(filteredProperties.ParticipantSC.properties || {}).forEach(([key, propSchema]) => {
+            if (allowedFields.includes(key)) {
+              filteredSCProps[key] = propSchema;
+            }
+          });
+          
+          filteredProperties.ParticipantSC.properties = filteredSCProps;
+        }
+        
+        return { ...rootSchema, properties: filteredProperties };
+      }
+    }
+
     return rootSchema;
   };
 
@@ -599,9 +647,36 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <InfrastructureHeader />;
       case 'Task':
         return <TaskHeader />;
+      case 'Participant':
+        return <ParticipantHeader />;
       default:
         return null;
     }
+  };
+
+  // Wrap onChange to handle Participant structural class changes
+  const wrappedOnChange = (newValue: any) => {
+    // Check if this is a Participant and ParticipantSC.entityType changed
+    if (value.entityType === 'Participant' && newValue.ParticipantSC?.entityType !== value.ParticipantSC?.entityType) {
+      const newStructuralClass = newValue.ParticipantSC?.entityType;
+      const structuralDefaults = getParticipantStructuralDefaults(newStructuralClass);
+      
+      // Preserve baseEntity fields, reset to new structural class defaults
+      const updatedParticipantSC = {
+        entityType: newStructuralClass,
+        schemaVersion: value.ParticipantSC?.schemaVersion || "https://movielabs.com/omc/json/schema/v2.8",
+        identifier: value.ParticipantSC?.identifier || [],
+        ...structuralDefaults
+      };
+      
+      onChange({
+        ...newValue,
+        ParticipantSC: updatedParticipantSC
+      });
+      return;
+    }
+    
+    onChange(newValue);
   };
 
   return (
@@ -611,7 +686,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         fieldKey="root" 
         schema={filteredSchema} 
         value={value} 
-        onChange={onChange} 
+        onChange={wrappedOnChange} 
         rootSchema={schema} // Pass full schema for lookups
         entityType={value.entityType} // Pass entity type for field descriptions
       />
