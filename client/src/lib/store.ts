@@ -64,6 +64,15 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
        defaultContent.infrastructureFC = null;
     }
 
+    if (type === "Task") {
+       defaultContent.TaskSC = {
+         entityType: "TaskSC",
+         structuralType: null,
+         structuralProperties: null
+       };
+       defaultContent.taskFC = null;
+    }
+
     const newEntity: Entity = {
       id,
       type,

@@ -67,12 +67,22 @@ const InfrastructureIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const TaskIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 11l3 3L22 4" />
+    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+  </svg>
+);
+
 const getEntityIcon = (entityType: string) => {
   if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
     return <LocationIcon className="h-3.5 w-3.5" />;
   }
   if (entityType === 'Infrastructure') {
     return <InfrastructureIcon className="h-3.5 w-3.5" />;
+  }
+  if (entityType === 'Task') {
+    return <TaskIcon className="h-3.5 w-3.5" />;
   }
   return <Database className="h-3.5 w-3.5" />;
 };
