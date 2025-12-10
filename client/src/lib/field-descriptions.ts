@@ -118,6 +118,10 @@ export const ASSET_FIELD_DESCRIPTIONS: Record<string, { description: string; req
     description: "Reference to an Asset Group that this Asset belongs to, used for organizing related assets.",
     required: false
   },
+  AssetSC: {
+    description: "Asset Structural Class: Describes the form of an Asset along with the attributes specific to that asset's form. Film and television production have been moving from the physical world to the digital world, but many Assets are still physical – cars, props an actor holds, and printed scripts. Some Assets that were once physical (sound and video) are now mostly digital.",
+    required: false
+  },
   provenance: {
     description: "Information about the origin or source of this Asset.",
     required: false

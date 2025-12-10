@@ -39,8 +39,9 @@ export function AssetHeader() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             <strong>A physical or digital object or collection of objects.</strong> Assets are 
             the building blocks of media production, representing everything from cameras and 
-            props to digital files and rendered footage. Each Asset has a specific functional 
-            type that describes its role in the production workflow.
+            props to digital files and rendered footage. Each Asset has a <em>Functional Type</em> describing 
+            its role in production, and an <em>Asset Structural Class (AssetSC)</em> describing its form 
+            and attributes specific to that form.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
