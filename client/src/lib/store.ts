@@ -56,13 +56,37 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
     }
 
     if (type === "Infrastructure") {
-       defaultContent.InfrastructureSC = null;
+       const infraScId = uuidv4();
+       defaultContent.InfrastructureSC = {
+         entityType: "InfrastructureSC",
+         schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+         identifier: [{
+           identifierScope: "me-nexus",
+           identifierValue: infraScId,
+           combinedForm: `me-nexus:${infraScId}`
+         }],
+         structuralType: null,
+         structuralProperties: {}
+       };
        defaultContent.infrastructureFC = null;
+       defaultContent.Context = null;
     }
 
     if (type === "Task") {
-       defaultContent.TaskSC = null;
+       const taskScId = uuidv4();
+       defaultContent.TaskSC = {
+         entityType: "TaskSC",
+         schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+         identifier: [{
+           identifierScope: "me-nexus",
+           identifierValue: taskScId,
+           combinedForm: `me-nexus:${taskScId}`
+         }],
+         structuralType: null,
+         structuralProperties: {}
+       };
        defaultContent.taskFC = null;
+       defaultContent.Context = null;
     }
 
     const newEntity: Entity = {
