@@ -13,11 +13,11 @@ export type ContextStructuralType = typeof CONTEXT_STRUCTURAL_TYPES[number]['val
 const CONTEXT_STRUCTURAL_PROPERTIES: Record<string, string[]> = {
   NarrativeContext: ['NarrativeScene', 'NarrativeLocation', 'Character', 'NarrativeObject', 'NarrativeAction', 'NarrativeAudio', 'NarrativeStyling', 'NarrativeWardrobe'],
   ProductionContext: ['ProductionScene', 'ProductionLocation', 'Participant', 'Task', 'Infrastructure', 'Asset'],
-  ShootDayContext: ['shootDate', 'callTime', 'wrapTime', 'ProductionScene', 'ProductionLocation', 'Participant'],
-  EditorialContext: ['Sequence', 'Asset', 'Participant'],
+  ShootDayContext: ['shootDate', 'callTime', 'wrapTime', 'ProductionScene', 'ProductionLocation', 'Participant', 'Task', 'Infrastructure', 'Asset'],
+  EditorialContext: ['Sequence', 'Asset', 'Participant', 'Task'],
   VFXContext: ['Sequence', 'Asset', 'Participant', 'Task'],
-  ColorContext: ['Sequence', 'Asset', 'Participant'],
-  AudioContext: ['Asset', 'Participant', 'Task'],
+  ColorContext: ['Sequence', 'Asset', 'Participant', 'Task'],
+  AudioContext: ['Asset', 'Participant', 'Task', 'Sequence'],
 };
 
 export function getContextStructuralProperties(structuralType: string | undefined): string[] {
@@ -26,63 +26,10 @@ export function getContextStructuralProperties(structuralType: string | undefine
 }
 
 export function getContextStructuralDefaults(structuralType: string | undefined): Record<string, any> {
-  const baseDefaults: Record<string, any> = {
-    structuralType: structuralType?.toLowerCase() || null,
+  const structuralTypeLower = structuralType ? 
+    structuralType.charAt(0).toLowerCase() + structuralType.slice(1) : null;
+  
+  return {
+    structuralType: structuralTypeLower,
   };
-
-  switch (structuralType) {
-    case 'NarrativeContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'narrativeContext',
-        NarrativeScene: null,
-        NarrativeLocation: null,
-        Character: null,
-      };
-    case 'ProductionContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'productionContext',
-        ProductionScene: null,
-        ProductionLocation: null,
-        Participant: null,
-      };
-    case 'ShootDayContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'shootDayContext',
-        shootDate: null,
-        callTime: null,
-        wrapTime: null,
-      };
-    case 'EditorialContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'editorialContext',
-        Sequence: null,
-        Asset: null,
-      };
-    case 'VFXContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'vfxContext',
-        Sequence: null,
-        Asset: null,
-      };
-    case 'ColorContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'colorContext',
-        Sequence: null,
-        Asset: null,
-      };
-    case 'AudioContext':
-      return {
-        ...baseDefaults,
-        structuralType: 'audioContext',
-        Asset: null,
-      };
-    default:
-      return baseDefaults;
-  }
 }

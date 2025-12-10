@@ -1008,8 +1008,12 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       // Generate a new identifier for the structural class
       const newScId = uuidv4();
       
-      // Build new ContextSC: start with structural defaults, then overlay preserved baseEntity fields
+      // Preserve existing ContextSC data but update the type-specific fields
+      const existingContextSC = value.ContextSC || {};
+      
+      // Build new ContextSC: merge existing data with new defaults
       const updatedContextSC = {
+        ...existingContextSC,
         ...structuralDefaults,
         entityType: newStructuralClass,
         schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
