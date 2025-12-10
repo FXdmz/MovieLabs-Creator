@@ -276,7 +276,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
 
   // Check if this is a read-only field (entityType is required and shouldn't be changed)
   // But NOT if it's within ParticipantSC where entityType is the structural class selector
-  const isReadOnlyField = fieldKey === 'entityType' && !path.includes('ParticipantSC');
+  // Also make schemaVersion read-only in structural characteristic sections
+  const isReadOnlyField = (fieldKey === 'entityType' && !path.includes('ParticipantSC')) ||
+    (fieldKey === 'schemaVersion' && (path.includes('ParticipantSC') || path.includes('AssetSC') || path.includes('TaskSC') || path.includes('InfrastructureSC')));
 
   // Check if this is an Asset structuralType or functionalType field
   // structuralType appears in AssetSC entities
