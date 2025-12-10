@@ -13,7 +13,15 @@ import { Plus, Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
+import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
+import { CreativeWorkHeader } from "./creative-work-header";
+
+const EPISODIC_FIELDS = ['seasonNumber', 'episodeSequence', 'Series', 'Season', 'Episode'];
+const SERIES_FIELDS = ['Season', 'Episode'];
+const SEASON_FIELDS = ['seasonNumber', 'Series', 'Episode'];
+const EPISODE_FIELDS = ['seasonNumber', 'episodeSequence', 'Series', 'Season'];
 
 // This is a simplified recursive form generator
 // In a real production app, we would parse the full JSON Schema to generate Zod schemas dynamically
@@ -228,19 +236,39 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
     );
   }
 
+  // Check if this is a language field
+  const isLanguageField = fieldKey.toLowerCase().includes('language') || 
+                          schema.description?.toLowerCase().includes('ietf') ||
+                          schema.description?.toLowerCase().includes('bcp 47');
+
   return (
     <div className="space-y-1.5">
       <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
       
       {schema.enum ? (
-        <Select value={value} onValueChange={onChange}>
+        <Select value={value || undefined} onValueChange={onChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select..." />
           </SelectTrigger>
           <SelectContent>
-            {schema.enum.map((opt: string) => (
+            {schema.enum.filter((opt: any) => opt !== null).map((opt: string) => (
               <SelectItem key={opt} value={opt}>{opt}</SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+      ) : isLanguageField ? (
+        <Select value={value || undefined} onValueChange={onChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select language..." />
+          </SelectTrigger>
+          <SelectContent>
+            <ScrollArea className="h-60">
+              {IETF_LANGUAGE_CODES.map((lang) => (
+                <SelectItem key={lang.code} value={lang.code}>
+                  {lang.code} - {lang.name}
+                </SelectItem>
+              ))}
+            </ScrollArea>
           </SelectContent>
         </Select>
       ) : schemaType === 'boolean' ? (
@@ -360,11 +388,44 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     );
   }
 
+  // For CreativeWork, filter fields based on creativeWorkType
+  const getFilteredSchema = () => {
+    if (value.entityType !== 'CreativeWork' || !rootSchema.properties) {
+      return rootSchema;
+    }
+
+    const creativeWorkType = value.creativeWorkType || 'creativeWork';
+    let hiddenFields: string[] = [];
+
+    // Determine which fields to hide based on creativeWorkType
+    if (creativeWorkType === 'creativeWork') {
+      hiddenFields = EPISODIC_FIELDS;
+    } else if (creativeWorkType === 'series') {
+      hiddenFields = EPISODE_FIELDS.filter(f => f !== 'Season' && f !== 'Episode');
+    } else if (creativeWorkType === 'season') {
+      hiddenFields = ['episodeSequence'];
+    }
+    // episode shows all fields
+
+    // Filter out hidden fields
+    const filteredProperties: any = {};
+    Object.entries(rootSchema.properties).forEach(([key, propSchema]) => {
+      if (!hiddenFields.includes(key)) {
+        filteredProperties[key] = propSchema;
+      }
+    });
+
+    return { ...rootSchema, properties: filteredProperties };
+  };
+
+  const filteredSchema = getFilteredSchema();
+
   return (
     <div className="p-1">
+      {value.entityType === 'CreativeWork' && <CreativeWorkHeader />}
       <SchemaField 
         fieldKey="root" 
-        schema={rootSchema} 
+        schema={filteredSchema} 
         value={value} 
         onChange={onChange} 
         rootSchema={schema} // Pass full schema for lookups
