@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
+import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
@@ -254,6 +255,10 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // Check if this is a read-only field (entityType is required and shouldn't be changed)
   const isReadOnlyField = fieldKey === 'entityType';
 
+  // Check if this is an Asset structuralType or functionalType field
+  const isAssetStructuralType = fieldKey === 'structuralType' && entityType === 'Asset';
+  const isAssetFunctionalType = fieldKey === 'functionalType';
+
   return (
     <div className="space-y-1.5">
       <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
@@ -290,6 +295,36 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
               {IETF_LANGUAGE_CODES.map((lang) => (
                 <SelectItem key={lang.code} value={lang.code}>
                   {lang.code} - {lang.name}
+                </SelectItem>
+              ))}
+            </ScrollArea>
+          </SelectContent>
+        </Select>
+      ) : isAssetStructuralType ? (
+        <Select value={value || undefined} onValueChange={onChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select structural type..." />
+          </SelectTrigger>
+          <SelectContent>
+            <ScrollArea className="h-60">
+              {ASSET_STRUCTURAL_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </ScrollArea>
+          </SelectContent>
+        </Select>
+      ) : isAssetFunctionalType ? (
+        <Select value={value || undefined} onValueChange={onChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select functional type..." />
+          </SelectTrigger>
+          <SelectContent>
+            <ScrollArea className="h-60">
+              {ASSET_FUNCTIONAL_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
                 </SelectItem>
               ))}
             </ScrollArea>
