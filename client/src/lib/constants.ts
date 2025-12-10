@@ -1,6 +1,7 @@
 export const ENTITY_TYPES = [
   "CreativeWork",
   "Asset",
+  "AssetSC",
   "Character",
   "Collection",
   "Composition",

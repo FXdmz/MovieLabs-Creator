@@ -175,12 +175,54 @@ export const BASE_ENTITY_FIELD_DESCRIPTIONS: Record<string, { description: strin
   }
 };
 
+export const ASSET_SC_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Asset Structural Classes, this is always 'AssetSC'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for this AssetSC. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  structuralType: {
+    description: "A canonical description of the asset's form. Options include digital (audio, video, image, document), physical (props, documents), geometry, or assetGroup.",
+    required: false
+  },
+  structuralProperties: {
+    description: "A set of properties that describe the asset in this form, including codec, dimensions, file details, and more.",
+    required: false
+  },
+  isAnalog: {
+    description: "True if the Asset is an analog (non-digital) asset.",
+    required: false
+  },
+  software: {
+    description: "A description of any software connected to this AssetSC, typically the one that generated it.",
+    required: false
+  },
+  Carrier: {
+    description: "For describing the physical storage device on which the digital essence is stored.",
+    required: false
+  },
+  provenance: {
+    description: "Information about the origin or source of this asset's structural form.",
+    required: false
+  }
+};
+
 export function getFieldDescription(entityType: string, fieldKey: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   if (entityType === 'Asset') {
     return ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'AssetSC') {
+    return ASSET_SC_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }

@@ -19,6 +19,7 @@ import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
+import { AssetSCHeader } from "./asset-sc-header";
 import { DurationInput } from "./duration-input";
 
 const ISO8601_DURATION_PATTERN = /^\(-\?\)P\(\?=\.\)/;
@@ -256,9 +257,10 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   const isReadOnlyField = fieldKey === 'entityType';
 
   // Check if this is an Asset structuralType or functionalType field
-  // structuralType can appear in Asset, AssetSC, or nested within Asset.AssetSC
+  // structuralType appears in AssetSC entities
   const isAssetStructuralType = fieldKey === 'structuralType' && 
-    (entityType === 'Asset' || entityType === 'AssetSC' || path.includes('AssetSC'));
+    (entityType === 'AssetSC' || path.includes('AssetSC'));
+  // functionalType appears in Asset.assetFC
   const isAssetFunctionalType = fieldKey === 'functionalType' && 
     (entityType === 'Asset' || path.includes('assetFC'));
 
@@ -488,6 +490,8 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <CreativeWorkHeader />;
       case 'Asset':
         return <AssetHeader />;
+      case 'AssetSC':
+        return <AssetSCHeader />;
       default:
         return null;
     }
