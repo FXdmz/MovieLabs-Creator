@@ -42,12 +42,23 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Copy } from "lucide-react";
 
 export default function Dashboard() {
   const { entities, addEntity, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"form" | "json">("form");
+  const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
   const { toast } = useToast();
 
   const ajv = useMemo(() => {
@@ -72,16 +83,7 @@ export default function Dashboard() {
   const handleValidate = () => {
     if (!schema || !selectedEntity) return;
 
-    // Compile schema if not already (simple caching could be added here)
-    // For now we just compile on the fly as it's fast enough for single entity
     try {
-      // We need to validate against the full schema, targeting the specific definition
-      // But AJV usually takes the whole schema.
-      // Let's try validating against the root schema with the entity content
-      
-      // NOTE: OMC schema uses "oneOf" at the root which matches either rootObject or rootEntity.
-      // Our entities are rootEntity instances usually.
-      
       const validate = ajv.compile(schema);
       const valid = validate(selectedEntity.content);
 
@@ -89,16 +91,14 @@ export default function Dashboard() {
         toast({
           title: "Validation Successful",
           description: "This entity conforms to the OMC v2.6 Schema.",
-          variant: "default", // Using default for success-like, or we can style it green
+          variant: "default",
           className: "bg-green-600 text-white border-none"
         });
+        setValidationErrors(null);
       } else {
         console.error("Validation errors:", validate.errors);
-        toast({
-          title: "Validation Failed",
-          description: `Found ${validate.errors?.length} errors. Check console for details.`,
-          variant: "destructive",
-        });
+        setValidationErrors(validate.errors);
+        setShowValidationDialog(true);
       }
     } catch (e) {
       console.error("Validation exception:", e);
@@ -108,6 +108,16 @@ export default function Dashboard() {
         variant: "destructive",
       });
     }
+  };
+
+  const copyErrorsToClipboard = () => {
+    if (!validationErrors) return;
+    const text = JSON.stringify(validationErrors, null, 2);
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied",
+      description: "Error messages copied to clipboard.",
+    });
   };
 
   const handleExport = () => {
@@ -316,6 +326,40 @@ export default function Dashboard() {
           </div>
         )}
       </main>
+
+      <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Validation Failed
+            </DialogTitle>
+            <DialogDescription>
+              The following errors were found in your entity data against the OMC v2.6 schema.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-auto border rounded-md bg-muted/50 p-4 font-mono text-xs">
+            <pre className="whitespace-pre-wrap break-all">
+              {validationErrors ? JSON.stringify(validationErrors, null, 2) : "No details available."}
+            </pre>
+          </div>
+
+          <DialogFooter className="sm:justify-between gap-2">
+            <div className="text-xs text-muted-foreground self-center">
+              {validationErrors?.length} error(s) found
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowValidationDialog(false)}>
+                Close
+              </Button>
+              <Button onClick={copyErrorsToClipboard} className="gap-2">
+                <Copy className="h-4 w-4" /> Copy Errors
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
