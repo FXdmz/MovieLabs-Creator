@@ -5770,11 +5770,12 @@
           "properties": {
             "schemaVersion": {
               "title": "Schema Version",
-              "default": "https://movielabs.com/omc/json/schema/v2.6",
+              "default": "https://movielabs.com/omc/json/schema/v2.8",
               "enum": [
                 "https://movielabs.com/omc/json/schema/v2.0",
                 "https://movielabs.com/omc/json/schema/v2.1",
-                "https://movielabs.com/omc/json/schema/v2.6"
+                "https://movielabs.com/omc/json/schema/v2.6",
+                "https://movielabs.com/omc/json/schema/v2.8"
               ],
               "description": "Describes the version of OMC-JSON schema that was used to create this instance."
             },
