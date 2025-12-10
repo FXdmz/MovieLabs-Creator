@@ -293,12 +293,125 @@ export const ASSET_SC_FIELD_DESCRIPTIONS: Record<string, { description: string; 
   }
 };
 
+export const TASK_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Tasks, this is always 'Task'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Task. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for this Task, such as 'Write Script' or 'Edit Scene 5'.",
+    required: false
+  },
+  description: {
+    description: "A textual description of this Task.",
+    required: false
+  },
+  TaskSC: {
+    description: "Task Structural Characteristics: Describes the form of the Task along with the attributes specific to that task's form.",
+    required: false
+  },
+  taskFC: {
+    description: "Task Functional Characteristics: Describes the purpose of the Task within the production process.",
+    required: false
+  },
+  structuralType: {
+    description: "A structured description of the Task's form.",
+    required: false
+  },
+  structuralProperties: {
+    description: "A set of properties that describe the Task in this form.",
+    required: false
+  },
+  functionalType: {
+    description: "The use or purpose of a Task within the production process.",
+    required: false
+  },
+  functionalProperties: {
+    description: "A set of properties that describe the task's functional use.",
+    required: false
+  },
+  Context: {
+    description: "Links to Context entities that provide additional metadata and relationships for this Task.",
+    required: false
+  },
+  customData: {
+    description: "User-defined custom data as an array of objects with domain, namespace, schema, and value properties.",
+    required: false
+  },
+  notes: {
+    description: "Human readable commentary, explanation, or information about this Task.",
+    required: false
+  }
+};
+
+export const INFRASTRUCTURE_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Infrastructure, this is always 'Infrastructure'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Infrastructure. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for this Infrastructure, such as 'Render Farm' or 'Storage Array'.",
+    required: false
+  },
+  description: {
+    description: "A textual description of this Infrastructure.",
+    required: false
+  },
+  InfrastructureSC: {
+    description: "Infrastructure Structural Characteristics: Describes the form of the Infrastructure.",
+    required: false
+  },
+  infrastructureFC: {
+    description: "Infrastructure Functional Characteristics: Describes the purpose of the Infrastructure.",
+    required: false
+  },
+  structuralType: {
+    description: "A structured description of the Infrastructure's form.",
+    required: false
+  },
+  structuralProperties: {
+    description: "A set of properties that describe the Infrastructure in this form.",
+    required: false
+  },
+  functionalType: {
+    description: "The use or purpose of an Infrastructure within the production process.",
+    required: false
+  },
+  functionalProperties: {
+    description: "A set of properties that describe the infrastructure's functional use.",
+    required: false
+  },
+  Context: {
+    description: "Links to Context entities that provide additional metadata and relationships.",
+    required: false
+  },
+  customData: {
+    description: "User-defined custom data as an array of objects with domain, namespace, schema, and value properties.",
+    required: false
+  }
+};
+
 export function getFieldDescription(entityType: string, fieldKey: string, path?: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   if (entityType === 'Asset') {
-    // For fields within the embedded AssetSC, check AssetSC descriptions first
     if (path?.includes('AssetSC')) {
       return ASSET_SC_FIELD_DESCRIPTIONS[fieldKey] || ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
     }
@@ -306,6 +419,12 @@ export function getFieldDescription(entityType: string, fieldKey: string, path?:
   }
   if (entityType === 'Location') {
     return LOCATION_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Task') {
+    return TASK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Infrastructure') {
+    return INFRASTRUCTURE_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }
