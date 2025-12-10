@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
+import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
 import { AssetSCHeader } from "./asset-sc-header";
@@ -462,34 +463,63 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     );
   }
 
-  // For CreativeWork, filter fields based on creativeWorkType
+  // Filter fields based on entity type and selected options
   const getFilteredSchema = () => {
-    if (value.entityType !== 'CreativeWork' || !rootSchema.properties) {
+    if (!rootSchema.properties) {
       return rootSchema;
     }
 
-    const creativeWorkType = value.creativeWorkType || 'creativeWork';
-    let hiddenFields: string[] = [];
+    // For CreativeWork, filter fields based on creativeWorkType
+    if (value.entityType === 'CreativeWork') {
+      const creativeWorkType = value.creativeWorkType || 'creativeWork';
+      let hiddenFields: string[] = [];
 
-    // Determine which fields to hide based on creativeWorkType
-    if (creativeWorkType === 'creativeWork') {
-      hiddenFields = EPISODIC_FIELDS;
-    } else if (creativeWorkType === 'series') {
-      hiddenFields = EPISODE_FIELDS.filter(f => f !== 'Season' && f !== 'Episode');
-    } else if (creativeWorkType === 'season') {
-      hiddenFields = ['episodeSequence'];
-    }
-    // episode shows all fields
-
-    // Filter out hidden fields
-    const filteredProperties: any = {};
-    Object.entries(rootSchema.properties).forEach(([key, propSchema]) => {
-      if (!hiddenFields.includes(key)) {
-        filteredProperties[key] = propSchema;
+      if (creativeWorkType === 'creativeWork') {
+        hiddenFields = EPISODIC_FIELDS;
+      } else if (creativeWorkType === 'series') {
+        hiddenFields = EPISODE_FIELDS.filter(f => f !== 'Season' && f !== 'Episode');
+      } else if (creativeWorkType === 'season') {
+        hiddenFields = ['episodeSequence'];
       }
-    });
 
-    return { ...rootSchema, properties: filteredProperties };
+      const filteredProperties: any = {};
+      Object.entries(rootSchema.properties).forEach(([key, propSchema]) => {
+        if (!hiddenFields.includes(key)) {
+          filteredProperties[key] = propSchema;
+        }
+      });
+
+      return { ...rootSchema, properties: filteredProperties };
+    }
+
+    // For AssetSC, filter structuralProperties based on structuralType
+    if (value.entityType === 'AssetSC') {
+      const structuralType = value.structuralType;
+      const relevantProps = getRelevantStructuralProperties(structuralType);
+      
+      // Deep clone and filter structuralProperties
+      const filteredProperties: any = { ...rootSchema.properties };
+      
+      if (filteredProperties.structuralProperties?.properties) {
+        const structPropsSchema = filteredProperties.structuralProperties;
+        const filteredStructProps: any = {};
+        
+        Object.entries(structPropsSchema.properties || {}).forEach(([key, propSchema]) => {
+          if (relevantProps.includes(key)) {
+            filteredStructProps[key] = propSchema;
+          }
+        });
+        
+        filteredProperties.structuralProperties = {
+          ...structPropsSchema,
+          properties: filteredStructProps
+        };
+      }
+
+      return { ...rootSchema, properties: filteredProperties };
+    }
+
+    return rootSchema;
   };
 
   const filteredSchema = getFilteredSchema();
