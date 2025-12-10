@@ -24,16 +24,32 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   selectedEntityId: null,
   addEntity: (type) => {
     const id = uuidv4();
+    
+    const defaultContent: any = {
+      entityType: type,
+      name: `New ${type}`,
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.6",
+      // OMC v2.6 Identifier is an array of objects
+      identifier: [{
+        identifierScope: "urn:uuid",
+        identifierValue: id,
+        combinedForm: `urn:uuid:${id}`
+      }]
+    };
+
+    // Specific defaults for complex types
+    if (type === "CreativeWork") {
+       defaultContent.creativeWorkTitle = [{
+         titleName: `New ${type}`,
+         titleType: "working"
+       }];
+    }
+
     const newEntity: Entity = {
       id,
       type,
       name: `New ${type}`,
-      content: {
-        entityType: type,
-        identifier: `urn:uuid:${id}`,
-        name: `New ${type}`,
-        schemaVersion: "https://movielabs.com/omc/json/schema/v2.6"
-      }
+      content: defaultContent
     };
     set((state) => ({
       entities: [...state.entities, newEntity],
