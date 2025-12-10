@@ -626,33 +626,100 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return { ...rootSchema, properties: filteredProperties };
     }
 
-    // For Participant, filter ParticipantSC properties based on selected structural class
+    // For Participant, build a synthetic merged ParticipantSC schema with all structural class properties
     if (value.entityType === 'Participant') {
       const structuralClass = value.ParticipantSC?.entityType;
       const relevantProps = getParticipantStructuralProperties(structuralClass);
       
-      if (structuralClass && relevantProps.length > 0) {
-        // Deep clone to avoid mutating the original schema
-        const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
-        
-        if (filteredProperties.ParticipantSC?.properties) {
-          // Keep only the relevant properties for the selected structural class
-          // Always keep entityType, schemaVersion, identifier, structuralType
-          const baseFields = ['entityType', 'schemaVersion', 'identifier', 'structuralType'];
-          const allowedFields = [...baseFields, ...relevantProps];
-          
-          const filteredSCProps: any = {};
-          Object.entries(filteredProperties.ParticipantSC.properties || {}).forEach(([key, propSchema]) => {
-            if (allowedFields.includes(key)) {
-              filteredSCProps[key] = propSchema;
-            }
-          });
-          
-          filteredProperties.ParticipantSC.properties = filteredSCProps;
+      // Deep clone to avoid mutating the original schema
+      const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
+      
+      // Build synthetic ParticipantSC schema with combined properties from all structural classes
+      // This replaces the oneOf with a flat object schema
+      const syntheticParticipantSC = {
+        type: 'object',
+        title: 'Participant Structural Characteristics',
+        description: 'Describes the form of a Participant along with the attributes specific to that Participant\'s form.',
+        properties: {
+          entityType: {
+            type: 'string',
+            title: 'Participant Type',
+            description: 'Select the type of participant: Person, Organization, Department, or Service'
+          },
+          schemaVersion: {
+            type: 'string',
+            title: 'Schema Version'
+          },
+          identifier: {
+            type: 'array',
+            title: 'Identifier',
+            items: { type: 'object' }
+          },
+          structuralType: {
+            type: 'string',
+            title: 'Structural Type'
+          },
+          // Person properties
+          personName: {
+            type: 'object',
+            title: "Person's Name",
+            description: 'The canonical name or set of names and titles for the Person'
+          },
+          jobTitle: {
+            type: 'string',
+            title: "Person's Job Title",
+            description: 'A person\'s job title (as distinct from a specific role).'
+          },
+          gender: {
+            type: 'object',
+            title: "Person's Gender"
+          },
+          // Organization properties
+          organizationName: {
+            type: 'object',
+            title: "Organization's Name"
+          },
+          // Department properties  
+          departmentName: {
+            type: 'object',
+            title: "Department's Name"
+          },
+          // Service properties
+          serviceName: {
+            type: 'object',
+            title: "Service's Name"
+          },
+          // Shared properties
+          contact: {
+            type: 'object',
+            title: 'Contact',
+            description: 'Contact information'
+          },
+          Location: {
+            type: 'object',
+            title: 'Location'
+          }
         }
+      };
+      
+      // Filter to only show relevant properties for the selected structural class
+      if (structuralClass && relevantProps.length > 0) {
+        const baseFields = ['entityType', 'schemaVersion', 'identifier', 'structuralType'];
+        const allowedFields = [...baseFields, ...relevantProps];
         
-        return { ...rootSchema, properties: filteredProperties };
+        const filteredSCProps: any = {};
+        Object.entries(syntheticParticipantSC.properties).forEach(([key, propSchema]) => {
+          if (allowedFields.includes(key)) {
+            filteredSCProps[key] = propSchema;
+          }
+        });
+        
+        syntheticParticipantSC.properties = filteredSCProps;
       }
+      
+      filteredProperties.ParticipantSC = syntheticParticipantSC;
+      
+      return { ...rootSchema, properties: filteredProperties };
     }
 
     return rootSchema;
