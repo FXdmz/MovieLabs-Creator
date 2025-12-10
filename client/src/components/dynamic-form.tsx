@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -655,17 +656,33 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
           identifier: {
             type: 'array',
             title: 'Identifier',
-            items: { type: 'object' }
+            items: {
+              type: 'object',
+              properties: {
+                identifierScope: { type: 'string', title: 'Identifier Scope' },
+                identifierValue: { type: 'string', title: 'Identifier Value' },
+                combinedForm: { type: 'string', title: 'Combined Form' }
+              }
+            }
           },
           structuralType: {
             type: 'string',
-            title: 'Structural Type'
+            title: 'Structural Type',
+            description: 'The type of Participant: person, organization, department, or service.'
           },
           // Person properties
           personName: {
             type: 'object',
             title: "Person's Name",
-            description: 'The canonical name or set of names and titles for the Person'
+            description: 'The canonical name or set of names and titles for the Person',
+            properties: {
+              fullName: { type: 'string', title: 'Full Name' },
+              firstGivenName: { type: 'string', title: 'First Name' },
+              secondGivenName: { type: 'string', title: 'Middle Name' },
+              familyName: { type: 'string', title: 'Family Name' },
+              suffix: { type: 'string', title: 'Suffix' },
+              salutation: { type: 'string', title: 'Salutation' }
+            }
           },
           jobTitle: {
             type: 'string',
@@ -674,32 +691,60 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
           },
           gender: {
             type: 'object',
-            title: "Person's Gender"
+            title: "Person's Gender",
+            properties: {
+              genderCode: { type: 'string', title: 'Gender Code' },
+              genderLabel: { type: 'string', title: 'Gender Label' }
+            }
           },
           // Organization properties
           organizationName: {
             type: 'object',
-            title: "Organization's Name"
+            title: "Organization's Name",
+            properties: {
+              fullName: { type: 'string', title: 'Full Name' },
+              altName: { type: 'string', title: 'Alternative Name' }
+            }
           },
           // Department properties  
           departmentName: {
             type: 'object',
-            title: "Department's Name"
+            title: "Department's Name",
+            properties: {
+              fullName: { type: 'string', title: 'Full Name' },
+              altName: { type: 'string', title: 'Alternative Name' }
+            }
           },
           // Service properties
           serviceName: {
             type: 'object',
-            title: "Service's Name"
+            title: "Service's Name",
+            properties: {
+              fullName: { type: 'string', title: 'Full Name' },
+              altName: { type: 'string', title: 'Alternative Name' }
+            }
           },
           // Shared properties
           contact: {
             type: 'object',
             title: 'Contact',
-            description: 'Contact information'
+            description: 'Contact information',
+            properties: {
+              email: { type: 'string', title: 'Email' },
+              telephone: { type: 'string', title: 'Telephone' },
+              website: { type: 'string', title: 'Website' }
+            }
           },
           Location: {
             type: 'object',
-            title: 'Location'
+            title: 'Location',
+            properties: {
+              address: { type: 'string', title: 'Address' },
+              city: { type: 'string', title: 'City' },
+              region: { type: 'string', title: 'Region' },
+              country: { type: 'string', title: 'Country' },
+              postalCode: { type: 'string', title: 'Postal Code' }
+            }
           }
         }
       };
@@ -755,13 +800,20 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       const newStructuralClass = newValue.ParticipantSC?.entityType;
       const structuralDefaults = getParticipantStructuralDefaults(newStructuralClass);
       
+      // Generate a new identifier for the structural class
+      const newScId = uuidv4();
+      
       // Build new ParticipantSC: start with structural defaults, then overlay preserved baseEntity fields
-      // This ensures we get class-specific properties but keep the identity intact
+      // Always generate a fresh identifier when switching structural class
       const updatedParticipantSC = {
         ...structuralDefaults,
         entityType: newStructuralClass,
-        schemaVersion: value.ParticipantSC?.schemaVersion || "https://movielabs.com/omc/json/schema/v2.8",
-        identifier: value.ParticipantSC?.identifier || [],
+        schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+        identifier: [{
+          identifierScope: "me-nexus",
+          identifierValue: newScId,
+          combinedForm: `me-nexus:${newScId}`
+        }],
       };
       
       onChange({
