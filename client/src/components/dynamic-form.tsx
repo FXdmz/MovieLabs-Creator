@@ -428,7 +428,13 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     // Handle OneOf/AnyOf - tricky for UI, just picking first for now or letting user switch (TODO)
     if (node.oneOf) {
        // Ideally we show a selector. For now, try to find a concrete type or merge
-       // Often oneOf in OMC is [Reference, Entity], we prefer Entity for editing usually, or Reference for linking
+       // Often oneOf in OMC is [Reference, Entity], we prefer Entity for editing usually
+       // For customData, prefer the array variant with items
+       const arrayVariant = node.oneOf.find((n:any) => n.type === 'array' || n.items);
+       if (arrayVariant) {
+         return resolveRef(arrayVariant, visited);
+       }
+       // Prefer non-reference variants
        const preferred = node.oneOf.find((n:any) => !n.$ref?.includes('reference')) || node.oneOf[0];
        return resolveRef(preferred, visited);
     }
