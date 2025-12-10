@@ -1,7 +1,6 @@
 export const ENTITY_TYPES = [
   "CreativeWork",
   "Asset",
-  "AssetSC",
   "Character",
   "Collection",
   "Composition",
@@ -10,7 +9,6 @@ export const ENTITY_TYPES = [
   "Depiction",
   "Effect",
   "Infrastructure",
-  "InfrastructureSC",
   "Location",
   "NarrativeAction",
   "NarrativeAudio",
@@ -29,8 +27,7 @@ export const ENTITY_TYPES = [
   "Service",
   "Slate",
   "SpecialAction",
-  "Task",
-  "TaskSC"
+  "Task"
 ] as const;
 
 export type EntityType = typeof ENTITY_TYPES[number];

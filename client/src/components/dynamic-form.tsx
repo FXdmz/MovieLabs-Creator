@@ -256,8 +256,11 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   const isReadOnlyField = fieldKey === 'entityType';
 
   // Check if this is an Asset structuralType or functionalType field
-  const isAssetStructuralType = fieldKey === 'structuralType' && entityType === 'Asset';
-  const isAssetFunctionalType = fieldKey === 'functionalType';
+  // structuralType can appear in Asset, AssetSC, or nested within Asset.AssetSC
+  const isAssetStructuralType = fieldKey === 'structuralType' && 
+    (entityType === 'Asset' || entityType === 'AssetSC' || path.includes('AssetSC'));
+  const isAssetFunctionalType = fieldKey === 'functionalType' && 
+    (entityType === 'Asset' || path.includes('assetFC'));
 
   return (
     <div className="space-y-1.5">
