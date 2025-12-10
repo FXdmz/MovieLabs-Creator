@@ -423,6 +423,12 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     // OMC Schema structure: $defs[Type].properties[Type]
     const def = schema.$defs?.[value.entityType];
     
+    // Special case: AssetSC is nested under Asset.properties.AssetSC
+    if (value.entityType === 'AssetSC') {
+      const assetSC = schema.$defs?.Asset?.properties?.AssetSC;
+      if (assetSC) return resolveRef(assetSC);
+    }
+    
     // Fallback: Check if it's nested in MediaCreationContext or Utility
     if (!def) {
       // Try to find it in nested definitions
@@ -431,6 +437,10 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       
       const utility = schema.$defs?.Utility?.properties?.[value.entityType];
       if (utility) return resolveRef(utility);
+      
+      // Try Participant
+      const participant = schema.$defs?.Participant?.properties?.[value.entityType];
+      if (participant) return resolveRef(participant);
       
       return null;
     }
