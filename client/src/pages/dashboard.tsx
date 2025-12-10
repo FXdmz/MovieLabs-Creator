@@ -89,11 +89,6 @@ export default function Dashboard() {
       // First try the nested path: $defs.Asset.properties.Asset
       let entitySchema = schema.$defs?.[selectedEntity.type]?.properties?.[selectedEntity.type];
       
-      // Special case: AssetSC is nested under Asset.properties.AssetSC
-      if (!entitySchema && selectedEntity.type === 'AssetSC') {
-         entitySchema = schema.$defs?.Asset?.properties?.AssetSC;
-      }
-      
       // Fallback: try direct definition (for simpler schemas)
       if (!entitySchema) {
          entitySchema = schema.$defs?.[selectedEntity.type];

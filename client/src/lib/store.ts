@@ -48,10 +48,10 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
        defaultContent.assetFC = {
          functionalType: null
        };
-    }
-
-    if (type === "AssetSC") {
-       defaultContent.structuralType = null;
+       defaultContent.AssetSC = {
+         structuralType: null,
+         structuralProperties: {}
+       };
     }
 
     const newEntity: Entity = {
