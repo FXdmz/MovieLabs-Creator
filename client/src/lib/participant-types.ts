@@ -45,3 +45,35 @@ export function getParticipantStructuralProperties(structuralClass: string | nul
 export function getParticipantStructuralDefaults(entityType: string): any {
   return PARTICIPANT_STRUCTURAL_TYPE_DEFAULTS[entityType] || {};
 }
+
+export const PARTICIPANT_FUNCTIONAL_TYPES: Record<string, { value: string; label: string }[]> = {
+  Person: [
+    { value: 'cast', label: 'Cast - Performing role in the production' },
+    { value: 'crew', label: 'Crew - Technical/creative production staff' },
+    { value: 'talent', label: 'Talent - On-screen or voice talent' },
+    { value: 'contractor', label: 'Contractor - External service provider' },
+  ],
+  Department: [
+    { value: 'production', label: 'Production - Core production department' },
+    { value: 'post-production', label: 'Post-Production - Editing, VFX, sound' },
+    { value: 'support', label: 'Support - Administrative/logistics support' },
+  ],
+  Organization: [
+    { value: 'studio', label: 'Studio - Production studio' },
+    { value: 'vendor', label: 'Vendor - External service vendor' },
+    { value: 'union', label: 'Union - Labor organization' },
+    { value: 'financier', label: 'Financier - Funding entity' },
+    { value: 'distributor', label: 'Distributor - Distribution partner' },
+  ],
+  Service: [
+    { value: 'automation', label: 'Automation - Automated processing service' },
+    { value: 'ai-agent', label: 'AI Agent - AI-powered service' },
+    { value: 'pipeline', label: 'Pipeline - Workflow pipeline service' },
+    { value: 'transcoding', label: 'Transcoding - Media transcoding service' },
+  ],
+};
+
+export function getParticipantFunctionalTypes(structuralClass: string | null | undefined): { value: string; label: string }[] {
+  if (!structuralClass) return [];
+  return PARTICIPANT_FUNCTIONAL_TYPES[structuralClass] || [];
+}

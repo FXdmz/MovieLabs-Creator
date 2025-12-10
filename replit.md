@@ -47,6 +47,18 @@ Preferred communication style: Simple, everyday language.
 
 **Merged Asset/AssetSC Experience**: Asset entities now include an embedded AssetSC section with structural type dropdown and contextual structural properties, eliminating the need to create separate AssetSC entities.
 
+**Merged Participant Experience**: Participant entities support four structural classes (Person, Organization, Department, Service) with a unified form experience. The structural class selector dynamically updates the form to show relevant properties for each type:
+- **Person**: personName, jobTitle, gender, contact, Location
+- **Organization**: organizationName, contact, Location
+- **Department**: departmentName, contact, Location
+- **Service**: serviceName, contact
+
+Functional characteristics (participantFC) are contextually filtered based on the selected structural class, providing role options relevant to each participant type.
+
+**Task Entity Support**: Task entities include TaskSC with proper baseEntity fields (entityType, schemaVersion, identifier) and structural type/properties for different task categories.
+
+**Infrastructure Entity Support**: Infrastructure entities follow the same pattern with InfrastructureSC containing baseEntity fields and structural properties.
+
 ## External Dependencies
 
 ### Third-Party Services

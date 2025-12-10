@@ -20,7 +20,7 @@ import { ISO_COUNTRY_CODES } from "@/lib/country-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
-import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults } from "@/lib/participant-types";
+import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults, getParticipantFunctionalTypes } from "@/lib/participant-types";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { LocationHeader } from "./location-header";
 import { InfrastructureHeader } from "./infrastructure-header";
@@ -49,6 +49,7 @@ interface SchemaFieldProps {
   path?: string;
   level?: number;
   entityType?: string;
+  participantStructuralClass?: string;
 }
 
 const FieldLabel = ({ label, required, description }: { label: string, required?: boolean, description?: string }) => (
@@ -67,7 +68,7 @@ const FieldLabel = ({ label, required, description }: { label: string, required?
   </div>
 );
 
-export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema, entityType }: SchemaFieldProps & { rootSchema?: any }) {
+export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema, entityType, participantStructuralClass }: SchemaFieldProps & { rootSchema?: any }) {
   // Open by default if: top level, OR if the field has data (e.g., from file import)
   const hasData = value && typeof value === 'object' && Object.keys(value).length > 0;
   const isAssetSection = ['AssetSC', 'assetFC'].includes(fieldKey);
@@ -104,6 +105,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           level={level} 
           rootSchema={rootSchema}
           entityType={entityType}
+          participantStructuralClass={participantStructuralClass}
         />;
       }
   }
@@ -160,6 +162,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  level={level + 1}
                  rootSchema={rootSchema}
                  entityType={entityType}
+                 participantStructuralClass={participantStructuralClass}
                />
             </div>
           ))}
@@ -188,6 +191,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  level={level + 1}
                  rootSchema={rootSchema}
                  entityType={entityType}
+                 participantStructuralClass={participantStructuralClass}
                />
             </div>
           ))}
@@ -222,6 +226,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                    level={level + 1}
                    rootSchema={rootSchema}
                    entityType={entityType}
+                   participantStructuralClass={participantStructuralClass}
                  />
               ))}
             </CardContent>
@@ -283,6 +288,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // Check if this is a Participant structural class selector (entityType within ParticipantSC)
   const isParticipantStructuralClass = fieldKey === 'entityType' && 
     path.includes('ParticipantSC') && entityType === 'Participant';
+  // Check if this is a Participant functional type field
+  const isParticipantFunctionalType = fieldKey === 'functionalType' && 
+    path.includes('participantFC') && entityType === 'Participant';
   // Dimension fields need special format hints
   const isDimensionField = ['height', 'width', 'depth'].includes(fieldKey) && 
     path.includes('dimensions');
@@ -384,6 +392,23 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                 {type.label}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+      ) : isParticipantFunctionalType ? (
+        <Select value={value ?? ""} onValueChange={onChange}>
+          <SelectTrigger data-testid="select-participant-functional-type">
+            <SelectValue placeholder="Select functional role..." />
+          </SelectTrigger>
+          <SelectContent>
+            {participantStructuralClass ? (
+              getParticipantFunctionalTypes(participantStructuralClass).map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem value="" disabled>Select a participant type first</SelectItem>
+            )}
           </SelectContent>
         </Select>
       ) : schemaType === 'boolean' ? (
@@ -661,12 +686,13 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       const newStructuralClass = newValue.ParticipantSC?.entityType;
       const structuralDefaults = getParticipantStructuralDefaults(newStructuralClass);
       
-      // Preserve baseEntity fields, reset to new structural class defaults
+      // Build new ParticipantSC: start with structural defaults, then overlay preserved baseEntity fields
+      // This ensures we get class-specific properties but keep the identity intact
       const updatedParticipantSC = {
+        ...structuralDefaults,
         entityType: newStructuralClass,
         schemaVersion: value.ParticipantSC?.schemaVersion || "https://movielabs.com/omc/json/schema/v2.8",
         identifier: value.ParticipantSC?.identifier || [],
-        ...structuralDefaults
       };
       
       onChange({
@@ -689,6 +715,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         onChange={wrappedOnChange} 
         rootSchema={schema} // Pass full schema for lookups
         entityType={value.entityType} // Pass entity type for field descriptions
+        participantStructuralClass={value.entityType === 'Participant' ? value.ParticipantSC?.entityType : undefined}
       />
     </div>
   );
