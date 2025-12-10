@@ -20,7 +20,6 @@ import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-type
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { AssetHeader } from "./asset-header";
-import { AssetSCHeader } from "./asset-sc-header";
 import { DurationInput } from "./duration-input";
 import { DimensionInput } from "./dimension-input";
 
@@ -65,7 +64,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   const [isOpen, setIsOpen] = useState(level < 1); // Open top level by default
   
   // Get field description from our descriptions file (for enhanced UX)
-  const fieldMeta = entityType ? getFieldDescription(entityType, fieldKey) : undefined;
+  const fieldMeta = entityType ? getFieldDescription(entityType, fieldKey, path) : undefined;
   const enhancedDescription = fieldMeta?.description || schema.description;
   const isRequired = fieldMeta?.required || false;
 
@@ -502,16 +501,17 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return { ...rootSchema, properties: filteredProperties };
     }
 
-    // For AssetSC, filter structuralProperties based on structuralType
-    if (value.entityType === 'AssetSC') {
-      const structuralType = value.structuralType;
+    // For Asset, filter AssetSC.structuralProperties based on AssetSC.structuralType
+    if (value.entityType === 'Asset') {
+      const structuralType = value.AssetSC?.structuralType;
       const relevantProps = getRelevantStructuralProperties(structuralType);
       
-      // Deep clone and filter structuralProperties
+      // Deep clone and filter AssetSC.structuralProperties
       const filteredProperties: any = { ...rootSchema.properties };
       
-      if (filteredProperties.structuralProperties?.properties) {
-        const structPropsSchema = filteredProperties.structuralProperties;
+      if (filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
+        const assetSCSchema = { ...filteredProperties.AssetSC };
+        const structPropsSchema = assetSCSchema.properties.structuralProperties;
         const filteredStructProps: any = {};
         
         Object.entries(structPropsSchema.properties || {}).forEach(([key, propSchema]) => {
@@ -520,9 +520,15 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
           }
         });
         
-        filteredProperties.structuralProperties = {
-          ...structPropsSchema,
-          properties: filteredStructProps
+        filteredProperties.AssetSC = {
+          ...assetSCSchema,
+          properties: {
+            ...assetSCSchema.properties,
+            structuralProperties: {
+              ...structPropsSchema,
+              properties: filteredStructProps
+            }
+          }
         };
       }
 
@@ -540,8 +546,6 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <CreativeWorkHeader />;
       case 'Asset':
         return <AssetHeader />;
-      case 'AssetSC':
-        return <AssetSCHeader />;
       default:
         return null;
     }

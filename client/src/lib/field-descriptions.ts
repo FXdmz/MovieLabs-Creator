@@ -230,15 +230,16 @@ export const ASSET_SC_FIELD_DESCRIPTIONS: Record<string, { description: string; 
   }
 };
 
-export function getFieldDescription(entityType: string, fieldKey: string): { description: string; required?: boolean } | undefined {
+export function getFieldDescription(entityType: string, fieldKey: string, path?: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   if (entityType === 'Asset') {
+    // For fields within the embedded AssetSC, check AssetSC descriptions first
+    if (path?.includes('AssetSC')) {
+      return ASSET_SC_FIELD_DESCRIPTIONS[fieldKey] || ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+    }
     return ASSET_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
-  }
-  if (entityType === 'AssetSC') {
-    return ASSET_SC_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }
