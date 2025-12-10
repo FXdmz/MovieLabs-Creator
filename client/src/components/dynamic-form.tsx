@@ -71,8 +71,13 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
       }
   }
 
+  // Normalize type (handle ["array", "null"] -> "array")
+  const schemaType = Array.isArray(schema.type) 
+    ? schema.type.find((t: string) => t !== 'null') || schema.type[0]
+    : schema.type;
+
   // Handle Array
-  if (schema.type === 'array') {
+  if (schemaType === 'array') {
     const items = Array.isArray(value) ? value : [];
     return (
       <div className="space-y-2 mt-4">
@@ -129,7 +134,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   }
 
   // Handle Object
-  if (schema.type === 'object' || schema.properties) {
+  if (schemaType === 'object' || schema.properties) {
     if (level === 0) {
       // Root object - render fields directly
       return (
@@ -189,12 +194,24 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // Handle Primitives
   const handleChange = (e: any) => {
     const val = e.target.value;
-    if (schema.type === 'number' || schema.type === 'integer') {
+    if (schemaType === 'number' || schemaType === 'integer') {
       onChange(Number(val));
     } else {
       onChange(val);
     }
   };
+
+  // Safety check: if value is object/array and we're rendering a primitive, skip it
+  if ((typeof value === 'object' && value !== null) && schemaType !== 'object' && schemaType !== 'array') {
+    return (
+      <div className="space-y-1.5">
+        <FieldLabel label={schema.title || fieldKey} description={schema.description} />
+        <div className="text-xs text-muted-foreground italic p-2 bg-muted/30 rounded">
+          Complex value (use JSON editor)
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-1.5">
@@ -211,7 +228,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
             ))}
           </SelectContent>
         </Select>
-      ) : schema.type === 'boolean' ? (
+      ) : schemaType === 'boolean' ? (
         <div className="flex items-center space-x-2 h-10">
           <Switch checked={value} onCheckedChange={onChange} />
           <span className="text-sm text-muted-foreground">{value ? 'Yes' : 'No'}</span>
@@ -220,7 +237,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
         <Input 
           value={value || ''} 
           onChange={handleChange} 
-          type={schema.type === 'number' || schema.type === 'integer' ? 'number' : 'text'}
+          type={schemaType === 'number' || schemaType === 'integer' ? 'number' : 'text'}
           className="bg-background"
         />
       )}
@@ -237,7 +254,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
     
     // Handle AllOf (Merge)
     if (node.allOf) {
-      let merged = {};
+      let merged: any = {};
       node.allOf.forEach((sub: any) => {
         const resolved = resolveRef(sub, visited);
         merged = { ...merged, ...resolved, properties: { ...merged.properties, ...resolved.properties } };
@@ -271,7 +288,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
        return resolveRef(preferred, visited);
     }
 
-    if (node.properties) {
+    if (node.properties && typeof node.properties === 'object') {
        const newProps: any = {};
        Object.keys(node.properties).forEach(k => {
          // Don't recurse into properties immediately to avoid stack blowup on deep trees
