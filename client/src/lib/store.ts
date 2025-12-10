@@ -28,8 +28,8 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
     const defaultContent: any = {
       entityType: type,
       name: `New ${type}`,
-      schemaVersion: "https://movielabs.com/omc/json/schema/v2.6",
-      // OMC v2.6 Identifier is an array of objects
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      // OMC v2.8 Identifier is an array of objects
       identifier: [{
         identifierScope: "urn:uuid",
         identifierValue: id,

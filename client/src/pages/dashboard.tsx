@@ -114,7 +114,7 @@ export default function Dashboard() {
       if (valid) {
         toast({
           title: "Validation Successful",
-          description: "This entity conforms to the OMC v2.6 Schema.",
+          description: "This entity conforms to the OMC v2.8 Schema.",
           variant: "default",
           className: "bg-green-600 text-white border-none"
         });
@@ -364,7 +364,7 @@ export default function Dashboard() {
               <div className="h-8 border-t border-border bg-card flex items-center justify-between px-4 text-[10px] text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                  <span>OMC v2.6 Schema Active</span>
+                  <span>OMC v2.8 Schema Active</span>
                 </div>
                 <div className="font-mono opacity-50">ID: {selectedEntity.id}</div>
               </div>
@@ -394,7 +394,7 @@ export default function Dashboard() {
               Validation Failed
             </DialogTitle>
             <DialogDescription>
-              The following errors were found in your entity data against the OMC v2.6 schema.
+              The following errors were found in your entity data against the OMC v2.8 schema.
             </DialogDescription>
           </DialogHeader>
           

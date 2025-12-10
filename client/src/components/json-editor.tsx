@@ -19,7 +19,7 @@ export function JsonEditor({ value, onChange, schema }: JsonEditorProps) {
         validate: true,
         schemas: [
           {
-            uri: "https://movielabs.com/omc/json/schema/v2.6",
+            uri: "https://movielabs.com/omc/json/schema/v2.8",
             fileMatch: ["*"],
             schema: schema,
           },
