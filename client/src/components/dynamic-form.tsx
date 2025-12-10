@@ -39,18 +39,36 @@ const FieldLabel = ({ label, required, description }: { label: string, required?
   </div>
 );
 
-export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0 }: SchemaFieldProps) {
+export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema }: SchemaFieldProps & { rootSchema?: any }) {
   const [isOpen, setIsOpen] = useState(level < 1); // Open top level by default
 
   if (!schema) return null;
 
-  // Resolve $ref (simplified - assumes refs are in #/$defs/)
-  if (schema.$ref) {
-    const refKey = schema.$ref.split('/').pop();
-    // This part requires access to the full root schema definitions
-    // We'll pass a "lookup" prop in a real implementation
-    // For now, we'll handle basic types and common fields
-    return <div className="p-2 border border-dashed border-border rounded text-xs text-muted-foreground">Reference to {refKey} (Form generation for refs requires full schema context)</div>;
+  // Lazy Resolve Ref inside component to avoid pre-calculating the world
+  if (schema.$ref && rootSchema) {
+      const refPath = schema.$ref.replace('#/', '').split('/');
+      let current = rootSchema;
+      for (const p of refPath) {
+        if(current) current = current[p];
+      }
+      
+      // If we found it, render it. If it's a circular ref that points back to a parent we've already rendered,
+      // we need to be careful. For now, we rely on the user expanding the tree to trigger the next render.
+      // This "Lazy Render" approach is safer for React than the recursive function above.
+      if (current) {
+        // Prevent infinite loops if current is same as schema (direct loop)
+        if (current === schema) return <div className="text-xs text-muted-foreground">Circular Reference</div>;
+        
+        return <SchemaField 
+          fieldKey={fieldKey} 
+          schema={current} 
+          value={value} 
+          onChange={onChange} 
+          path={path} 
+          level={level} 
+          rootSchema={rootSchema} 
+        />;
+      }
   }
 
   // Handle Array
@@ -98,6 +116,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  }} 
                  path={`${path}[${index}]`}
                  level={level + 1}
+                 rootSchema={rootSchema}
                />
             </div>
           ))}
@@ -124,6 +143,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                  onChange={(val) => onChange({ ...value, [key]: val })} 
                  path={`${path}.${key}`}
                  level={level + 1}
+                 rootSchema={rootSchema}
                />
             </div>
           ))}
@@ -156,6 +176,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                    onChange={(val) => onChange({ ...value, [key]: val })} 
                    path={`${path}.${key}`}
                    level={level + 1}
+                   rootSchema={rootSchema}
                  />
               ))}
             </CardContent>
@@ -210,46 +231,61 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
 // Wrapper to handle definition lookups
 export function DynamicForm({ schema, value, onChange }: { schema: any, value: any, onChange: (val: any) => void }) {
   // Helper to dereference schemas (shallow)
-  // In a real implementation this needs to be a robust recursive dereferencer
-  const resolveRef = (node: any): any => {
+  // We use a cache to prevent infinite recursion on circular refs
+  const resolveRef = (node: any, visited = new Set<string>()): any => {
     if (!node) return node;
     
     // Handle AllOf (Merge)
     if (node.allOf) {
       let merged = {};
       node.allOf.forEach((sub: any) => {
-        const resolved = resolveRef(sub);
+        const resolved = resolveRef(sub, visited);
         merged = { ...merged, ...resolved, properties: { ...merged.properties, ...resolved.properties } };
       });
       return { ...merged, ...node }; // Keep node props like title
     }
 
     if (node.$ref) {
+      if (visited.has(node.$ref)) {
+         // Break recursion - return a placeholder or the raw ref
+         return { type: 'object', title: node.$ref.split('/').pop(), description: 'Recursive Reference' };
+      }
+      
+      const newVisited = new Set(visited);
+      newVisited.add(node.$ref);
+
       const refPath = node.$ref.replace('#/', '').split('/');
       let current = schema;
       for (const p of refPath) {
-        current = current[p];
+        if (current) current = current[p];
       }
-      return resolveRef(current); // Recurse
+      
+      return resolveRef(current, newVisited); // Recurse with history
     }
     
     // Handle OneOf/AnyOf - tricky for UI, just picking first for now or letting user switch (TODO)
     if (node.oneOf) {
        // Ideally we show a selector. For now, try to find a concrete type or merge
        // Often oneOf in OMC is [Reference, Entity], we prefer Entity for editing usually, or Reference for linking
-       return resolveRef(node.oneOf.find((n:any) => !n.$ref?.includes('reference')) || node.oneOf[0]);
+       const preferred = node.oneOf.find((n:any) => !n.$ref?.includes('reference')) || node.oneOf[0];
+       return resolveRef(preferred, visited);
     }
 
     if (node.properties) {
        const newProps: any = {};
        Object.keys(node.properties).forEach(k => {
-         newProps[k] = resolveRef(node.properties[k]);
+         // Don't recurse into properties immediately to avoid stack blowup on deep trees
+         // We only resolve refs when we actually render that field's schema
+         // BUT for the form generator to work, we need some structure.
+         // Let's shallow copy and let the SchemaField component resolve nested refs as it renders down
+         newProps[k] = node.properties[k]; 
        });
        return { ...node, properties: newProps };
     }
     
     if (node.items) {
-       return { ...node, items: resolveRef(node.items) };
+       // Similarly, shallow resolve items
+       return { ...node, items: node.items };
     }
 
     return node;
@@ -288,6 +324,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         schema={rootSchema} 
         value={value} 
         onChange={onChange} 
+        rootSchema={schema} // Pass full schema for lookups
       />
     </div>
   );

@@ -249,7 +249,7 @@ export default function Dashboard() {
             <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center mb-6 ring-1 ring-primary/20">
               <Logo variant="mark" className="scale-150" />
             </div>
-            <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to FX-DMZ</h2>
+            <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to ME-DMZ</h2>
             <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
               Select an entity from the sidebar or create a new one to start building your media creation ontology.
             </p>
