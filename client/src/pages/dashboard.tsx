@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useOntologyStore } from "@/lib/store";
 import { JsonEditor } from "@/components/json-editor";
 import { DynamicForm } from "@/components/dynamic-form";
 import { Logo } from "@/components/logo";
 import { ENTITY_TYPES, EntityType } from "@/lib/constants";
+import { useToast } from "@/hooks/use-toast";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
 import { 
   Plus, 
   FileJson, 
@@ -17,7 +20,9 @@ import {
   Save,
   Download,
   FormInput,
-  Braces
+  Braces,
+  CheckCircle,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -43,6 +48,13 @@ export default function Dashboard() {
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"form" | "json">("form");
+  const { toast } = useToast();
+
+  const ajv = useMemo(() => {
+    const ajvInstance = new Ajv({ strict: false, allErrors: true });
+    addFormats(ajvInstance);
+    return ajvInstance;
+  }, []);
 
   useEffect(() => {
     fetch("/schema.json")
@@ -56,6 +68,47 @@ export default function Dashboard() {
     e.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     e.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleValidate = () => {
+    if (!schema || !selectedEntity) return;
+
+    // Compile schema if not already (simple caching could be added here)
+    // For now we just compile on the fly as it's fast enough for single entity
+    try {
+      // We need to validate against the full schema, targeting the specific definition
+      // But AJV usually takes the whole schema.
+      // Let's try validating against the root schema with the entity content
+      
+      // NOTE: OMC schema uses "oneOf" at the root which matches either rootObject or rootEntity.
+      // Our entities are rootEntity instances usually.
+      
+      const validate = ajv.compile(schema);
+      const valid = validate(selectedEntity.content);
+
+      if (valid) {
+        toast({
+          title: "Validation Successful",
+          description: "This entity conforms to the OMC v2.6 Schema.",
+          variant: "default", // Using default for success-like, or we can style it green
+          className: "bg-green-600 text-white border-none"
+        });
+      } else {
+        console.error("Validation errors:", validate.errors);
+        toast({
+          title: "Validation Failed",
+          description: `Found ${validate.errors?.length} errors. Check console for details.`,
+          variant: "destructive",
+        });
+      }
+    } catch (e) {
+      console.error("Validation exception:", e);
+      toast({
+        title: "Validation Error",
+        description: "An error occurred during validation.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleExport = () => {
     const json = exportJson();
@@ -192,6 +245,10 @@ export default function Dashboard() {
                     <TooltipContent>Delete Entity</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+
+                <Button variant="outline" size="sm" onClick={handleValidate} className="gap-2 border-green-600/20 text-green-600 hover:bg-green-600/10">
+                  <CheckCircle className="h-4 w-4" /> Validate
+                </Button>
                 
                 <Button variant="outline" size="sm" onClick={handleExport} className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
                   <Download className="h-4 w-4" /> Export
