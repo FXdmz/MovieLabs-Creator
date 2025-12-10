@@ -4,37 +4,35 @@ export function TaskHeader() {
       <div className="flex items-start gap-4">
         <div className="p-3 bg-primary/10 rounded-lg">
           <svg 
-            viewBox="0 0 24 24" 
+            viewBox="1.899 2.2 199.771 141.894" 
             xmlns="http://www.w3.org/2000/svg"
             width="48" 
-            height="48" 
+            height="34" 
             className="text-primary"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
           >
-            <path d="M9 11l3 3L22 4" />
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            <path 
+              d="M 10.465 7.129 L 60.101 12.194 C 67.426 12.944 74.756 13.631 82.092 14.257 L 132.806 18.567 C 140.149 19.189 147.477 19.966 154.788 20.896 L 181.355 24.285 C 187.614 25.086 192.305 30.408 192.314 36.717 L 192.36 108.639 C 192.366 114.919 187.62 120.185 181.374 120.832 L 19.167 137.749 C 13.34 138.339 8.303 133.714 8.393 127.858 L 8.743 107.755 L 10.465 7.129 Z" 
+              strokeWidth="4" 
+              fill="currentColor" 
+              stroke="currentColor"
+            />
           </svg>
         </div>
         <div className="flex-1">
           <h2 className="text-xl font-bold text-foreground mb-2 flex items-center gap-2">
             <svg 
-              viewBox="0 0 24 24" 
+              viewBox="1.899 2.2 199.771 141.894" 
               xmlns="http://www.w3.org/2000/svg"
-              width="20" 
-              height="20" 
+              width="24" 
+              height="17" 
               className="text-primary"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
             >
-              <path d="M9 11l3 3L22 4" />
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              <path 
+                d="M 10.465 7.129 L 60.101 12.194 C 67.426 12.944 74.756 13.631 82.092 14.257 L 132.806 18.567 C 140.149 19.189 147.477 19.966 154.788 20.896 L 181.355 24.285 C 187.614 25.086 192.305 30.408 192.314 36.717 L 192.36 108.639 C 192.366 114.919 187.62 120.185 181.374 120.832 L 19.167 137.749 C 13.34 138.339 8.303 133.714 8.393 127.858 L 8.743 107.755 L 10.465 7.129 Z" 
+                strokeWidth="4" 
+                fill="currentColor" 
+                stroke="currentColor"
+              />
             </svg>
             Task
           </h2>
