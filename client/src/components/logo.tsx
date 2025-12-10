@@ -23,7 +23,7 @@ export function Logo({ className, variant = "horizontal" }: LogoProps) {
       
       {variant !== "mark" && (
         <div className="flex flex-col leading-none">
-          <span className="text-[#232073] dark:text-[#CEECF2] text-xl tracking-tighter">ME-DMZ</span>
+          <span className="text-[#232073] dark:text-[#CEECF2] text-xl tracking-tighter font-uber">ME-DMZ</span>
         </div>
       )}
     </div>

@@ -37,7 +37,8 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: 'Montserrat', sans-serif;
+  --font-sans: 'azo-sans-web', sans-serif;
+  --font-uber: 'azo-sans-uber', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius: 0.5rem;
 }
