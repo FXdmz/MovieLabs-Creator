@@ -22,11 +22,13 @@ import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-type
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
 import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults, getParticipantFunctionalTypes } from "@/lib/participant-types";
+import { CONTEXT_STRUCTURAL_TYPES, getContextStructuralProperties, getContextStructuralDefaults } from "@/lib/context-types";
 import { CreativeWorkHeader } from "./creative-work-header";
 import { LocationHeader } from "./location-header";
 import { InfrastructureHeader } from "./infrastructure-header";
 import { TaskHeader } from "./task-header";
 import { ParticipantHeader } from "./participant-header";
+import { ContextHeader } from "./context-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
 import { DimensionInput } from "./dimension-input";
@@ -276,10 +278,10 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                           schema.description?.toLowerCase().includes('iso 8601');
 
   // Check if this is a read-only field (entityType is required and shouldn't be changed)
-  // But NOT if it's within ParticipantSC where entityType is the structural class selector
+  // But NOT if it's within ParticipantSC or ContextSC where entityType is the structural class selector
   // Also make schemaVersion read-only in structural characteristic sections
-  const isReadOnlyField = (fieldKey === 'entityType' && !path.includes('ParticipantSC')) ||
-    (fieldKey === 'schemaVersion' && (path.includes('ParticipantSC') || path.includes('AssetSC') || path.includes('TaskSC') || path.includes('InfrastructureSC')));
+  const isReadOnlyField = (fieldKey === 'entityType' && !path.includes('ParticipantSC') && !path.includes('ContextSC')) ||
+    (fieldKey === 'schemaVersion' && (path.includes('ParticipantSC') || path.includes('ContextSC') || path.includes('AssetSC') || path.includes('TaskSC') || path.includes('InfrastructureSC')));
 
   // Check if this is an Asset structuralType or functionalType field
   // structuralType appears in AssetSC entities
@@ -294,6 +296,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // Check if this is a Participant functional type field
   const isParticipantFunctionalType = fieldKey === 'functionalType' && 
     path.includes('participantFC') && entityType === 'Participant';
+  // Check if this is a Context structural class selector (entityType within ContextSC)
+  const isContextStructuralClass = fieldKey === 'entityType' && 
+    path.includes('ContextSC') && entityType === 'Context';
   // Dimension fields need special format hints
   const isDimensionField = ['height', 'width', 'depth'].includes(fieldKey) && 
     path.includes('dimensions');
@@ -412,6 +417,19 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
             ) : (
               <SelectItem value="" disabled>Select a participant type first</SelectItem>
             )}
+          </SelectContent>
+        </Select>
+      ) : isContextStructuralClass ? (
+        <Select value={value ?? ""} onValueChange={onChange}>
+          <SelectTrigger data-testid="select-context-structural-class">
+            <SelectValue placeholder="Select context type..." />
+          </SelectTrigger>
+          <SelectContent>
+            {CONTEXT_STRUCTURAL_TYPES.map((type) => (
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       ) : schemaType === 'boolean' ? (
@@ -769,6 +787,163 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return { ...rootSchema, properties: filteredProperties };
     }
 
+    // For Context, build a synthetic merged ContextSC schema with all context type properties
+    if (value.entityType === 'Context') {
+      const structuralClass = value.ContextSC?.entityType;
+      const relevantProps = getContextStructuralProperties(structuralClass);
+      
+      // Deep clone to avoid mutating the original schema
+      const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
+      
+      // Build synthetic ContextSC schema
+      const syntheticContextSC = {
+        type: 'object',
+        title: 'Context Structural Characteristics',
+        description: 'Defines the type and structure of this Context.',
+        properties: {
+          entityType: {
+            type: 'string',
+            title: 'Context Type',
+            description: 'Select the type of context: Narrative, Production, Shoot Day, Editorial, VFX, Color, or Audio'
+          },
+          schemaVersion: {
+            type: 'string',
+            title: 'Schema Version'
+          },
+          identifier: {
+            type: 'array',
+            title: 'Identifier',
+            items: {
+              type: 'object',
+              properties: {
+                identifierScope: { type: 'string', title: 'Identifier Scope' },
+                identifierValue: { type: 'string', title: 'Identifier Value' },
+                combinedForm: { type: 'string', title: 'Combined Form' }
+              }
+            }
+          },
+          structuralType: {
+            type: 'string',
+            title: 'Structural Type',
+            description: 'The type of Context.'
+          },
+          // Narrative Context properties
+          NarrativeScene: {
+            type: 'array',
+            title: 'Narrative Scenes',
+            items: { type: 'object' }
+          },
+          NarrativeLocation: {
+            type: 'array',
+            title: 'Narrative Locations',
+            items: { type: 'object' }
+          },
+          Character: {
+            type: 'array',
+            title: 'Characters',
+            items: { type: 'object' }
+          },
+          NarrativeObject: {
+            type: 'array',
+            title: 'Narrative Objects',
+            items: { type: 'object' }
+          },
+          NarrativeAction: {
+            type: 'array',
+            title: 'Narrative Actions',
+            items: { type: 'object' }
+          },
+          NarrativeAudio: {
+            type: 'array',
+            title: 'Narrative Audio',
+            items: { type: 'object' }
+          },
+          NarrativeStyling: {
+            type: 'array',
+            title: 'Narrative Styling',
+            items: { type: 'object' }
+          },
+          NarrativeWardrobe: {
+            type: 'array',
+            title: 'Narrative Wardrobe',
+            items: { type: 'object' }
+          },
+          // Production Context properties
+          ProductionScene: {
+            type: 'array',
+            title: 'Production Scenes',
+            items: { type: 'object' }
+          },
+          ProductionLocation: {
+            type: 'array',
+            title: 'Production Locations',
+            items: { type: 'object' }
+          },
+          Participant: {
+            type: 'array',
+            title: 'Participants',
+            items: { type: 'object' }
+          },
+          Task: {
+            type: 'array',
+            title: 'Tasks',
+            items: { type: 'object' }
+          },
+          Infrastructure: {
+            type: 'array',
+            title: 'Infrastructure',
+            items: { type: 'object' }
+          },
+          Asset: {
+            type: 'array',
+            title: 'Assets',
+            items: { type: 'object' }
+          },
+          // Shoot Day Context properties
+          shootDate: {
+            type: 'string',
+            title: 'Shoot Date',
+            description: 'The date of the shoot'
+          },
+          callTime: {
+            type: 'string',
+            title: 'Call Time',
+            description: 'The call time for crew and cast'
+          },
+          wrapTime: {
+            type: 'string',
+            title: 'Wrap Time',
+            description: 'The expected or actual wrap time'
+          },
+          // Editorial/VFX/Color/Audio Context properties
+          Sequence: {
+            type: 'array',
+            title: 'Sequences',
+            items: { type: 'object' }
+          }
+        }
+      };
+      
+      // Filter to only show relevant properties for the selected context type
+      if (structuralClass && relevantProps.length > 0) {
+        const baseFields = ['entityType', 'schemaVersion', 'identifier', 'structuralType'];
+        const allowedFields = [...baseFields, ...relevantProps];
+        
+        const filteredSCProps: any = {};
+        Object.entries(syntheticContextSC.properties).forEach(([key, propSchema]) => {
+          if (allowedFields.includes(key)) {
+            filteredSCProps[key] = propSchema;
+          }
+        });
+        
+        syntheticContextSC.properties = filteredSCProps;
+      }
+      
+      filteredProperties.ContextSC = syntheticContextSC;
+      
+      return { ...rootSchema, properties: filteredProperties };
+    }
+
     return rootSchema;
   };
 
@@ -788,12 +963,14 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <TaskHeader />;
       case 'Participant':
         return <ParticipantHeader />;
+      case 'Context':
+        return <ContextHeader />;
       default:
         return null;
     }
   };
 
-  // Wrap onChange to handle Participant structural class changes
+  // Wrap onChange to handle Participant and Context structural class changes
   const wrappedOnChange = (newValue: any) => {
     // Check if this is a Participant and ParticipantSC.entityType changed
     if (value.entityType === 'Participant' && newValue.ParticipantSC?.entityType !== value.ParticipantSC?.entityType) {
@@ -819,6 +996,33 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       onChange({
         ...newValue,
         ParticipantSC: updatedParticipantSC
+      });
+      return;
+    }
+    
+    // Check if this is a Context and ContextSC.entityType changed
+    if (value.entityType === 'Context' && newValue.ContextSC?.entityType !== value.ContextSC?.entityType) {
+      const newStructuralClass = newValue.ContextSC?.entityType;
+      const structuralDefaults = getContextStructuralDefaults(newStructuralClass);
+      
+      // Generate a new identifier for the structural class
+      const newScId = uuidv4();
+      
+      // Build new ContextSC: start with structural defaults, then overlay preserved baseEntity fields
+      const updatedContextSC = {
+        ...structuralDefaults,
+        entityType: newStructuralClass,
+        schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+        identifier: [{
+          identifierScope: "me-nexus",
+          identifierValue: newScId,
+          combinedForm: `me-nexus:${newScId}`
+        }],
+      };
+      
+      onChange({
+        ...newValue,
+        ContextSC: updatedContextSC
       });
       return;
     }

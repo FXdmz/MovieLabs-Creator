@@ -79,6 +79,17 @@ const ParticipantIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const ContextIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="1375.27 1509.47 150 150" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 1517.343 1583.172 C 1517.343 1621.099 1486.602 1651.831 1448.684 1651.831 C 1410.767 1651.831 1380.026 1621.099 1380.026 1583.172 C 1380.026 1545.255 1410.767 1514.514 1448.684 1514.514 C 1486.602 1514.514 1517.343 1545.255 1517.343 1583.172 Z" 
+      strokeWidth="4" 
+      stroke="currentColor"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 const getEntityIcon = (entityType: string) => {
   if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
     return <LocationIcon className="h-3.5 w-3.5" />;
@@ -91,6 +102,9 @@ const getEntityIcon = (entityType: string) => {
   }
   if (entityType === 'Participant') {
     return <ParticipantIcon className="h-3.5 w-3.5" />;
+  }
+  if (entityType === 'Context') {
+    return <ContextIcon className="h-3.5 w-3.5" />;
   }
   return <Database className="h-3.5 w-3.5" />;
 };

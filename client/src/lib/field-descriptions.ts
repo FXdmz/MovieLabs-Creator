@@ -478,6 +478,73 @@ export const PARTICIPANT_FIELD_DESCRIPTIONS: Record<string, { description: strin
   }
 };
 
+export const CONTEXT_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
+  entityType: {
+    description: "The type of OMC entity. For Contexts, this is always 'Context'.",
+    required: true
+  },
+  schemaVersion: {
+    description: "Describes the version of OMC-JSON schema that was used to create this instance.",
+    required: true
+  },
+  identifier: {
+    description: "One or more identifiers for the Context. At least one should be resolvable within the production environment.",
+    required: true
+  },
+  name: {
+    description: "A human-readable name for the Context used for display purposes.",
+    required: false
+  },
+  ContextSC: {
+    description: "The structural characteristics of the Context, defining its type and related properties.",
+    required: false
+  },
+  contextFC: {
+    description: "The functional characteristics describing the purpose of this Context within production.",
+    required: false
+  },
+  structuralType: {
+    description: "The type of Context: narrativeContext, productionContext, shootDayContext, editorialContext, vfxContext, colorContext, or audioContext.",
+    required: false
+  },
+  NarrativeScene: {
+    description: "Narrative scenes associated with this Context.",
+    required: false
+  },
+  NarrativeLocation: {
+    description: "Narrative locations associated with this Context.",
+    required: false
+  },
+  ProductionScene: {
+    description: "Production scenes associated with this Context.",
+    required: false
+  },
+  ProductionLocation: {
+    description: "Production locations associated with this Context.",
+    required: false
+  },
+  shootDate: {
+    description: "The date of the shoot for this Context.",
+    required: false
+  },
+  callTime: {
+    description: "The call time for crew and cast.",
+    required: false
+  },
+  wrapTime: {
+    description: "The expected or actual wrap time.",
+    required: false
+  },
+  Sequence: {
+    description: "Sequences associated with this Context.",
+    required: false
+  },
+  Character: {
+    description: "Characters associated with this Context.",
+    required: false
+  }
+};
+
 export function getFieldDescription(entityType: string, fieldKey: string, path?: string): { description: string; required?: boolean } | undefined {
   if (entityType === 'CreativeWork') {
     return CREATIVE_WORK_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
@@ -499,6 +566,9 @@ export function getFieldDescription(entityType: string, fieldKey: string, path?:
   }
   if (entityType === 'Participant') {
     return PARTICIPANT_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
+  }
+  if (entityType === 'Context') {
+    return CONTEXT_FIELD_DESCRIPTIONS[fieldKey] || BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
   }
   return BASE_ENTITY_FIELD_DESCRIPTIONS[fieldKey];
 }

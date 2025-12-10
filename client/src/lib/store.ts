@@ -108,6 +108,21 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
        defaultContent.Context = null;
     }
 
+    if (type === "Context") {
+       const contextScId = uuidv4();
+       defaultContent.ContextSC = {
+         entityType: "NarrativeContext",
+         schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+         identifier: [{
+           identifierScope: "me-nexus",
+           identifierValue: contextScId,
+           combinedForm: `me-nexus:${contextScId}`
+         }],
+         structuralType: "narrativeContext",
+       };
+       defaultContent.contextFC = null;
+    }
+
     const newEntity: Entity = {
       id,
       type,
