@@ -97,7 +97,7 @@ export default function Dashboard() {
         setValidationErrors(null);
       } else {
         console.error("Validation errors:", validate.errors);
-        setValidationErrors(validate.errors);
+        setValidationErrors(validate.errors || null);
         setShowValidationDialog(true);
       }
     } catch (e) {
@@ -113,11 +113,44 @@ export default function Dashboard() {
   const copyErrorsToClipboard = () => {
     if (!validationErrors) return;
     const text = JSON.stringify(validationErrors, null, 2);
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied",
-      description: "Error messages copied to clipboard.",
-    });
+    
+    const fallbackCopy = (text: string) => {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        toast({
+          title: "Copied",
+          description: "Error messages copied to clipboard.",
+        });
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+        toast({
+          title: "Copy Failed",
+          description: "Could not copy text. Please select and copy manually.",
+          variant: "destructive"
+        });
+      }
+      document.body.removeChild(textArea);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          toast({
+            title: "Copied",
+            description: "Error messages copied to clipboard.",
+          });
+        })
+        .catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
   };
 
   const handleExport = () => {
