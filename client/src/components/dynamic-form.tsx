@@ -21,6 +21,7 @@ import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-type
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
 import { CreativeWorkHeader } from "./creative-work-header";
+import { LocationHeader } from "./location-header";
 import { AssetHeader } from "./asset-header";
 import { DurationInput } from "./duration-input";
 import { DimensionInput } from "./dimension-input";
@@ -584,6 +585,8 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         return <CreativeWorkHeader />;
       case 'Asset':
         return <AssetHeader />;
+      case 'Location':
+        return <LocationHeader />;
       default:
         return null;
     }
