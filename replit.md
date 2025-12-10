@@ -43,6 +43,10 @@ Preferred communication style: Simple, everyday language.
 
 **Structural Properties Mapping**: Asset entities have structural type-dependent properties. The `structural-properties-map.ts` defines which properties are relevant for each asset structural class (digital, physical, geometry, etc.).
 
+**File Import for Assets**: Users can drag-and-drop or browse for media files (video, audio, images, documents) to automatically create Asset entities. The system extracts metadata (file name, size, MIME type, dimensions, duration) and maps it to the appropriate AssetSC structural type and properties.
+
+**Merged Asset/AssetSC Experience**: Asset entities now include an embedded AssetSC section with structural type dropdown and contextual structural properties, eliminating the need to create separate AssetSC entities.
+
 ## External Dependencies
 
 ### Third-Party Services
