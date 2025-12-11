@@ -116,6 +116,51 @@ export default function Intro() {
         <section className="bg-white py-16">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About the OMC Builder</h2>
+              <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
+                <p className="mb-6">
+                  The <strong>OMC Builder</strong> is a web application designed to help media 
+                  production professionals create and export OMC-compliant JSON documents. Whether 
+                  you're defining creative works, cataloging assets, or mapping production workflows, 
+                  this tool provides an intuitive form-based interface with built-in validation.
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <AssetIcon className="h-6 w-6 text-[#232073]" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] mb-2">Schema Validated</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Real-time validation against OMC-JSON Schema v2.8
+                  </p>
+                </div>
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ContextIcon className="h-6 w-6 text-[#232073]" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] mb-2">Multiple Entity Types</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Support for Assets, Participants, Tasks, Locations, and more
+                  </p>
+                </div>
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ArrowRight className="h-6 w-6 text-[#232073]" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] mb-2">Easy Export</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Export valid JSON ready for integration with production systems
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-[#CEECF2]/20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">What is the OMC?</h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">
                 <p className="mb-6">
@@ -141,7 +186,7 @@ export default function Intro() {
           </div>
         </section>
 
-        <section className="py-16 bg-[#CEECF2]/20">
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-[#232073] mb-12 text-center">Core Building Blocks</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
@@ -200,51 +245,6 @@ export default function Intro() {
                   </p>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About the OMC Builder</h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
-                <p className="mb-6">
-                  The <strong>OMC Builder</strong> is a web application designed to help media 
-                  production professionals create and export OMC-compliant JSON documents. Whether 
-                  you're defining creative works, cataloging assets, or mapping production workflows, 
-                  this tool provides an intuitive form-based interface with built-in validation.
-                </p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-[#232073]" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Schema Validated</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Real-time validation against OMC-JSON Schema v2.8
-                  </p>
-                </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-[#232073]" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Multiple Entity Types</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Support for Assets, Participants, Tasks, Locations, and more
-                  </p>
-                </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ArrowRight className="h-6 w-6 text-[#232073]" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Easy Export</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Export valid JSON ready for integration with production systems
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
