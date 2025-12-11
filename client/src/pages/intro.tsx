@@ -106,17 +106,15 @@ export default function Intro() {
         <section className="bg-white py-16">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About the OMC Builder</h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
-                <p className="mb-6 text-xl text-center">
-                  A standardized vocabulary and data model enabling software interoperability 
-                  across the entire media production workflow—from script to screen.
+              <div className="prose prose-lg max-w-none text-muted-foreground mb-8 text-center">
+                <p className="text-lg mb-4">
+                  Create standardized metadata that speaks the language of modern media production! 
+                  The <strong className="text-[#232073]">OMC Builder</strong> helps you craft OMC-compliant JSON documents 
+                  with an intuitive form-based interface and real-time validation.
                 </p>
-                <p className="mb-6">
-                  The <strong>OMC Builder</strong> is a web application designed to help media 
-                  production professionals create and export OMC-compliant JSON documents. Whether 
-                  you're defining creative works, cataloging assets, or mapping production workflows, 
-                  this tool provides an intuitive form-based interface with built-in validation.
+                <p className="text-lg">
+                  Define creative works, catalog assets, or map production workflows—all with 
+                  industry-standard interoperability from script to screen.
                 </p>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
