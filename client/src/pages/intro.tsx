@@ -67,8 +67,9 @@ export default function Intro() {
       <header className="border-b bg-white/80 dark:bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
-              <Logo className="h-8 w-auto" variant="light" />
+            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="block">
+              <Logo className="h-8 w-auto dark:hidden" variant="light" />
+              <Logo className="h-8 w-auto hidden dark:block" variant="dark" />
             </a>
           </div>
           <div className="flex items-center gap-2">
