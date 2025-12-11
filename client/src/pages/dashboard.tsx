@@ -197,11 +197,11 @@ export default function Dashboard() {
           identifierValue: staged.id,
           combinedForm: `me-nexus:${staged.id}`
         }],
-        assetFC: {
+        AssetFunctionalCharacteristics: {
           functionalType: staged.functionalType,
           ...(functionalProperties ? { functionalProperties } : {})
         },
-        AssetSC: {
+        AssetStructuralCharacteristics: {
           entityType: 'AssetSC',
           schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
           identifier: [{
@@ -219,15 +219,13 @@ export default function Dashboard() {
       }
       
       if (staged.provenance) {
-        // Only include valid OMC provenance properties (CreatedOn, ModifiedOn)
-        const validProvenanceKeys = ['CreatedOn', 'ModifiedOn'];
+        // Only include valid OMC provenance properties (createdOn - lowercase 'on')
+        const prov = staged.provenance as any;
         const omcProvenance: Record<string, any> = {};
         
-        for (const key of validProvenanceKeys) {
-          const value = (staged.provenance as any)[key];
-          if (value !== null && value !== undefined && value !== '') {
-            omcProvenance[key] = value;
-          }
+        // Map CreatedOn to createdOn (schema uses lowercase 'on')
+        if (prov.CreatedOn) {
+          omcProvenance.createdOn = prov.CreatedOn;
         }
         
         if (Object.keys(omcProvenance).length > 0) {
@@ -249,10 +247,10 @@ export default function Dashboard() {
           identifierValue: group.id,
           combinedForm: `me-nexus:${group.id}`
         }],
-        assetFC: {
+        AssetFunctionalCharacteristics: {
           functionalType: group.isOrdered ? 'shot' : 'creativeReferenceMaterial'
         },
-        AssetSC: {
+        AssetStructuralCharacteristics: {
           entityType: 'AssetSC',
           schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
           identifier: [{

@@ -74,7 +74,7 @@ const FieldLabel = ({ label, required, description }: { label: string, required?
 export function SchemaField({ fieldKey, schema, value, onChange, path = "", level = 0, rootSchema, entityType, participantStructuralClass }: SchemaFieldProps & { rootSchema?: any }) {
   // Open by default if: top level, OR if the field has data (e.g., from file import)
   const hasData = value && typeof value === 'object' && Object.keys(value).length > 0;
-  const isAssetSection = ['AssetSC', 'assetFC'].includes(fieldKey);
+  const isAssetSection = ['AssetStructuralCharacteristics', 'AssetFunctionalCharacteristics', 'AssetSC', 'assetFC'].includes(fieldKey);
   const [isOpen, setIsOpen] = useState(level < 1 || hasData || isAssetSection);
   
   // Get field description from our descriptions file (for enhanced UX)
@@ -287,9 +287,9 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // structuralType appears in AssetSC entities
   const isAssetStructuralType = fieldKey === 'structuralType' && 
     (entityType === 'AssetSC' || path.includes('AssetSC'));
-  // functionalType appears in Asset.assetFC
+  // functionalType appears in Asset.AssetFunctionalCharacteristics
   const isAssetFunctionalType = fieldKey === 'functionalType' && 
-    (entityType === 'Asset' || path.includes('assetFC'));
+    (entityType === 'Asset' || path.includes('AssetFunctionalCharacteristics') || path.includes('assetFC'));
   // Check if this is a Participant structural class selector (entityType within ParticipantSC)
   const isParticipantStructuralClass = fieldKey === 'entityType' && 
     path.includes('ParticipantSC') && entityType === 'Participant';
@@ -602,17 +602,18 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
 
     // For Asset, filter both structural and functional properties based on selected types
     if (value.entityType === 'Asset') {
-      const structuralType = value.AssetSC?.structuralType;
-      const functionalType = value.assetFC?.functionalType;
+      const structuralType = value.AssetStructuralCharacteristics?.structuralType || value.AssetSC?.structuralType;
+      const functionalType = value.AssetFunctionalCharacteristics?.functionalType || value.assetFC?.functionalType;
       const relevantStructProps = getRelevantStructuralProperties(structuralType);
       const relevantFuncProps = getRelevantFunctionalProperties(functionalType);
       
       // Deep clone to avoid mutating the original schema
       const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
       
-      // Filter AssetSC.structuralProperties only if we have a specific structural type with properties
-      if (structuralType && relevantStructProps.length > 0 && filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
-        const structPropsSchema = filteredProperties.AssetSC.properties.structuralProperties;
+      // Filter AssetStructuralCharacteristics.structuralProperties only if we have a specific structural type with properties
+      const scKey = filteredProperties.AssetStructuralCharacteristics ? 'AssetStructuralCharacteristics' : 'AssetSC';
+      if (structuralType && relevantStructProps.length > 0 && filteredProperties[scKey]?.properties?.structuralProperties?.properties) {
+        const structPropsSchema = filteredProperties[scKey].properties.structuralProperties;
         const filteredStructProps: any = {};
         
         Object.entries(structPropsSchema.properties || {}).forEach(([key, propSchema]) => {
@@ -623,18 +624,19 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         
         // Only apply filter if we have relevant properties
         if (Object.keys(filteredStructProps).length > 0) {
-          filteredProperties.AssetSC.properties.structuralProperties.properties = filteredStructProps;
+          filteredProperties[scKey].properties.structuralProperties.properties = filteredStructProps;
         }
       }
       
-      // Filter assetFC.functionalProperties based on functional type
+      // Filter AssetFunctionalCharacteristics.functionalProperties based on functional type
       // If the functional type has no properties defined (empty array), hide the section entirely
-      if (functionalType && filteredProperties.assetFC?.properties?.functionalProperties) {
+      const fcKey = filteredProperties.AssetFunctionalCharacteristics ? 'AssetFunctionalCharacteristics' : 'assetFC';
+      if (functionalType && filteredProperties[fcKey]?.properties?.functionalProperties) {
         if (!hasFunctionalProperties(functionalType)) {
           // Remove functionalProperties from the schema for types with no defined properties
-          delete filteredProperties.assetFC.properties.functionalProperties;
-        } else if (relevantFuncProps.length > 0 && filteredProperties.assetFC.properties.functionalProperties?.properties) {
-          const funcPropsSchema = filteredProperties.assetFC.properties.functionalProperties;
+          delete filteredProperties[fcKey].properties.functionalProperties;
+        } else if (relevantFuncProps.length > 0 && filteredProperties[fcKey].properties.functionalProperties?.properties) {
+          const funcPropsSchema = filteredProperties[fcKey].properties.functionalProperties;
           const filteredFuncProps: any = {};
           
           Object.entries(funcPropsSchema.properties || {}).forEach(([key, propSchema]) => {
@@ -645,7 +647,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
           
           // Apply filter if we have relevant properties
           if (Object.keys(filteredFuncProps).length > 0) {
-            filteredProperties.assetFC.properties.functionalProperties.properties = filteredFuncProps;
+            filteredProperties[fcKey].properties.functionalProperties.properties = filteredFuncProps;
           }
         }
       }

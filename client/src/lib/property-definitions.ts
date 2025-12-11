@@ -23,15 +23,7 @@ export const STRUCTURAL_PROPERTY_DEFINITIONS: Record<string, PropertyDefinition>
     type: "text",
     group: "File Details"
   },
-  "fileDetails.fileSizeBytes": {
-    key: "fileDetails.fileSizeBytes",
-    label: "File Size",
-    description: "Size of the file in bytes",
-    type: "number",
-    unit: "bytes",
-    group: "File Details"
-  },
-  "dimensions.width": {
+    "dimensions.width": {
     key: "dimensions.width",
     label: "Width",
     description: "Width in pixels",
@@ -302,7 +294,6 @@ export function getStructuralPropertiesForType(structuralType: string): Property
     if (key === 'fileDetails') {
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileName']);
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileExtension']);
-      definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileSizeBytes']);
     } else if (key === 'dimensions') {
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['dimensions.width']);
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['dimensions.height']);

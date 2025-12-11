@@ -48,8 +48,7 @@ export function AssetWizard({ onComplete, onCancel }: AssetWizardProps) {
       const structuralProps: any = {
         fileDetails: {
           fileName: metadata.fileName,
-          fileExtension: metadata.fileExtension,
-          fileSizeBytes: metadata.fileSize
+          fileExtension: metadata.fileExtension
         }
       };
       

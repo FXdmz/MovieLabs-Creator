@@ -60,8 +60,10 @@ const jsonToRdfPredicate: Record<string, string> = {
   
   AssetSC: "omc:hasAssetStructuralCharacteristic",
   assetSC: "omc:hasAssetStructuralCharacteristic",
+  AssetStructuralCharacteristics: "omc:hasAssetStructuralCharacteristic",
   assetFC: "omc:hasAssetFunctionalCharacteristic",
   AssetFC: "omc:hasAssetFunctionalCharacteristic",
+  AssetFunctionalCharacteristics: "omc:hasAssetFunctionalCharacteristic",
   functionalType: "omc:hasFunctionalType",
   structuralType: "omc:hasStructuralType",
   structuralProperties: "omc:hasStructuralProperties",
