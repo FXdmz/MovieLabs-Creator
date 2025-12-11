@@ -1,0 +1,146 @@
+[
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "structuralType"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "personName"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "jobTitle"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "gender"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "contact"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "entityType"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "schemaVersion"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": {
+      "additionalProperty": "dateOfBirth"
+    },
+    "message": "must NOT have additional properties"
+  },
+  {
+    "instancePath": "/ParticipantSC/structuralType",
+    "schemaPath": "#/properties/structuralType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "person"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/entityType",
+    "schemaPath": "#/properties/entityType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "Department"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/structuralType",
+    "schemaPath": "#/properties/structuralType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "department"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/entityType",
+    "schemaPath": "#/properties/entityType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "Organization"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/structuralType",
+    "schemaPath": "#/properties/structuralType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "organization"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/entityType",
+    "schemaPath": "#/properties/entityType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "Service"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC/structuralType",
+    "schemaPath": "#/properties/structuralType/const",
+    "keyword": "const",
+    "params": {
+      "allowedValue": "service"
+    },
+    "message": "must be equal to constant"
+  },
+  {
+    "instancePath": "/ParticipantSC",
+    "schemaPath": "#/properties/ParticipantSC/oneOf",
+    "keyword": "oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "message": "must match exactly one schema in oneOf"
+  }
+]

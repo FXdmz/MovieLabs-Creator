@@ -38,7 +38,7 @@ export function ParticipantHeader({ value, onChange }: ParticipantHeaderProps) {
       ...structuralDefaults,
       entityType: "Person",
       schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
-      structuralType: "Person",
+      structuralType: "person",
       identifier: [{
         identifierScope: "me-nexus",
         identifierValue: newScId,
