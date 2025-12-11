@@ -12,6 +12,7 @@ import addFormats from "ajv-formats";
 import { 
   Plus, 
   FileJson, 
+  FileText,
   Trash2, 
   Settings, 
   Search, 
@@ -25,7 +26,8 @@ import {
   AlertTriangle,
   Upload,
   HelpCircle,
-  Home
+  Home,
+  ChevronDown
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -286,7 +288,7 @@ export default function Dashboard() {
     }
   };
 
-  const handleExport = () => {
+  const handleExportJson = () => {
     const json = exportJson();
     const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -298,6 +300,22 @@ export default function Dashboard() {
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
+    toast({
+      title: "Exported as JSON",
+      description: `Downloaded ${fileName}`
+    });
+  };
+
+  const handleExportTtl = () => {
+    const { downloadAs } = useOntologyStore.getState();
+    const fileName = selectedEntity 
+      ? `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.ttl`
+      : "omc-ontology.ttl";
+    downloadAs("ttl", fileName);
+    toast({
+      title: "Exported as TTL (RDF)",
+      description: `Downloaded ${fileName}`
+    });
   };
 
   return (
@@ -440,9 +458,21 @@ export default function Dashboard() {
                   <CheckCircle className="h-4 w-4" /> Validate
                 </Button>
                 
-                <Button variant="outline" size="sm" onClick={handleExport} className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
-                  <Download className="h-4 w-4" /> Export
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
+                      <Download className="h-4 w-4" /> Export <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleExportJson} className="gap-2">
+                      <FileJson className="h-4 w-4" /> Export as JSON
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportTtl} className="gap-2">
+                      <FileText className="h-4 w-4" /> Export as TTL (RDF)
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 

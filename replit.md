@@ -2,6 +2,18 @@
 
 ## Milestones
 
+### RDF/TTL Export Feature (December 11, 2025)
+- Added dual export capability: JSON and RDF/TTL (Turtle) formats
+- Export dropdown menu in builder toolbar with format selection
+- RDF serializer maps JSON entities to OMC 2.8 ontology predicates and classes
+- Uses ontology-backed mappings from official omc_1765463407912.ttl schema file
+- Key RDF predicates: omc:hasAssetStructuralCharacteristic, omc:hasAssetFunctionalCharacteristic, etc.
+- Entity types mapped to correct classes: omc:Asset, omc:Participant, omc:Task, etc.
+- SC/FC nodes typed as omc:AssetAsStructure, omc:AssetAsFunction, etc.
+- URIs use me: prefix for me-nexus identifiers (https://me-nexus.com/id/)
+- Deterministic blank node IDs using incrementing counter
+- Export files located in: client/src/lib/export/
+
 ### Branding Audit Complete (December 11, 2025)
 - Full FX-DMZ brand color audit with extended palette integration
 - CSS variables updated with exact brand colors:
@@ -35,7 +47,7 @@ The intro/landing page at "/" is complete with:
 
 ## Overview
 
-ME-DMZ Ontology Builder is a web application for creating and exporting MovieLabs Ontology for Media Creation (OMC) compliant JSON documents. The application provides a visual form-based interface for building complex media production ontology entities (such as Creative Works, Assets, Characters, etc.) and validates them against the official OMC-JSON Schema v2.8.
+ME-DMZ Ontology Builder is a web application for creating and exporting MovieLabs Ontology for Media Creation (OMC) compliant documents in both JSON and RDF/TTL (Turtle) formats. The application provides a visual form-based interface for building complex media production ontology entities (such as Creative Works, Assets, Characters, etc.) and validates them against the official OMC-JSON Schema v2.8.
 
 The tool is designed for media production professionals who need to create standardized metadata that follows the MovieLabs OMC specification, enabling interoperability across production workflows.
 
@@ -111,3 +123,4 @@ Functional characteristics (participantFC) are contextually filtered based on th
 
 ### External Schemas
 - MovieLabs OMC-JSON Schema v2.8 (bundled in `client/public/schema.json`)
+- MovieLabs OMC RDF/OWL Ontology v2.8 (attached_assets/omc_1765463407912.ttl) - used for RDF export predicate/class mappings

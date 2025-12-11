@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { EntityType } from './constants';
 import { v4 as uuidv4 } from 'uuid';
+import { exportEntities, downloadExport, ExportFormat } from './export';
 
 export interface Entity {
   id: string;
@@ -18,6 +19,8 @@ interface OntologyStore {
   removeEntity: (id: string) => void;
   selectEntity: (id: string | null) => void;
   exportJson: () => any;
+  exportAs: (format: ExportFormat) => string;
+  downloadAs: (format: ExportFormat, filename?: string) => void;
 }
 
 export const useOntologyStore = create<OntologyStore>((set, get) => ({
@@ -162,8 +165,15 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   selectEntity: (id) => set({ selectedEntityId: id }),
   exportJson: () => {
     const { entities } = get();
-    // Wrap in rootObject or array depending on count, but for now let's just return the array of entities or single entity
     if (entities.length === 1) return entities[0].content;
     return entities.map(e => e.content);
+  },
+  exportAs: (format: ExportFormat) => {
+    const { entities } = get();
+    return exportEntities(entities, { format, pretty: true });
+  },
+  downloadAs: (format: ExportFormat, filename?: string) => {
+    const { entities } = get();
+    downloadExport(entities, { format, pretty: true }, filename);
   }
 }));
