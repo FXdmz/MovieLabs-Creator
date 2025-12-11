@@ -91,6 +91,17 @@ const ContextIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const AssetIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="1545.36 1648.8 149.92 149.93" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 1550.154 1666.405 C 1550.154 1660.29 1555.112 1655.332 1561.228 1655.332 L 1677.428 1655.332 C 1683.543 1655.332 1688.501 1660.29 1688.501 1666.405 L 1688.501 1782.614 C 1688.501 1788.73 1683.543 1793.688 1677.428 1793.688 L 1561.228 1793.688 C 1555.112 1793.688 1550.154 1788.73 1550.154 1782.614 L 1550.154 1666.405 Z" 
+      stroke="currentColor" 
+      strokeWidth="4" 
+      fill="currentColor"
+    />
+  </svg>
+);
+
 const getEntityIcon = (entityType: string) => {
   if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
     return <LocationIcon className="h-3.5 w-3.5" />;
@@ -106,6 +117,9 @@ const getEntityIcon = (entityType: string) => {
   }
   if (entityType === 'Context') {
     return <ContextIcon className="h-3.5 w-3.5" />;
+  }
+  if (entityType === 'Asset') {
+    return <AssetIcon className="h-3.5 w-3.5" />;
   }
   return <Database className="h-3.5 w-3.5" />;
 };
@@ -472,7 +486,7 @@ export default function Dashboard() {
                 <ParticipantIcon className="h-4 w-4" /> Create Participant
               </Button>
               <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2">
-                <Database className="h-4 w-4" /> Create Asset
+                <AssetIcon className="h-4 w-4" /> Create Asset
               </Button>
               <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2">
                 <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
