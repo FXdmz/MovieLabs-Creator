@@ -379,7 +379,7 @@ export default function Dashboard() {
           </DropdownMenu>
           <HelpDialog 
             trigger={
-              <Button variant="outline" className="w-full gap-2" size="lg" data-testid="button-help-sidebar">
+              <Button variant="outline" className="w-full gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] transition-all duration-200" size="lg" data-testid="button-help-sidebar">
                 <HelpCircle className="h-4 w-4" /> Help & Documentation
               </Button>
             }
@@ -488,16 +488,16 @@ export default function Dashboard() {
               Select an entity from the sidebar or create a new one to start building your media creation ontology.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2">
+              <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <TaskIcon className="h-4 w-4" /> Create Task
               </Button>
-              <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2">
+              <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <ParticipantIcon className="h-4 w-4" /> Create Participant
               </Button>
-              <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2">
+              <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <AssetIcon className="h-4 w-4" /> Create Asset
               </Button>
-              <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2">
+              <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
               </Button>
             </div>
