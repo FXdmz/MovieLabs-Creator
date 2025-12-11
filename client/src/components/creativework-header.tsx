@@ -41,7 +41,8 @@ export function CreativeWorkHeader({ value, onChange }: CreativeWorkHeaderProps)
       description: media.description || value.description,
       creativeWorkType,
       creativeWorkCategory,
-      creativeWorkTitle
+      creativeWorkTitle,
+      ...(media.duration && { approximateLength: media.duration })
     };
 
     onChange(updatedValue);

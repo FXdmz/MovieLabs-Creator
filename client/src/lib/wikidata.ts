@@ -298,11 +298,31 @@ export async function searchMedia(query: string): Promise<WikidataMedia[]> {
         image = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodedFilename}?width=200`;
       }
 
+      // Extract duration (in minutes from Wikidata)
+      let duration: string | undefined;
+      const durationClaim = entity.claims?.[MEDIA_PROPS.duration]?.[0];
+      if (durationClaim?.mainsnak?.datavalue?.value?.amount) {
+        const minutes = parseInt(durationClaim.mainsnak.datavalue.value.amount.replace('+', ''), 10);
+        if (!isNaN(minutes) && minutes > 0) {
+          // Convert to ISO 8601 duration format
+          const hours = Math.floor(minutes / 60);
+          const mins = minutes % 60;
+          if (hours > 0 && mins > 0) {
+            duration = `PT${hours}H${mins}M`;
+          } else if (hours > 0) {
+            duration = `PT${hours}H`;
+          } else {
+            duration = `PT${mins}M`;
+          }
+        }
+      }
+
       results.push({
         id,
         title,
         description,
         releaseDate,
+        duration,
         mediaType,
         image,
         wikidataUrl: `https://www.wikidata.org/wiki/${id}`
