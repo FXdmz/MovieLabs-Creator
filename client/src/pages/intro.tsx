@@ -106,6 +106,15 @@ export default function Intro() {
           </div>
         </section>
 
+        <div className="relative h-48 md:h-64 overflow-hidden">
+          <img 
+            src="/attached_assets/iStock-1278449967_1765459968008.jpg" 
+            alt="Abstract data visualization" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#232073]/40 to-transparent" />
+        </div>
+
         <section className="bg-white dark:bg-card py-16">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
