@@ -44,17 +44,13 @@ export function ParticipantHeader({ value, onChange }: ParticipantHeaderProps) {
         identifierValue: newScId,
         combinedForm: `me-nexus:${newScId}`
       }],
-      personName: wikidataData.personName,
-      ...(wikidataData.dateOfBirth && { dateOfBirth: wikidataData.dateOfBirth })
+      personName: wikidataData.personName
     };
 
     const updatedValue = {
       ...value,
       ParticipantSC: updatedParticipantSC,
-      customData: {
-        ...(value.customData || {}),
-        ...wikidataData.customData
-      }
+      name: wikidataData.personName.fullName
     };
 
     onChange(updatedValue);
