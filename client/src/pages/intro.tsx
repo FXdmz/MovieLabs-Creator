@@ -1,8 +1,19 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, FileJson, Users, Layers, CheckCircle } from "lucide-react";
+import { ArrowRight, FileJson, Layers, CheckCircle } from "lucide-react";
 import { Logo } from "@/components/logo";
+
+const ParticipantIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="1620.35 1648.8 159.848 148.03" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 1627.367 1731.241 C 1624.541 1726.171 1624.541 1720 1627.367 1714.93 L 1656.794 1662.124 C 1659.602 1657.091 1664.914 1653.972 1670.677 1653.974 L 1729.057 1653.974 C 1734.822 1653.974 1740.135 1657.097 1742.94 1662.134 L 1772.368 1714.93 C 1775.19 1719.997 1775.19 1726.164 1772.368 1731.231 L 1742.94 1784.018 C 1740.135 1789.055 1734.822 1792.178 1729.057 1792.178 L 1670.668 1792.178 C 1664.906 1792.175 1659.597 1789.052 1656.794 1784.018 L 1627.367 1731.241 Z" 
+      stroke="currentColor" 
+      strokeWidth="4" 
+      fill="currentColor" 
+    />
+  </svg>
+);
 
 export default function Intro() {
   return (
@@ -80,7 +91,7 @@ export default function Intro() {
               <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-participants">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-8 w-8 text-[#232073]" />
+                    <ParticipantIcon className="h-8 w-8 text-[#232073]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] mb-2">Participants</h3>
                   <p className="text-sm text-muted-foreground">
