@@ -33,7 +33,8 @@ import {
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
-import { ExtractedMetadata } from "@/lib/file-metadata";
+import { AssetWizard, StagedAsset, AssetGroup } from "@/components/asset-wizard";
+import { ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
 import { entityToTurtle } from "@/lib/export";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -160,6 +161,7 @@ export default function Dashboard() {
   const [isValidating, setIsValidating] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
+  const [showAssetWizard, setShowAssetWizard] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
@@ -171,6 +173,110 @@ export default function Dashboard() {
     toast({
       title: "Asset Created",
       description: `Created Asset from "${metadata.fileName}" with detected structural type: ${metadata.structuralType || 'unknown'}`,
+    });
+  };
+
+  const handleWizardComplete = (stagedAssets: StagedAsset[], groups: AssetGroup[]) => {
+    let createdCount = 0;
+    
+    for (const staged of stagedAssets) {
+      const structuralProperties: any = {};
+      
+      if (staged.structuralType.startsWith('digital')) {
+        structuralProperties.fileDetails = {
+          fileName: staged.metadata.fileName,
+          fileExtension: staged.metadata.fileExtension,
+          fileSize: staged.metadata.fileSize
+        };
+        
+        if (staged.metadata.width && staged.metadata.height) {
+          structuralProperties.dimensions = {
+            width: `${staged.metadata.width}px`,
+            height: `${staged.metadata.height}px`
+          };
+        }
+        
+        if (staged.metadata.duration) {
+          structuralProperties.length = formatDuration(staged.metadata.duration);
+        }
+      }
+      
+      const asset: any = {
+        entityType: 'Asset',
+        name: staged.name,
+        schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
+        identifier: [{
+          identifierScope: 'me-nexus',
+          identifierValue: staged.id,
+          combinedForm: `me-nexus:${staged.id}`
+        }],
+        assetFC: {
+          functionalType: staged.functionalType
+        },
+        AssetSC: {
+          entityType: 'AssetSC',
+          schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
+          identifier: [{
+            identifierScope: 'me-nexus',
+            identifierValue: `${staged.id}-sc`,
+            combinedForm: `me-nexus:${staged.id}-sc`
+          }],
+          structuralType: staged.structuralType,
+          structuralProperties: Object.keys(structuralProperties).length > 0 ? structuralProperties : undefined
+        }
+      };
+      
+      if (staged.description) {
+        asset.description = staged.description;
+      }
+      
+      addEntityFromContent('Asset', staged.id, asset);
+      createdCount++;
+    }
+    
+    for (const group of groups) {
+      const groupAsset: any = {
+        entityType: 'Asset',
+        name: group.name,
+        schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
+        identifier: [{
+          identifierScope: 'me-nexus',
+          identifierValue: group.id,
+          combinedForm: `me-nexus:${group.id}`
+        }],
+        assetFC: {
+          functionalType: group.isOrdered ? 'shot' : 'creativeReferenceMaterial'
+        },
+        AssetSC: {
+          entityType: 'AssetSC',
+          schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
+          identifier: [{
+            identifierScope: 'me-nexus',
+            identifierValue: `${group.id}-sc`,
+            combinedForm: `me-nexus:${group.id}-sc`
+          }],
+          structuralType: 'assetGroup',
+          structuralProperties: {
+            isOrdered: group.isOrdered
+          },
+          Asset: group.assetIds.map(id => ({
+            identifier: [{
+              identifierScope: 'me-nexus',
+              identifierValue: id,
+              combinedForm: `me-nexus:${id}`
+            }]
+          }))
+        }
+      };
+      
+      addEntityFromContent('Asset', group.id, groupAsset);
+      createdCount++;
+    }
+    
+    setShowAssetWizard(false);
+    toast({
+      title: "Assets Created",
+      description: `Successfully created ${stagedAssets.length} asset${stagedAssets.length !== 1 ? 's' : ''}${groups.length > 0 ? ` and ${groups.length} group${groups.length !== 1 ? 's' : ''}` : ''}.`,
     });
   };
 
@@ -520,8 +626,8 @@ export default function Dashboard() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto">
-              <DropdownMenuItem onClick={() => { selectEntity(null); setShowFileDropZone(true); }} className="text-primary font-medium">
-                <Upload className="h-4 w-4 mr-2" /> Import Asset from File
+              <DropdownMenuItem onClick={() => { selectEntity(null); setShowAssetWizard(true); }} className="text-primary font-medium">
+                <Upload className="h-4 w-4 mr-2" /> Import Assets (Wizard)
               </DropdownMenuItem>
               <Separator className="my-1" />
               {(['CreativeWork', 'Task', 'Location', 'Participant', 'Asset', 'Infrastructure'] as const).map((type) => (
@@ -645,6 +751,13 @@ export default function Dashboard() {
               </div>
             </div>
           </>
+        ) : showAssetWizard ? (
+          <div className="flex-1 flex flex-col bg-muted/5">
+            <AssetWizard 
+              onComplete={handleWizardComplete}
+              onCancel={() => setShowAssetWizard(false)}
+            />
+          </div>
         ) : showFileDropZone ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-muted/5">
             <div className="w-full max-w-xl">

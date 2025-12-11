@@ -1,0 +1,69 @@
+Here is a prompt designed for Replit's Agent (or a similar coding assistant) to build this wizard. It is structured to provide the AI with the specific ontological rules and data structures found in the MovieLabs document you uploaded.
+
+-----
+
+### Prompt for Replit Agent
+
+I need you to build a **Multi-Step Import Wizard** for a "MovieLabs Ontology for Media Creation (OMC)" SaaS application. This wizard will allow users to upload files and map them to the OMC Asset Ontology.
+
+Please implement this using **React** (frontend) and **Node.js/Express** (backend). Use a clean, modern UI library like **Tailwind CSS** or **Material UI**.
+
+**Core Logic & Ontology Rules:**
+Refer to the *OMC Part 3: Assets* specification. The central concept is that an **Asset** is defined by two distinct properties:
+
+1.  **Structural Class:** What the asset *is* physically or digitally (e.g., an Image, a PDF, a Physical Prop).
+2.  **Functional Class:** How the asset *is used* in the production (e.g., a Script, a VFX Plate, a Concept Art).
+
+**Wizard Steps Requirements:**
+
+**Step 1: File Upload & Structural Derivation**
+
+  * **UI:** Create a drag-and-drop zone for uploading multiple files (images, PDFs, audio, video, etc.).
+  * **Logic:** Once files are selected, automatically derive the **Asset Structural Class** based on the file extension/MIME type.
+      * *Mapping Rules:*
+          * `Image` (jpg, png, exr) → **Digital Image**
+          * `Video` (mp4, mov, mkv) → **Digital Moving Image**
+          * `Audio` (wav, mp3, aiff) → **Digital Audio**
+          * `PDF` → **Digital Document** (specifically, offer a toggle for "Structured Document" if it seems like a script).
+          * `3D Files` (obj, fbx, usd) → **Digital Asset** (generic for now).
+  * **Display:** Show a table of uploaded files with a column for "Detected Structural Class" that the user can override via a dropdown.
+
+**Step 2: Functional Classification**
+
+  * **UI:** For each imported item from Step 1, provide a mandatory dropdown to select the **Asset Functional Class**.
+  * **Logic:** Filter available Functional Classes based on the Structural Class selected in Step 1 (as per the "Asset Functional Classes in Contexts" table in the ontology).
+      * *Example:* If Structural Class is "Digital Document", suggest "Script".
+      * *Example:* If Structural Class is "Digital Moving Image", suggest "Capture", "Shot", "Dailies".
+      * *Example:* If Structural Class is "Digital Image", suggest "Concept Art", "Texture", "Reference Material".
+  * **Metadata:** Allow the user to add a "Name" and "Description" for each asset here.
+
+**Step 3: Grouping (Optional)**
+
+  * **UI:** specific distinct section for **Asset Groups**.
+  * **Logic:** Allow the user to select multiple assets from the previous steps and combine them into a single **Asset Group** entity.
+      * *Use Case:* Selecting a video file and an XML sidecar file to create a single "Camera Capture" asset.
+      * *Use Case:* Selecting multiple images to create a "Storyboard" asset.
+  * **Attribute:** Add a checkbox for `isOrdered` (boolean) if the group requires a specific sequence (e.g., an Image Sequence).
+
+**Step 4: Review & Finalize**
+
+  * **UI:** A summary screen showing the Assets to be created.
+  * **JSON Output:** On submission, generate a JSON object structure that matches the OMC schema:
+    ```json
+    {
+      "Assets": [
+        {
+          "id": "uuid",
+          "Name": "...",
+          "StructuralCharacteristics": { "type": "..." },
+          "FunctionalCharacteristics": { "type": "..." },
+          "AssetGroup": { ... } // Optional
+        }
+      ]
+    }
+    ```
+
+**Technical Implementation Notes:**
+
+  * Store state between steps using a local Context provider or a multi-step form library.
+  * Mock the backend API call for the final submission—just log the final JSON payload to the console for now.
