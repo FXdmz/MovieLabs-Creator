@@ -260,7 +260,9 @@ export default function Dashboard() {
           }],
           structuralType: 'assetGroup',
           structuralProperties: {
-            isOrdered: group.isOrdered
+            assetGroup: {
+              isOrdered: group.isOrdered
+            }
           },
           Asset: group.assetIds.map(id => ({
             identifier: [{
