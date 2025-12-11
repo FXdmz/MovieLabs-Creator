@@ -197,11 +197,11 @@ export default function Dashboard() {
           identifierValue: staged.id,
           combinedForm: `me-nexus:${staged.id}`
         }],
-        AssetFunctionalCharacteristics: {
+        assetFC: {
           functionalType: staged.functionalType,
           ...(functionalProperties ? { functionalProperties } : {})
         },
-        AssetStructuralCharacteristics: {
+        AssetSC: {
           entityType: 'AssetSC',
           schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
           identifier: [{
@@ -247,10 +247,10 @@ export default function Dashboard() {
           identifierValue: group.id,
           combinedForm: `me-nexus:${group.id}`
         }],
-        AssetFunctionalCharacteristics: {
+        assetFC: {
           functionalType: group.isOrdered ? 'shot' : 'creativeReferenceMaterial'
         },
-        AssetStructuralCharacteristics: {
+        AssetSC: {
           entityType: 'AssetSC',
           schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',
           identifier: [{

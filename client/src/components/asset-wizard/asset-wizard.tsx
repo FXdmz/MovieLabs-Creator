@@ -60,7 +60,7 @@ export function AssetWizard({ onComplete, onCancel }: AssetWizardProps) {
       }
       
       if (metadata.duration) {
-        structuralProps.length = formatDuration(metadata.duration);
+        structuralProps.duration = formatDuration(metadata.duration);
       }
       
       if (metadata.sampleRate) {
