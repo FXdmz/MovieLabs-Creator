@@ -199,6 +199,14 @@ export function HelpDialog({ trigger, defaultTab = "overview" }: HelpDialogProps
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <a 
+                      href="https://movielabs.com/ontology-for-media-creation/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-[#232073] hover:underline flex items-center gap-1"
+                    >
+                      Ontology for Media Creation <ExternalLink className="h-3 w-3" />
+                    </a>
+                    <a 
                       href="https://mc.movielabs.com/docs/ontology/" 
                       target="_blank" 
                       rel="noopener noreferrer"
