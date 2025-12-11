@@ -290,6 +290,8 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   // functionalType appears in Asset.assetFC
   const isAssetFunctionalType = fieldKey === 'functionalType' && 
     (entityType === 'Asset' || path.includes('assetFC'));
+  // Make Asset SC/FC types read-only when they have values (set by wizard)
+  const isAssetTypeReadOnly = (isAssetStructuralType || isAssetFunctionalType) && value;
   // Check if this is a Participant structural class selector (entityType within ParticipantSC)
   const isParticipantStructuralClass = fieldKey === 'entityType' && 
     path.includes('ParticipantSC') && entityType === 'Participant';
@@ -307,14 +309,16 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
     <div className="space-y-1.5">
       <FieldLabel label={schema.title || fieldKey} required={isRequired} description={enhancedDescription} />
       
-      {isReadOnlyField ? (
+      {isReadOnlyField || isAssetTypeReadOnly ? (
         <div className="flex items-center gap-2">
           <Input 
             value={value || ''} 
             disabled
             className="bg-muted/50 text-muted-foreground cursor-not-allowed"
           />
-          <Badge variant="secondary" className="text-xs whitespace-nowrap">Read-only</Badge>
+          <Badge variant="secondary" className="text-xs whitespace-nowrap">
+            {isAssetTypeReadOnly ? 'From Wizard' : 'Read-only'}
+          </Badge>
         </div>
       ) : schema.enum ? (
         <Select value={value ?? ""} onValueChange={onChange}>
