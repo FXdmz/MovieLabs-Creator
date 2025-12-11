@@ -1,3 +1,6 @@
+import { PersonSearch } from "./person-search";
+import { WikidataPerson } from "@/lib/wikidata";
+
 const ParticipantIcon = ({ className, size = 48 }: { className?: string; size?: number }) => (
   <svg 
     viewBox="1620.35 1648.8 159.848 148.03" 
@@ -15,7 +18,24 @@ const ParticipantIcon = ({ className, size = 48 }: { className?: string; size?: 
   </svg>
 );
 
-export function ParticipantHeader() {
+interface ParticipantHeaderProps {
+  value?: any;
+  onChange?: (newValue: any) => void;
+}
+
+export function ParticipantHeader({ value, onChange }: ParticipantHeaderProps) {
+  const handlePersonSelect = (participantData: Record<string, any>, person: WikidataPerson) => {
+    if (!onChange || !value) return;
+
+    const updatedValue = {
+      ...value,
+      ...participantData,
+      identifier: value.identifier || participantData.identifier,
+    };
+
+    onChange(updatedValue);
+  };
+
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
       <div className="flex items-start gap-4">
@@ -27,13 +47,23 @@ export function ParticipantHeader() {
             <ParticipantIcon size={20} />
             Participant
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             <strong>Entities responsible for the production of a Creative Work.</strong> Participants 
             include People (individuals contracted or employed), Organizations (groups or legal entities 
             with a production purpose), and Services (computer-driven agents that perform tasks). 
             Select a structural type to define whether this is a Person, Organization, Department, or Service.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          
+          {onChange && (
+            <div className="mb-4">
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Quick Person Lookup
+              </label>
+              <PersonSearch onPersonSelect={handlePersonSelect} />
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2">
             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
             <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full">MovieLabs Ontology</span>
           </div>

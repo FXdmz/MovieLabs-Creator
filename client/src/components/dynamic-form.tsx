@@ -962,7 +962,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       case 'Task':
         return <TaskHeader />;
       case 'Participant':
-        return <ParticipantHeader />;
+        return <ParticipantHeader value={value} onChange={wrappedOnChange} />;
       case 'Context':
         return <ContextHeader />;
       default:
