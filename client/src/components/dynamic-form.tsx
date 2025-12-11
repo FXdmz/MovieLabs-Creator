@@ -23,7 +23,7 @@ import { getRelevantStructuralProperties } from "@/lib/structural-properties-map
 import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
 import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults, getParticipantFunctionalTypes } from "@/lib/participant-types";
 import { CONTEXT_STRUCTURAL_TYPES, getContextStructuralProperties, getContextStructuralDefaults } from "@/lib/context-types";
-import { CreativeWorkHeader } from "./creative-work-header";
+import { CreativeWorkHeader } from "./creativework-header";
 import { LocationHeader } from "./location-header";
 import { InfrastructureHeader } from "./infrastructure-header";
 import { TaskHeader } from "./task-header";
@@ -952,7 +952,7 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
   const renderEntityHeader = () => {
     switch (value.entityType) {
       case 'CreativeWork':
-        return <CreativeWorkHeader />;
+        return <CreativeWorkHeader value={value} onChange={wrappedOnChange} />;
       case 'Asset':
         return <AssetHeader />;
       case 'Location':

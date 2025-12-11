@@ -510,9 +510,9 @@ export default function Dashboard() {
                 <Upload className="h-4 w-4 mr-2" /> Import Asset from File
               </DropdownMenuItem>
               <Separator className="my-1" />
-              {(['Task', 'Location', 'Participant', 'Asset', 'Infrastructure'] as const).map((type) => (
+              {(['CreativeWork', 'Task', 'Location', 'Participant', 'Asset', 'Infrastructure'] as const).map((type) => (
                 <DropdownMenuItem key={type} onClick={() => addEntity(type)}>
-                  {getEntityIcon(type)} {type}
+                  {getEntityIcon(type)} {type === 'CreativeWork' ? 'Creative Work' : type}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
