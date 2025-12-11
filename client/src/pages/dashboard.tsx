@@ -29,7 +29,8 @@ import {
   Home,
   ChevronDown,
   Eye,
-  Loader2
+  Loader2,
+  Film
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -654,6 +655,9 @@ export default function Dashboard() {
               Select an entity from the sidebar or create a new one to start building your media creation ontology.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
+              <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                <Film className="h-4 w-4" /> Create Creative Work
+              </Button>
               <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <TaskIcon className="h-4 w-4" /> Create Task
               </Button>

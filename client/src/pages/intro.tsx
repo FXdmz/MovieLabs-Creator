@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, HelpCircle } from "lucide-react";
+import { ArrowRight, HelpCircle, Film } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -266,6 +266,12 @@ export default function Intro() {
               Start creating standardized metadata for your media production workflows.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/builder?create=CreativeWork">
+                <Button size="lg" variant="secondary" data-testid="button-create-creativework" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
+                  <Film className="h-5 w-5" />
+                  Create Creative Work
+                </Button>
+              </Link>
               <Link href="/builder?create=Task">
                 <Button size="lg" variant="secondary" data-testid="button-create-task" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <TaskIcon className="h-5 w-5" />
