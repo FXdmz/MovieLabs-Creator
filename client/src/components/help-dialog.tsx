@@ -41,6 +41,13 @@ const ContextIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const LocationIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+    <circle cx="12" cy="10" r="3"/>
+  </svg>
+);
+
 interface HelpDialogProps {
   trigger?: React.ReactNode;
   defaultTab?: string;
@@ -67,12 +74,13 @@ export function HelpDialog({ trigger, defaultTab = "overview" }: HelpDialogProps
         </DialogHeader>
 
         <Tabs defaultValue={defaultTab} className="flex-1 flex flex-col overflow-hidden">
-          <TabsList className="grid grid-cols-6 w-full">
+          <TabsList className="grid grid-cols-7 w-full">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="task" data-testid="tab-task">Task</TabsTrigger>
             <TabsTrigger value="participant" data-testid="tab-participant">Participant</TabsTrigger>
             <TabsTrigger value="asset" data-testid="tab-asset">Asset</TabsTrigger>
             <TabsTrigger value="infrastructure" data-testid="tab-infrastructure">Infrastructure</TabsTrigger>
+            <TabsTrigger value="location" data-testid="tab-location">Location</TabsTrigger>
             <TabsTrigger value="context" data-testid="tab-context">Context</TabsTrigger>
           </TabsList>
 
@@ -438,6 +446,72 @@ export function HelpDialog({ trigger, defaultTab = "overview" }: HelpDialogProps
                     <li>May host or store Assets</li>
                     <li>Operated by Participants</li>
                     <li>Located within Contexts</li>
+                  </ul>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="location" className="mt-0 pr-4">
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-[#232073]/10 rounded-lg">
+                    <LocationIcon className="h-10 w-10 text-[#232073]" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-[#232073] mb-2">Location</h3>
+                    <p className="text-sm text-muted-foreground">
+                      A physical or virtual place associated with production activities.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-[#232073] mb-2">Description</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Locations represent places where production activities occur or that are relevant to 
+                    the creative work. This includes filming locations, studio facilities, offices, and 
+                    any physical address associated with participants, infrastructure, or narrative elements.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                  <h5 className="font-medium text-blue-800 mb-1">Tip: Address Search</h5>
+                  <p className="text-sm text-blue-700">
+                    Use the address search bar at the top of the Location form to quickly find and 
+                    auto-fill address details. Simply type an address and select from the suggestions 
+                    to automatically populate the street, city, region, country, and coordinates fields.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-[#232073] mb-2">Key Fields</h4>
+                  <ul className="text-sm text-muted-foreground space-y-2">
+                    <li><strong>Name:</strong> A human-readable name for the location (e.g., "Main Studio", "NYC Office")</li>
+                    <li><strong>Description:</strong> Details about the location's purpose or characteristics</li>
+                    <li><strong>Address:</strong> Full postal address with street, city, region, and country</li>
+                    <li><strong>Coordinates:</strong> Geographic coordinates (latitude/longitude) for mapping</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-[#232073] mb-2">Address Components</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Street - Street address and number</li>
+                    <li>City - City or locality name</li>
+                    <li>Region - State, province, or administrative region</li>
+                    <li>Postal Code - ZIP or postal code</li>
+                    <li>Country - Country name</li>
+                    <li>Latitude/Longitude - Geographic coordinates</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-[#232073] mb-2">Use Cases</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Documenting filming locations for a production</li>
+                    <li>Recording participant office or contact addresses</li>
+                    <li>Tracking studio facilities and stages</li>
+                    <li>Mapping narrative story locations</li>
                   </ul>
                 </div>
               </div>
