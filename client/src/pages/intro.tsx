@@ -119,9 +119,10 @@ export default function Intro() {
                 </p>
                 <p>
                   All productions have <strong>Participants</strong> that conduct <strong>Tasks</strong>, 
-                  often involving media <strong>Assets</strong> within the realm of a workflow <strong>Context</strong>. 
-                  By defining these key building blocks and their relationships, we can design complex 
-                  workflows that both humans and machines can understand.
+                  often involving media <strong>Assets</strong> and <strong>Infrastructure</strong> within 
+                  the realm of a workflow <strong>Context</strong>. By defining these key building blocks 
+                  and their relationships, we can design complex workflows that both humans and machines 
+                  can understand.
                 </p>
               </div>
             </div>
