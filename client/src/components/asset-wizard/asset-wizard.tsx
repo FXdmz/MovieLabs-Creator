@@ -59,9 +59,8 @@ export function AssetWizard({ onComplete, onCancel }: AssetWizardProps) {
         };
       }
       
-      if (metadata.duration) {
-        structuralProps.duration = formatDuration(metadata.duration);
-      }
+      // Note: duration is not a valid top-level property in structuralProperties
+      // according to OMC schema - it's only valid in Composition/Sequence contexts
       
       if (metadata.sampleRate) {
         structuralProps.audioSampleRate = metadata.sampleRate;

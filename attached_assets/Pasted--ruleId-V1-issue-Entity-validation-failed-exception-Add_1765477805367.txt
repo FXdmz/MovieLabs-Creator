@@ -1,0 +1,14 @@
+[
+  {
+    "ruleId": "V1",
+    "issue": "Entity validation failed",
+    "exception": "Additional properties are not allowed ('duration' was unexpected)\n\nFailed validating 'additionalProperties' in schema['properties']['structuralProperties']:\n    {'additionalProperties': False,\n     'description': 'A set of properties that describe the asset in this '\n                    'form.',\n     'properties': {'assetGroup': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/assetGroup'},\n                    'audioBitRate': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/audioBitRate'},\n                    'audioSampleRate': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/audioSampleRate'},\n                    'audioSampleSize': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/audioSampleSize'},\n                    'axisAligned': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/axisAligned'},\n                    'boundingBox': {'$ref': '#/$defs/Utility/properties/boundingBox'},\n                    'cgVolumePurpose': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/cgVolumePurpose'},\n                    'codec': {'$ref': '#/$defs/Utility/properties/codec'},\n                    'coordinateOrientation': {'$ref': '#/$defs/Utility/properties/coordinateOrientation'},\n                    'dimensions': {'$ref': '#/$defs/Utility/properties/unitOfMeasurement/properties/dimensions'},\n                    'fileDetails': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/fileDetails'},\n                    'geometryType': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/geometryType'},\n                    'levelOfDetail': {'$ref': '#/$defs/Utility/properties/levelOfDetail'},\n                    'linkset': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/linkset'},\n                    'numberPoints': {'$ref': '#/$defs/Asset/properties/AssetSC/$defs/numberPoints'},\n                    'purpose': {'$ref': '#/$defs/Utility/properties/purpose'},\n                    'scale': {'$ref': '#/$defs/Utility/properties/scale'}},\n     'title': 'Structural Properties',\n     'type': ['object', 'null']}\n\nOn instance['structuralProperties']:\n    {'dimensions': {'height': '1080px', 'width': '1920px'},\n     'duration': 'PT56S',\n     'fileDetails': {'fileExtension': 'mp4', 'fileName': 'C0001.MP4'}}",
+    "context": {
+      "type": "entity",
+      "jsonPointers": [
+        "/AssetSC"
+      ]
+    },
+    "specifics": null
+  }
+]
