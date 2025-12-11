@@ -33,6 +33,7 @@ import {
 
 import { FileDropZone } from "@/components/file-drop-zone";
 import { ExtractedMetadata } from "@/lib/file-metadata";
+import { entityToTurtle } from "@/lib/export";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -223,16 +224,44 @@ export default function Dashboard() {
       console.log("Validating against schema for:", selectedEntity.type);
 
       const validate = ajv.compile(schemaToValidate);
-      const valid = validate(selectedEntity.content);
+      const jsonValid = validate(selectedEntity.content);
 
-      if (valid) {
+      // Validate RDF generation
+      let rdfValid = false;
+      let rdfError = "";
+      try {
+        const ttlOutput = entityToTurtle(selectedEntity);
+        // Basic RDF validation: check that output contains expected prefixes and triples
+        rdfValid = ttlOutput.includes("@prefix omc:") && 
+                   ttlOutput.includes("rdf:type") &&
+                   ttlOutput.length > 100;
+        if (!rdfValid) {
+          rdfError = "RDF output appears incomplete or malformed";
+        }
+      } catch (e: any) {
+        rdfError = e.message || "RDF generation failed";
+      }
+
+      if (jsonValid && rdfValid) {
         toast({
           title: "Validation Successful",
-          description: "This entity conforms to the OMC v2.8 Schema.",
+          description: "JSON: Valid (OMC v2.8 Schema) | RDF: Valid (Turtle format)",
           variant: "default",
           className: "bg-green-600 text-white border-none"
         });
         setValidationErrors(null);
+      } else if (jsonValid && !rdfValid) {
+        toast({
+          title: "Partial Validation",
+          description: `JSON: Valid | RDF: ${rdfError || "Invalid"}`,
+          variant: "default",
+          className: "bg-yellow-600 text-white border-none"
+        });
+        setValidationErrors(null);
+      } else if (!jsonValid && rdfValid) {
+        console.error("JSON validation errors:", validate.errors);
+        setValidationErrors(validate.errors || []);
+        setShowValidationDialog(true);
       } else {
         console.error("Validation errors:", validate.errors);
         setValidationErrors(validate.errors || []);
