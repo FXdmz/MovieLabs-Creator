@@ -502,6 +502,9 @@ export default function Dashboard() {
               <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
               </Button>
+              <Button onClick={() => addEntity("Location")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                <LocationIcon className="h-4 w-4" /> Create Location
+              </Button>
             </div>
           </div>
         )}
