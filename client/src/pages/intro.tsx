@@ -123,7 +123,7 @@ export default function Intro() {
                 data-testid="img-movielabs-logo"
               />
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                MovieLabs Ontology for Media Creation Builder
+                MovieLabs OMC Builder
               </h1>
             </div>
           </div>
