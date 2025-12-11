@@ -66,7 +66,9 @@ export default function Intro() {
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Logo className="h-8 w-auto" variant="light" />
+            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
+              <Logo className="h-8 w-auto" variant="light" />
+            </a>
           </div>
           <div className="flex items-center gap-2">
             <HelpDialog 
@@ -283,21 +285,34 @@ export default function Intro() {
         </section>
       </main>
 
-      <footer className="bg-gray-50 border-t py-8">
-        <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p className="mb-2">
-            The Ontology for Media Creation is developed by{" "}
-            <a href="https://movielabs.com" target="_blank" rel="noopener noreferrer" className="text-[#232073] hover:underline">
-              MovieLabs
-            </a>{" "}
-            and is licensed under the Creative Commons Attribution 4.0 International License.
-          </p>
-          <p>
-            Learn more at the{" "}
-            <a href="https://mc.movielabs.com/" target="_blank" rel="noopener noreferrer" className="text-[#232073] hover:underline">
-              MovieLabs Documentation Site
+      <footer className="bg-[#232073] text-white py-10">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
+              <Logo className="h-10 w-auto" />
             </a>
-          </p>
+            <p className="text-white/80 text-sm max-w-md text-center md:text-right">
+              We live at the intersection of art and data helping content creators entertain, influence and educate the world.
+            </p>
+          </div>
+          <div className="border-t border-white/20 pt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/60">
+              <p>
+                The Ontology for Media Creation is developed by{" "}
+                <a href="https://movielabs.com" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">
+                  MovieLabs
+                </a>{" "}
+                and is licensed under the Creative Commons Attribution 4.0 International License.
+              </p>
+              <div className="flex items-center gap-4">
+                <a href="https://www.me-dmz.com/privacy-policy-and-terms-of-use" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white hover:underline">
+                  Privacy Policy
+                </a>
+                <span className="text-white/40">|</span>
+                <span>All rights reserved © 2025 by ME-DMZ</span>
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
