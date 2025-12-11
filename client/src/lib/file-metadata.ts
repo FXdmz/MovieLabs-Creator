@@ -1,9 +1,9 @@
 import { ASSET_STRUCTURAL_TYPES } from "./asset-types";
 
 export interface ProvenanceInfo {
-  createdDate: string | null;
-  modifiedDate: string | null;
-  creator: string | null;
+  CreatedOn: string | null;
+  ModifiedOn: string | null;
+  creatorName: string | null;
   source: string | null;
   software: string | null;
 }
@@ -209,9 +209,9 @@ export async function extractFileMetadata(file: File): Promise<ExtractedMetadata
     pageCount: null,
     isLikelyScript: false,
     provenance: {
-      createdDate: null,
-      modifiedDate: file.lastModified ? new Date(file.lastModified).toISOString() : null,
-      creator: null,
+      CreatedOn: null,
+      ModifiedOn: file.lastModified ? new Date(file.lastModified).toISOString() : null,
+      creatorName: null,
       source: null,
       software: null
     }

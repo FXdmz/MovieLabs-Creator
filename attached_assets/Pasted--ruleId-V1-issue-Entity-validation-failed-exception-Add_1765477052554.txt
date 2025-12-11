@@ -1,0 +1,26 @@
+[
+  {
+    "ruleId": "V1",
+    "issue": "Entity validation failed",
+    "exception": "Additional properties are not allowed ('fileSize' was unexpected)\n\nFailed validating 'additionalProperties' in schema['properties']['structuralProperties']['properties']['fileDetails']:\n    {'additionalProperties': False,\n     'description': 'Where opaque identifiers are used it can be useful to '\n                    'express naming for use in traditional file systems',\n     'properties': {'fileExtension': {'type': ['string', 'null']},\n                    'fileName': {'type': ['string', 'null']},\n                    'filePath': {'type': ['string', 'null']},\n                    'mediaType': {'type': ['string', 'null']}},\n     'title': 'File Details',\n     'type': ['object', 'null']}\n\nOn instance['structuralProperties']['fileDetails']:\n    {'fileExtension': 'jpeg',\n     'fileName': 'FullSizeRender 1 (1).jpeg',\n     'fileSize': 1712023}",
+    "context": {
+      "type": "entity",
+      "jsonPointers": [
+        "/AssetSC"
+      ]
+    },
+    "specifics": null
+  },
+  {
+    "ruleId": "V1",
+    "issue": "Entity validation failed",
+    "exception": "Additional properties are not allowed ('modifiedDate' was unexpected)\n\nFailed validating 'additionalProperties' in schema['properties']['provenance']:\n    {'additionalProperties': False,\n     'description': 'A record of when something was changed and by whom.',\n     'properties': {'CreatedBy': {'oneOf': [{'$ref': '#/$defs/core/properties/reference'},\n                                            {'$ref': '#/$defs/Participant/properties/Participant'}]},\n                    'Origin': {'oneOf': [{'$ref': '#/$defs/core/properties/reference'},\n                                         {'$ref': '#/$defs/Asset/properties/Asset'}]},\n                    'Role': {'oneOf': [{'$ref': '#/$defs/core/properties/reference'},\n                                       {'$ref': '#/$defs/Participant/properties/Role'}]},\n                    'annotation': {'$ref': '#/$defs/Utility/properties/annotation'},\n                    'createdOn': {'$ref': '#/$defs/Utility/properties/time/properties/dateTime'},\n                    'reason': {'type': ['string', 'null']}},\n     'title': 'Provenance',\n     'type': ['object', 'null']}\n\nOn instance['provenance']:\n    {'modifiedDate': '2020-02-01T15:04:38.000Z'}",
+    "context": {
+      "type": "entity",
+      "jsonPointers": [
+        ""
+      ]
+    },
+    "specifics": null
+  }
+]

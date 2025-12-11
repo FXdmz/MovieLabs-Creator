@@ -49,7 +49,7 @@ export function AssetWizard({ onComplete, onCancel }: AssetWizardProps) {
         fileDetails: {
           fileName: metadata.fileName,
           fileExtension: metadata.fileExtension,
-          fileSize: metadata.fileSize
+          fileSizeBytes: metadata.fileSize
         }
       };
       

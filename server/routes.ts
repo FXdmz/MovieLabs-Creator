@@ -135,9 +135,9 @@ export async function registerRoutes(
         fileSize: file.size,
         mimeType: file.mimetype,
         provenance: {
-          createdDate: null,
-          modifiedDate: null,
-          creator: null,
+          CreatedOn: null,
+          ModifiedOn: null,
+          creatorName: null,
           source: null,
           software: null
         }
@@ -166,13 +166,13 @@ export async function registerRoutes(
             
             // Extract provenance from audio metadata
             if (metadata.common.artist) {
-              result.provenance.creator = metadata.common.artist;
+              result.provenance.creatorName = metadata.common.artist;
             }
             if (metadata.common.encodersettings) {
               result.provenance.software = metadata.common.encodersettings;
             }
             if (metadata.common.date) {
-              result.provenance.createdDate = metadata.common.date;
+              result.provenance.CreatedOn = metadata.common.date;
             }
           }
         } catch (mmError) {
@@ -191,16 +191,16 @@ export async function registerRoutes(
           // Extract provenance from PDF metadata
           if (pdfData.info) {
             if (pdfData.info.Author) {
-              result.provenance.creator = pdfData.info.Author;
+              result.provenance.creatorName = pdfData.info.Author;
             }
             if (pdfData.info.Creator) {
               result.provenance.software = pdfData.info.Creator;
             }
             if (pdfData.info.CreationDate) {
-              result.provenance.createdDate = pdfData.info.CreationDate;
+              result.provenance.CreatedOn = pdfData.info.CreationDate;
             }
             if (pdfData.info.ModDate) {
-              result.provenance.modifiedDate = pdfData.info.ModDate;
+              result.provenance.ModifiedOn = pdfData.info.ModDate;
             }
           }
           

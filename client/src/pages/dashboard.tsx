@@ -219,11 +219,19 @@ export default function Dashboard() {
       }
       
       if (staged.provenance) {
-        const hasProvenance = Object.values(staged.provenance).some(v => v);
-        if (hasProvenance) {
-          asset.provenance = Object.fromEntries(
-            Object.entries(staged.provenance).filter(([_, v]) => v !== null && v !== undefined && v !== '')
-          );
+        // Only include valid OMC provenance properties (CreatedOn, ModifiedOn)
+        const validProvenanceKeys = ['CreatedOn', 'ModifiedOn'];
+        const omcProvenance: Record<string, any> = {};
+        
+        for (const key of validProvenanceKeys) {
+          const value = (staged.provenance as any)[key];
+          if (value !== null && value !== undefined && value !== '') {
+            omcProvenance[key] = value;
+          }
+        }
+        
+        if (Object.keys(omcProvenance).length > 0) {
+          asset.provenance = omcProvenance;
         }
       }
       

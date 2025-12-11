@@ -23,8 +23,8 @@ export const STRUCTURAL_PROPERTY_DEFINITIONS: Record<string, PropertyDefinition>
     type: "text",
     group: "File Details"
   },
-  "fileDetails.fileSize": {
-    key: "fileDetails.fileSize",
+  "fileDetails.fileSizeBytes": {
+    key: "fileDetails.fileSizeBytes",
     label: "File Size",
     description: "Size of the file in bytes",
     type: "number",
@@ -271,38 +271,24 @@ export const FUNCTIONAL_PROPERTY_DEFINITIONS: Record<string, PropertyDefinition>
 };
 
 export const PROVENANCE_PROPERTY_DEFINITIONS: Record<string, PropertyDefinition> = {
-  "createdDate": {
-    key: "createdDate",
-    label: "Created Date",
-    description: "When the asset was originally created",
+  "CreatedOn": {
+    key: "CreatedOn",
+    label: "Created On",
+    description: "When the asset was originally created (ISO 8601 datetime)",
     type: "date",
     group: "Provenance"
   },
-  "modifiedDate": {
-    key: "modifiedDate",
-    label: "Modified Date",
-    description: "When the asset was last modified",
+  "ModifiedOn": {
+    key: "ModifiedOn",
+    label: "Modified On",
+    description: "When the asset was last modified (ISO 8601 datetime)",
     type: "date",
     group: "Provenance"
   },
-  "creator": {
-    key: "creator",
-    label: "Creator",
-    description: "Person or entity that created the asset",
-    type: "text",
-    group: "Provenance"
-  },
-  "source": {
-    key: "source",
-    label: "Source",
-    description: "Original source of the asset",
-    type: "text",
-    group: "Provenance"
-  },
-  "software": {
-    key: "software",
-    label: "Software",
-    description: "Software used to create the asset",
+  "creatorName": {
+    key: "creatorName",
+    label: "Creator Name",
+    description: "Name of the person or entity that created the asset (informational only)",
     type: "text",
     group: "Provenance"
   }
@@ -316,7 +302,7 @@ export function getStructuralPropertiesForType(structuralType: string): Property
     if (key === 'fileDetails') {
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileName']);
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileExtension']);
-      definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileSize']);
+      definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['fileDetails.fileSizeBytes']);
     } else if (key === 'dimensions') {
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['dimensions.width']);
       definitions.push(STRUCTURAL_PROPERTY_DEFINITIONS['dimensions.height']);
