@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, User, Loader2, AlertCircle, ExternalLink } from "lucide-react";
-import { searchPeople, WikidataPerson, mapWikidataToParticipant } from "@/lib/wikidata";
+import { searchPeople, WikidataPerson } from "@/lib/wikidata";
 
 interface PersonSearchProps {
-  onPersonSelect: (participantData: Record<string, any>, person: WikidataPerson) => void;
+  onPersonSelect: (person: WikidataPerson) => void;
 }
 
 export function PersonSearch({ onPersonSelect }: PersonSearchProps) {
@@ -64,8 +64,7 @@ export function PersonSearch({ onPersonSelect }: PersonSearchProps) {
   };
 
   const handleSelect = (person: WikidataPerson) => {
-    const participantData = mapWikidataToParticipant(person);
-    onPersonSelect(participantData, person);
+    onPersonSelect(person);
     setQuery(person.name);
     setShowDropdown(false);
     setSuggestions([]);

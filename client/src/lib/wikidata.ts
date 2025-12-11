@@ -151,26 +151,33 @@ export async function searchPeople(query: string): Promise<WikidataPerson[]> {
   }
 }
 
-export function mapWikidataToParticipant(person: WikidataPerson): Record<string, any> {
-  // Parse name into first/last if possible
+export interface WikidataParticipantData {
+  personName: {
+    fullName: string;
+    firstGivenName: string;
+    familyName: string;
+  };
+  dateOfBirth?: string;
+  customData: {
+    wikidataId: string;
+    wikidataUrl: string;
+    wikidataDescription?: string;
+    imageUrl?: string;
+  };
+}
+
+export function extractWikidataPersonData(person: WikidataPerson): WikidataParticipantData {
   const nameParts = person.name.split(" ");
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
 
   return {
-    entityType: "Participant",
-    schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
-    ParticipantSC: {
-      entityType: "Person",
-      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
-      structuralType: "Person",
-      personName: {
-        fullName: person.name,
-        firstGivenName: firstName,
-        familyName: lastName
-      },
-      ...(person.birthDate && { dateOfBirth: person.birthDate })
+    personName: {
+      fullName: person.name,
+      firstGivenName: firstName,
+      familyName: lastName
     },
+    ...(person.birthDate && { dateOfBirth: person.birthDate }),
     customData: {
       wikidataId: person.id,
       wikidataUrl: person.wikidataUrl,

@@ -1,5 +1,7 @@
 import { PersonSearch } from "./person-search";
-import { WikidataPerson } from "@/lib/wikidata";
+import { WikidataPerson, extractWikidataPersonData } from "@/lib/wikidata";
+import { getParticipantStructuralDefaults } from "@/lib/participant-types";
+import { v4 as uuidv4 } from "uuid";
 
 const ParticipantIcon = ({ className, size = 48 }: { className?: string; size?: number }) => (
   <svg 
@@ -24,13 +26,35 @@ interface ParticipantHeaderProps {
 }
 
 export function ParticipantHeader({ value, onChange }: ParticipantHeaderProps) {
-  const handlePersonSelect = (participantData: Record<string, any>, person: WikidataPerson) => {
+  const handlePersonSelect = (person: WikidataPerson) => {
     if (!onChange || !value) return;
+
+    const wikidataData = extractWikidataPersonData(person);
+    const structuralDefaults = getParticipantStructuralDefaults("Person");
+    
+    const newScId = uuidv4();
+    
+    const updatedParticipantSC = {
+      ...structuralDefaults,
+      entityType: "Person",
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      structuralType: "Person",
+      identifier: [{
+        identifierScope: "me-nexus",
+        identifierValue: newScId,
+        combinedForm: `me-nexus:${newScId}`
+      }],
+      personName: wikidataData.personName,
+      ...(wikidataData.dateOfBirth && { dateOfBirth: wikidataData.dateOfBirth })
+    };
 
     const updatedValue = {
       ...value,
-      ...participantData,
-      identifier: value.identifier || participantData.identifier,
+      ParticipantSC: updatedParticipantSC,
+      customData: {
+        ...(value.customData || {}),
+        ...wikidataData.customData
+      }
     };
 
     onChange(updatedValue);
