@@ -29,8 +29,7 @@ import {
   Home,
   ChevronDown,
   Eye,
-  Loader2,
-  Film
+  Loader2
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -113,6 +112,18 @@ const AssetIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const CreativeWorkIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 46.35 45.5" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      fill="currentColor" 
+      stroke="currentColor"
+      strokeWidth="0.5"
+      d="M36,22.17a33.27,33.27,0,0,1-9.67-3.41,12.62,12.62,0,0,0,.07-4.63Q24.49,3.3,24.49,3.29A33,33,0,0,1,14,7.17a32.91,32.91,0,0,1-11.18,0S3.46,10.73,4.73,18c1.62,9.19,13.61,13.84,13.61,13.84a30.66,30.66,0,0,0,6.2-8c-.26,1.48-.57,3.25-.94,5.33C22,38.32,31.66,46.79,31.66,46.79s12-4.65,13.61-13.84q1.9-10.83,1.91-10.83A32.91,32.91,0,0,1,36,22.17Z" 
+      transform="translate(-1.82 -2.3)"
+    />
+  </svg>
+);
+
 const getEntityIcon = (entityType: string) => {
   if (entityType === 'Location' || entityType === 'ProductionLocation' || entityType === 'NarrativeLocation') {
     return <LocationIcon className="h-3.5 w-3.5" />;
@@ -131,6 +142,9 @@ const getEntityIcon = (entityType: string) => {
   }
   if (entityType === 'Asset') {
     return <AssetIcon className="h-3.5 w-3.5" />;
+  }
+  if (entityType === 'CreativeWork') {
+    return <CreativeWorkIcon className="h-3.5 w-3.5" />;
   }
   return <Database className="h-3.5 w-3.5" />;
 };
@@ -656,7 +670,7 @@ export default function Dashboard() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <Film className="h-4 w-4" /> Create Creative Work
+                <CreativeWorkIcon className="h-4 w-4" /> Create Creative Work
               </Button>
               <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <TaskIcon className="h-4 w-4" /> Create Task

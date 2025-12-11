@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, HelpCircle, Film } from "lucide-react";
+import { ArrowRight, HelpCircle } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -57,6 +57,18 @@ const InfrastructureIcon = ({ className }: { className?: string }) => (
       strokeWidth="4" 
       fill="currentColor"
       stroke="currentColor"
+    />
+  </svg>
+);
+
+const CreativeWorkIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 46.35 45.5" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      fill="currentColor" 
+      stroke="currentColor"
+      strokeWidth="0.5"
+      d="M36,22.17a33.27,33.27,0,0,1-9.67-3.41,12.62,12.62,0,0,0,.07-4.63Q24.49,3.3,24.49,3.29A33,33,0,0,1,14,7.17a32.91,32.91,0,0,1-11.18,0S3.46,10.73,4.73,18c1.62,9.19,13.61,13.84,13.61,13.84a30.66,30.66,0,0,0,6.2-8c-.26,1.48-.57,3.25-.94,5.33C22,38.32,31.66,46.79,31.66,46.79s12-4.65,13.61-13.84q1.9-10.83,1.91-10.83A32.91,32.91,0,0,1,36,22.17Z" 
+      transform="translate(-1.82 -2.3)"
     />
   </svg>
 );
@@ -268,7 +280,7 @@ export default function Intro() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/builder?create=CreativeWork">
                 <Button size="lg" variant="secondary" data-testid="button-create-creativework" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <Film className="h-5 w-5" />
+                  <CreativeWorkIcon className="h-5 w-5" />
                   Create Creative Work
                 </Button>
               </Link>
