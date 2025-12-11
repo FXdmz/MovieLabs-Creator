@@ -615,17 +615,19 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       const filteredProperties: any = JSON.parse(JSON.stringify(rootSchema.properties));
       
       // Filter AssetSC.structuralProperties only if we have a specific structural type with properties
-      if (structuralType && relevantStructProps.length > 0 && filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
+      if (filteredProperties.AssetSC?.properties?.structuralProperties?.properties) {
         const structPropsSchema = filteredProperties.AssetSC.properties.structuralProperties;
+        const existingDataKeys = Object.keys(value.AssetSC?.structuralProperties || {});
         const filteredStructProps: any = {};
         
+        // Include properties that are relevant for the structural type
         Object.entries(structPropsSchema.properties || {}).forEach(([key, propSchema]) => {
-          if (relevantStructProps.includes(key)) {
+          if (relevantStructProps.includes(key) || existingDataKeys.includes(key)) {
             filteredStructProps[key] = propSchema;
           }
         });
         
-        // Only apply filter if we have relevant properties
+        // Only apply filter if we have relevant properties or existing data
         if (Object.keys(filteredStructProps).length > 0) {
           filteredProperties.AssetSC.properties.structuralProperties.properties = filteredStructProps;
         }
