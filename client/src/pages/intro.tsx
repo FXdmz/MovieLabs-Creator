@@ -92,28 +92,26 @@ export default function Intro() {
       </header>
 
       <main>
-        <section className="container mx-auto px-6 py-16 md:py-24">
-          <div className="max-w-4xl mx-auto text-center">
-            <img 
-              src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
-              alt="MovieLabs 2030 Vision" 
-              className="h-48 md:h-64 mx-auto mb-8"
-              data-testid="img-movielabs-logo"
-            />
-            <h1 className="text-4xl md:text-5xl font-bold text-[#232073] dark:text-primary mb-6">
-              MovieLabs Ontology for Media Creation Builder
-            </h1>
+        <section className="relative">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/iStock-1278449967_1765459968008.jpg')" }}
+          />
+          <div className="absolute inset-0 bg-[#0d1129]/70" />
+          <div className="relative container mx-auto px-6 py-16 md:py-24">
+            <div className="max-w-4xl mx-auto text-center">
+              <img 
+                src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
+                alt="MovieLabs 2030 Vision" 
+                className="h-48 md:h-64 mx-auto mb-8"
+                data-testid="img-movielabs-logo"
+              />
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                MovieLabs Ontology for Media Creation Builder
+              </h1>
+            </div>
           </div>
         </section>
-
-        <div className="relative h-48 md:h-64 overflow-hidden">
-          <img 
-            src="/iStock-1278449967_1765459968008.jpg" 
-            alt="Abstract data visualization" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#232073]/40 to-transparent" />
-        </div>
 
         <section className="bg-white dark:bg-card py-16">
           <div className="container mx-auto px-6">
