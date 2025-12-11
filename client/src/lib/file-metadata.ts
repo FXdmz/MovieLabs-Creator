@@ -1,5 +1,13 @@
 import { ASSET_STRUCTURAL_TYPES } from "./asset-types";
 
+export interface ProvenanceInfo {
+  createdDate: string | null;
+  modifiedDate: string | null;
+  creator: string | null;
+  source: string | null;
+  software: string | null;
+}
+
 export interface ExtractedMetadata {
   fileName: string;
   fileSize: number;
@@ -17,6 +25,7 @@ export interface ExtractedMetadata {
   container: string | null;
   pageCount: number | null;
   isLikelyScript: boolean;
+  provenance: ProvenanceInfo;
 }
 
 export function getStructuralTypeFromMime(mimeType: string): string | null {
@@ -155,7 +164,7 @@ export async function extractServerMetadata(file: File): Promise<Partial<Extract
     }
     
     const data = await response.json();
-    return {
+    const result: Partial<ExtractedMetadata> = {
       duration: data.duration ?? null,
       sampleRate: data.sampleRate ?? null,
       bitRate: data.bitRate ?? null,
@@ -166,6 +175,12 @@ export async function extractServerMetadata(file: File): Promise<Partial<Extract
       pageCount: data.pageCount ?? null,
       isLikelyScript: data.isLikelyScript ?? false
     };
+    
+    if (data.provenance) {
+      result.provenance = data.provenance;
+    }
+    
+    return result;
   } catch (error) {
     console.warn('Server metadata extraction error:', error);
     return {};
@@ -192,7 +207,14 @@ export async function extractFileMetadata(file: File): Promise<ExtractedMetadata
     codec: null,
     container: null,
     pageCount: null,
-    isLikelyScript: false
+    isLikelyScript: false,
+    provenance: {
+      createdDate: null,
+      modifiedDate: file.lastModified ? new Date(file.lastModified).toISOString() : null,
+      creator: null,
+      source: null,
+      software: null
+    }
   };
   
   // Client-side extraction for images

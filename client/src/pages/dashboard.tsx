@@ -180,49 +180,13 @@ export default function Dashboard() {
     let createdCount = 0;
     
     for (const staged of stagedAssets) {
-      const structuralProperties: any = {};
+      const structuralProperties = staged.structuralProps && Object.keys(staged.structuralProps).length > 0 
+        ? staged.structuralProps 
+        : undefined;
       
-      if (staged.structuralType.startsWith('digital')) {
-        structuralProperties.fileDetails = {
-          fileName: staged.metadata.fileName,
-          fileExtension: staged.metadata.fileExtension,
-          fileSize: staged.metadata.fileSize
-        };
-        
-        if (staged.metadata.width && staged.metadata.height) {
-          structuralProperties.dimensions = {
-            width: `${staged.metadata.width}px`,
-            height: `${staged.metadata.height}px`
-          };
-        }
-        
-        if (staged.metadata.duration) {
-          structuralProperties.length = formatDuration(staged.metadata.duration);
-        }
-        
-        // Audio-specific properties
-        if (staged.structuralType.includes('audio') || staged.structuralType === 'digital.audioVisual') {
-          if (staged.metadata.sampleRate) {
-            structuralProperties.audioSampleRate = staged.metadata.sampleRate;
-          }
-          if (staged.metadata.channels) {
-            structuralProperties.audioChannelCount = staged.metadata.channels;
-          }
-          if (staged.metadata.bitsPerSample) {
-            structuralProperties.audioBitDepth = staged.metadata.bitsPerSample;
-          }
-          if (staged.metadata.codec) {
-            structuralProperties.codec = staged.metadata.codec;
-          }
-        }
-        
-        // Document-specific properties
-        if (staged.structuralType.includes('document')) {
-          if (staged.metadata.pageCount) {
-            structuralProperties.pageCount = staged.metadata.pageCount;
-          }
-        }
-      }
+      const functionalProperties = staged.functionalProps && Object.keys(staged.functionalProps).filter(k => staged.functionalProps[k]).length > 0
+        ? Object.fromEntries(Object.entries(staged.functionalProps).filter(([_, v]) => v !== null && v !== undefined && v !== ''))
+        : undefined;
       
       const asset: any = {
         entityType: 'Asset',
@@ -234,7 +198,8 @@ export default function Dashboard() {
           combinedForm: `me-nexus:${staged.id}`
         }],
         assetFC: {
-          functionalType: staged.functionalType
+          functionalType: staged.functionalType,
+          ...(functionalProperties ? { functionalProperties } : {})
         },
         AssetSC: {
           entityType: 'AssetSC',
@@ -245,12 +210,21 @@ export default function Dashboard() {
             combinedForm: `me-nexus:${staged.id}-sc`
           }],
           structuralType: staged.structuralType,
-          structuralProperties: Object.keys(structuralProperties).length > 0 ? structuralProperties : undefined
+          structuralProperties
         }
       };
       
       if (staged.description) {
         asset.description = staged.description;
+      }
+      
+      if (staged.provenance) {
+        const hasProvenance = Object.values(staged.provenance).some(v => v);
+        if (hasProvenance) {
+          asset.provenance = Object.fromEntries(
+            Object.entries(staged.provenance).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          );
+        }
       }
       
       addEntityFromContent('Asset', staged.id, asset);

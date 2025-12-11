@@ -1,12 +1,14 @@
-import { FileVideo, FileAudio, FileImage, FileText, File, Layers, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { CheckCircle, Layers, FileVideo, FileAudio, FileImage, FileText, File, ChevronDown, ChevronUp, Settings, Clock, User } from "lucide-react";
 import { StagedAsset, AssetGroup } from "./types";
 import { formatFileSize } from "@/lib/file-metadata";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
+import { useState } from "react";
 
 interface Step4ReviewProps {
   stagedAssets: StagedAsset[];
@@ -14,6 +16,20 @@ interface Step4ReviewProps {
 }
 
 export function Step4Review({ stagedAssets, groups }: Step4ReviewProps) {
+  const [expandedAssets, setExpandedAssets] = useState<Set<string>>(new Set());
+
+  const toggleAsset = (id: string) => {
+    setExpandedAssets(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const getFileIcon = (mimeType: string, className: string = "h-5 w-5") => {
     if (mimeType.startsWith('video/')) return <FileVideo className={`${className} text-blue-500`} />;
     if (mimeType.startsWith('audio/')) return <FileAudio className={`${className} text-purple-500`} />;
@@ -25,12 +41,24 @@ export function Step4Review({ stagedAssets, groups }: Step4ReviewProps) {
   };
 
   const getStructuralLabel = (value: string) => {
-    return ASSET_STRUCTURAL_TYPES.find(t => t.value === value)?.label || value;
+    const type = ASSET_STRUCTURAL_TYPES.find(t => t.value === value);
+    return type?.label || value;
   };
 
-  const getFunctionalLabel = (value: string | null) => {
-    if (!value) return "Not set";
-    return ASSET_FUNCTIONAL_TYPES.find(t => t.value === value)?.label || value;
+  const getFunctionalLabel = (value: string) => {
+    const type = ASSET_FUNCTIONAL_TYPES.find(t => t.value === value);
+    return type?.label || value;
+  };
+
+  const formatPropertyValue = (value: any): string => {
+    if (value === null || value === undefined) return '-';
+    if (typeof value === 'object') {
+      return Object.entries(value)
+        .filter(([_, v]) => v !== null && v !== undefined)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(', ');
+    }
+    return String(value);
   };
 
   const groupedAssetIds = new Set(groups.flatMap(g => g.assetIds));
@@ -43,7 +71,7 @@ export function Step4Review({ stagedAssets, groups }: Step4ReviewProps) {
           Review Your Assets
         </h3>
         <p className="text-sm text-muted-foreground">
-          Review the assets below. Click "Create Assets" to add them to your ontology.
+          Review all properties below. Click on an asset to see details. Click "Create Assets" to add them to your ontology.
         </p>
       </div>
 
@@ -114,66 +142,121 @@ export function Step4Review({ stagedAssets, groups }: Step4ReviewProps) {
 
       <div>
         <h4 className="font-medium mb-3">All Assets ({stagedAssets.length})</h4>
-        <Card>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[300px]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12"></TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Structural Type</TableHead>
-                    <TableHead>Functional Type</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {stagedAssets.map((asset) => (
-                    <TableRow key={asset.id}>
-                      <TableCell>
-                        {getFileIcon(asset.metadata.mimeType)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{asset.name}</div>
+        <ScrollArea className="h-[400px]">
+          <div className="space-y-3 pr-4">
+            {stagedAssets.map((asset) => {
+              const isExpanded = expandedAssets.has(asset.id);
+              const structuralPropsCount = Object.keys(asset.structuralProps || {}).length;
+              const functionalPropsCount = Object.keys(asset.functionalProps || {}).length;
+              const hasProvenance = asset.provenance && Object.values(asset.provenance).some(v => v);
+
+              return (
+                <Card key={asset.id} className="overflow-hidden">
+                  <Collapsible open={isExpanded} onOpenChange={() => toggleAsset(asset.id)}>
+                    <CollapsibleTrigger asChild>
+                      <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors py-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            {getFileIcon(asset.metadata.mimeType)}
+                            <div>
+                              <CardTitle className="text-base">{asset.name}</CardTitle>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {getStructuralLabel(asset.structuralType)}
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {getFunctionalLabel(asset.functionalType || '')}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {formatFileSize(asset.metadata.fileSize)}
+                                </span>
+                                {groupedAssetIds.has(asset.id) && (
+                                  <Badge variant="default" className="text-xs bg-blue-500">
+                                    <Layers className="h-3 w-3 mr-1" />
+                                    Grouped
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {structuralPropsCount + functionalPropsCount + (hasProvenance ? 1 : 0)} property sections
+                            </span>
+                            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                          </div>
+                        </div>
+                      </CardHeader>
+                    </CollapsibleTrigger>
+
+                    <CollapsibleContent>
+                      <CardContent className="pt-0 space-y-4">
                         {asset.description && (
-                          <div className="text-xs text-muted-foreground truncate max-w-[200px]">
-                            {asset.description}
+                          <p className="text-sm text-muted-foreground">{asset.description}</p>
+                        )}
+
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm font-medium">
+                            <Settings className="h-4 w-4 text-primary" />
+                            Structural Properties
+                          </div>
+                          <div className="grid grid-cols-3 gap-3 text-sm">
+                            {Object.entries(asset.structuralProps || {}).map(([key, value]) => (
+                              <div key={key} className="bg-muted/50 rounded p-2">
+                                <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                                <div className="font-medium truncate" title={formatPropertyValue(value)}>
+                                  {formatPropertyValue(value)}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {hasProvenance && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm font-medium">
+                              <Clock className="h-4 w-4 text-primary" />
+                              Provenance
+                            </div>
+                            <div className="grid grid-cols-3 gap-3 text-sm">
+                              {Object.entries(asset.provenance || {}).filter(([_, v]) => v).map(([key, value]) => (
+                                <div key={key} className="bg-muted/50 rounded p-2">
+                                  <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                                  <div className="font-medium truncate" title={String(value)}>
+                                    {String(value)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-xs">
-                          {getStructuralLabel(asset.structuralType)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="text-xs">
-                          {getFunctionalLabel(asset.functionalType)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {formatFileSize(asset.metadata.fileSize)}
-                      </TableCell>
-                      <TableCell>
-                        {groupedAssetIds.has(asset.id) ? (
-                          <Badge variant="default" className="text-xs bg-blue-500">
-                            <Layers className="h-3 w-3 mr-1" />
-                            Grouped
-                          </Badge>
-                        ) : (
-                          <Badge variant="secondary" className="text-xs">
-                            Individual
-                          </Badge>
+
+                        {functionalPropsCount > 0 && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm font-medium">
+                              <User className="h-4 w-4 text-primary" />
+                              Functional Properties
+                            </div>
+                            <div className="grid grid-cols-3 gap-3 text-sm">
+                              {Object.entries(asset.functionalProps || {}).filter(([_, v]) => v).map(([key, value]) => (
+                                <div key={key} className="bg-muted/50 rounded p-2">
+                                  <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                                  <div className="font-medium truncate" title={formatPropertyValue(value)}>
+                                    {formatPropertyValue(value)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              );
+            })}
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

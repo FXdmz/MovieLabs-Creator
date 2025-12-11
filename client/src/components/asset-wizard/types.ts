@@ -1,4 +1,49 @@
-import { ExtractedMetadata } from "@/lib/file-metadata";
+import { ExtractedMetadata, ProvenanceInfo } from "@/lib/file-metadata";
+
+export interface StructuralProperties {
+  fileDetails?: {
+    fileName?: string;
+    fileExtension?: string;
+    fileSize?: number;
+  };
+  dimensions?: {
+    width?: string;
+    height?: string;
+  };
+  length?: string;
+  audioBitRate?: number;
+  audioSampleRate?: number;
+  audioSampleSize?: number;
+  codec?: string;
+  resolution?: string;
+  numberPoints?: number;
+  boundingBox?: string;
+  coordinateOrientation?: string;
+  geometryType?: string;
+  levelOfDetail?: string;
+  scale?: string;
+  software?: string;
+  pageCount?: number;
+  [key: string]: any;
+}
+
+export interface FunctionalProperties {
+  audioChannelName?: string[];
+  audioContent?: string;
+  audioMixType?: string;
+  audioProcessingAction?: string;
+  audioTrackName?: string;
+  cameraMetadata?: any;
+  lensMetadata?: any;
+  recorderMetadata?: any;
+  timing?: any;
+  isSelfContained?: boolean;
+  soundfield?: string;
+  mapFormat?: string;
+  mapType?: string;
+  scd?: any;
+  [key: string]: any;
+}
 
 export interface StagedAsset {
   id: string;
@@ -8,6 +53,9 @@ export interface StagedAsset {
   functionalType: string | null;
   name: string;
   description: string;
+  structuralProps: StructuralProperties;
+  functionalProps: FunctionalProperties;
+  provenance: ProvenanceInfo;
 }
 
 export interface AssetGroup {

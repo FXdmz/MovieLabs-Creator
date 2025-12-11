@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Upload, Tag, Layers, CheckCircle } from "lucide-react";
 import { StagedAsset, AssetGroup, WizardState } from "./types";
-import { extractFileMetadata, ExtractedMetadata } from "@/lib/file-metadata";
+import { extractFileMetadata, ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
 import { Step1Upload } from "./step1-upload";
 import { Step2Classify } from "./step2-classify";
 import { Step3Group } from "./step3-group";
@@ -43,14 +43,58 @@ export function AssetWizard({ onComplete, onCancel }: AssetWizardProps) {
     
     for (const file of files) {
       const metadata = await extractFileMetadata(file);
+      const structuralType = metadata.structuralType || "digital";
+      
+      const structuralProps: any = {
+        fileDetails: {
+          fileName: metadata.fileName,
+          fileExtension: metadata.fileExtension,
+          fileSize: metadata.fileSize
+        }
+      };
+      
+      if (metadata.width && metadata.height) {
+        structuralProps.dimensions = {
+          width: `${metadata.width}px`,
+          height: `${metadata.height}px`
+        };
+      }
+      
+      if (metadata.duration) {
+        structuralProps.length = formatDuration(metadata.duration);
+      }
+      
+      if (metadata.sampleRate) {
+        structuralProps.audioSampleRate = metadata.sampleRate;
+      }
+      
+      if (metadata.channels) {
+        structuralProps.audioSampleSize = metadata.bitsPerSample || undefined;
+      }
+      
+      if (metadata.bitRate) {
+        structuralProps.audioBitRate = metadata.bitRate;
+      }
+      
+      if (metadata.codec) {
+        structuralProps.codec = metadata.codec;
+      }
+      
+      if (metadata.pageCount) {
+        structuralProps.pageCount = metadata.pageCount;
+      }
+      
       newAssets.push({
         id: uuidv4(),
         file,
         metadata,
-        structuralType: metadata.structuralType || "digital",
+        structuralType,
         functionalType: null,
         name: file.name.replace(/\.[^/.]+$/, ""),
-        description: ""
+        description: "",
+        structuralProps,
+        functionalProps: {},
+        provenance: metadata.provenance
       });
     }
     

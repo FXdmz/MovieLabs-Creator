@@ -133,7 +133,14 @@ export async function registerRoutes(
       const result: any = {
         fileName: file.originalname,
         fileSize: file.size,
-        mimeType: file.mimetype
+        mimeType: file.mimetype,
+        provenance: {
+          createdDate: null,
+          modifiedDate: null,
+          creator: null,
+          source: null,
+          software: null
+        }
       };
 
       // Audio file extraction using music-metadata
@@ -151,11 +158,22 @@ export async function registerRoutes(
             result.container = metadata.format.container;
           }
           
-          // For audio files, also extract common tags
+          // For audio files, also extract common tags and provenance
           if (metadata.common) {
             result.title = metadata.common.title;
             result.artist = metadata.common.artist;
             result.album = metadata.common.album;
+            
+            // Extract provenance from audio metadata
+            if (metadata.common.artist) {
+              result.provenance.creator = metadata.common.artist;
+            }
+            if (metadata.common.encodersettings) {
+              result.provenance.software = metadata.common.encodersettings;
+            }
+            if (metadata.common.date) {
+              result.provenance.createdDate = metadata.common.date;
+            }
           }
         } catch (mmError) {
           console.log("music-metadata extraction failed:", mmError);
@@ -169,6 +187,22 @@ export async function registerRoutes(
           const pdfData = await pdfModule.default(file.buffer);
           result.pageCount = pdfData.numpages;
           result.pdfInfo = pdfData.info;
+          
+          // Extract provenance from PDF metadata
+          if (pdfData.info) {
+            if (pdfData.info.Author) {
+              result.provenance.creator = pdfData.info.Author;
+            }
+            if (pdfData.info.Creator) {
+              result.provenance.software = pdfData.info.Creator;
+            }
+            if (pdfData.info.CreationDate) {
+              result.provenance.createdDate = pdfData.info.CreationDate;
+            }
+            if (pdfData.info.ModDate) {
+              result.provenance.modifiedDate = pdfData.info.ModDate;
+            }
+          }
           
           // Check for script keywords in first 5000 characters
           const textSample = pdfData.text.substring(0, 5000).toUpperCase();
