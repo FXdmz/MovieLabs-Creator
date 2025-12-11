@@ -27,7 +27,7 @@ export default function Intro() {
             <img 
               src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
               alt="MovieLabs 2030 Vision" 
-              className="h-24 md:h-32 mx-auto mb-8"
+              className="h-48 md:h-64 mx-auto mb-8"
               data-testid="img-movielabs-logo"
             />
             <h1 className="text-4xl md:text-5xl font-bold text-[#232073] mb-6">

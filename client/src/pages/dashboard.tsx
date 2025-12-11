@@ -440,7 +440,7 @@ export default function Dashboard() {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8 bg-muted/5">
             <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center mb-6 ring-1 ring-primary/20">
-              <Logo variant="mark" className="scale-150" />
+              <Logo className="h-16 w-auto" />
             </div>
             <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to ME-DMZ</h2>
             <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
