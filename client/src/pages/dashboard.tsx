@@ -22,7 +22,8 @@ import {
   Download,
   CheckCircle,
   AlertTriangle,
-  Upload
+  Upload,
+  HelpCircle
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -302,9 +303,8 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="p-4 border-b border-sidebar-border">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6">
             <Logo />
-            <HelpDialog />
           </div>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-primary/50" />
@@ -358,7 +358,7 @@ export default function Dashboard() {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10">
+        <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10 space-y-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-full gap-2 bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 shadow-md border-0" size="lg">
@@ -377,6 +377,13 @@ export default function Dashboard() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          <HelpDialog 
+            trigger={
+              <Button variant="outline" className="w-full gap-2" size="lg" data-testid="button-help-sidebar">
+                <HelpCircle className="h-4 w-4" /> Help & Documentation
+              </Button>
+            }
+          />
         </div>
       </aside>
 

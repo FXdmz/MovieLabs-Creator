@@ -71,8 +71,8 @@ export default function Intro() {
           <div className="flex items-center gap-2">
             <HelpDialog 
               trigger={
-                <Button variant="ghost" size="icon" data-testid="button-help-intro">
-                  <HelpCircle className="h-5 w-5 text-[#232073]" />
+                <Button variant="outline" className="gap-2" data-testid="button-help-intro">
+                  <HelpCircle className="h-4 w-4" /> Help
                 </Button>
               }
             />
