@@ -1,6 +1,5 @@
 import { MediaSearch } from "./media-search";
-import { WikidataMedia, extractWikidataMediaData } from "@/lib/wikidata";
-import { v4 as uuidv4 } from "uuid";
+import { WikidataMedia } from "@/lib/wikidata";
 import { Film } from "lucide-react";
 
 interface CreativeWorkHeaderProps {
@@ -8,16 +7,41 @@ interface CreativeWorkHeaderProps {
   onChange?: (newValue: any) => void;
 }
 
+function mapMediaTypeToOMC(mediaType: WikidataMedia["mediaType"]): { 
+  creativeWorkType: string; 
+  creativeWorkCategory: string | null;
+} {
+  switch (mediaType) {
+    case "film":
+      return { creativeWorkType: "creativeWork", creativeWorkCategory: "movie" };
+    case "tvSeries":
+      return { creativeWorkType: "series", creativeWorkCategory: "tv" };
+    case "tvEpisode":
+      return { creativeWorkType: "episode", creativeWorkCategory: "tv" };
+    default:
+      return { creativeWorkType: "creativeWork", creativeWorkCategory: null };
+  }
+}
+
 export function CreativeWorkHeader({ value, onChange }: CreativeWorkHeaderProps) {
   const handleMediaSelect = (media: WikidataMedia) => {
     if (!onChange || !value) return;
 
-    const wikidataData = extractWikidataMediaData(media);
+    const { creativeWorkType, creativeWorkCategory } = mapMediaTypeToOMC(media.mediaType);
     
+    const creativeWorkTitle = [{
+      titleName: media.title,
+      titleType: "release",
+      titleLanguage: "en"
+    }];
+
     const updatedValue = {
       ...value,
-      name: wikidataData.name,
-      description: wikidataData.description || value.description
+      name: media.title,
+      description: media.description || value.description,
+      creativeWorkType,
+      creativeWorkCategory,
+      creativeWorkTitle
     };
 
     onChange(updatedValue);
