@@ -82,7 +82,7 @@ export default function Intro() {
               }
             />
             <Link href="/builder">
-              <Button data-testid="button-get-started-header" className="bg-[#232073] hover:bg-[#1a1857] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+              <Button data-testid="button-get-started-header" className="bg-[#232073] hover:bg-[#1a1857] dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -151,7 +151,7 @@ export default function Intro() {
               </div>
               <div className="text-center mt-10">
                 <Link href="/builder">
-                  <Button size="lg" data-testid="button-start-building" className="bg-[#232073] hover:bg-[#1a1857] hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-lg px-8 py-6">
+                  <Button size="lg" data-testid="button-start-building" className="bg-[#232073] hover:bg-[#1a1857] dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-lg px-8 py-6">
                     Start Building OMC
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
