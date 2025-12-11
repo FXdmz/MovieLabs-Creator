@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, FileJson, Layers } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react";
 import { Logo } from "@/components/logo";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
@@ -22,6 +22,17 @@ const TaskIcon = ({ className }: { className?: string }) => (
       strokeWidth="4" 
       fill="currentColor" 
       stroke="currentColor"
+    />
+  </svg>
+);
+
+const AssetIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="1545.36 1648.8 149.92 149.93" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 1550.154 1666.405 C 1550.154 1660.29 1555.112 1655.332 1561.228 1655.332 L 1677.428 1655.332 C 1683.543 1655.332 1688.501 1660.29 1688.501 1666.405 L 1688.501 1782.614 C 1688.501 1788.73 1683.543 1793.688 1677.428 1793.688 L 1561.228 1793.688 C 1555.112 1793.688 1550.154 1788.73 1550.154 1782.614 L 1550.154 1666.405 Z" 
+      stroke="currentColor" 
+      strokeWidth="4" 
+      fill="currentColor"
     />
   </svg>
 );
@@ -124,7 +135,7 @@ export default function Intro() {
               <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-assets">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileJson className="h-8 w-8 text-[#232073]" />
+                    <AssetIcon className="h-8 w-8 text-[#232073]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] mb-2">Assets</h3>
                   <p className="text-sm text-muted-foreground">
@@ -162,7 +173,7 @@ export default function Intro() {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <FileJson className="h-6 w-6 text-[#232073]" />
+                    <AssetIcon className="h-6 w-6 text-[#232073]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] mb-2">Schema Validated</h3>
                   <p className="text-sm text-muted-foreground">
