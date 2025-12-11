@@ -108,7 +108,7 @@ export default function Intro() {
 
         <div className="relative h-48 md:h-64 overflow-hidden">
           <img 
-            src="/attached_assets/iStock-1278449967_1765459968008.jpg" 
+            src="/iStock-1278449967_1765459968008.jpg" 
             alt="Abstract data visualization" 
             className="w-full h-full object-cover"
           />
