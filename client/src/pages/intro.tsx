@@ -195,10 +195,10 @@ export default function Intro() {
         <section className="py-16 bg-white">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About This Tool</h2>
+              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About the OMC Builder</h2>
               <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
                 <p className="mb-6">
-                  The <strong>ME-DMZ OMC Builder</strong> is a web application designed to help media 
+                  The <strong>OMC Builder</strong> is a web application designed to help media 
                   production professionals create and export OMC-compliant JSON documents. Whether 
                   you're defining creative works, cataloging assets, or mapping production workflows, 
                   this tool provides an intuitive form-based interface with built-in validation.
@@ -243,12 +243,32 @@ export default function Intro() {
             <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
               Start creating standardized metadata for your media production workflows.
             </p>
-            <Link href="/builder">
-              <Button size="lg" variant="secondary" data-testid="button-start-building-footer" className="text-[#232073] text-lg px-8 py-6">
-                Open the Builder
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/builder?create=Task">
+                <Button size="lg" variant="secondary" data-testid="button-create-task" className="text-[#232073] gap-2">
+                  <TaskIcon className="h-5 w-5" />
+                  Create Task
+                </Button>
+              </Link>
+              <Link href="/builder?create=Participant">
+                <Button size="lg" variant="secondary" data-testid="button-create-participant" className="text-[#232073] gap-2">
+                  <ParticipantIcon className="h-5 w-5" />
+                  Create Participant
+                </Button>
+              </Link>
+              <Link href="/builder?create=Asset">
+                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="text-[#232073] gap-2">
+                  <AssetIcon className="h-5 w-5" />
+                  Create Asset
+                </Button>
+              </Link>
+              <Link href="/builder?create=Infrastructure">
+                <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="text-[#232073] gap-2">
+                  <InfrastructureIcon className="h-5 w-5" />
+                  Create Infrastructure
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </main>

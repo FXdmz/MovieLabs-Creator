@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useLocation } from "wouter";
 import { useOntologyStore } from "@/lib/store";
 import { DynamicForm } from "@/components/dynamic-form";
 import { Logo } from "@/components/logo";
@@ -111,11 +112,13 @@ const getEntityIcon = (entityType: string) => {
 
 export default function Dashboard() {
   const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
+  const [location, setLocation] = useLocation();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
+  const hasHandledCreate = useRef(false);
   const { toast } = useToast();
 
   const handleFileAssetCreated = (asset: any, metadata: ExtractedMetadata) => {
@@ -139,6 +142,21 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => setSchema(data));
   }, []);
+
+  // Handle ?create= URL parameter from intro page
+  useEffect(() => {
+    if (hasHandledCreate.current) return;
+    
+    const params = new URLSearchParams(window.location.search);
+    const createType = params.get('create');
+    
+    if (createType && ENTITY_TYPES.includes(createType as EntityType)) {
+      hasHandledCreate.current = true;
+      addEntity(createType as EntityType);
+      // Clean up URL
+      setLocation('/builder', { replace: true });
+    }
+  }, [addEntity, setLocation]);
 
   const selectedEntity = entities.find((e) => e.id === selectedEntityId);
 
@@ -442,16 +460,22 @@ export default function Dashboard() {
             <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center mb-6 ring-1 ring-primary/20">
               <Logo className="h-16 w-auto" />
             </div>
-            <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to ME-DMZ</h2>
+            <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to OMC Builder</h2>
             <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
               Select an entity from the sidebar or create a new one to start building your media creation ontology.
             </p>
-            <div className="flex gap-4">
-              <Button onClick={() => setShowFileDropZone(true)} variant="outline" size="lg" className="gap-2">
-                <Upload className="h-5 w-5" /> Import from File
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2">
+                <TaskIcon className="h-4 w-4" /> Create Task
               </Button>
-              <Button onClick={() => addEntity("Asset")} size="lg" className="gap-2 shadow-lg shadow-primary/20">
-                <Plus className="h-5 w-5" /> Create Asset
+              <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2">
+                <ParticipantIcon className="h-4 w-4" /> Create Participant
+              </Button>
+              <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2">
+                <Database className="h-4 w-4" /> Create Asset
+              </Button>
+              <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2">
+                <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
               </Button>
             </div>
           </div>
