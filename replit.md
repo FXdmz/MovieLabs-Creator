@@ -2,6 +2,12 @@
 
 ## Milestones
 
+### Dark Mode Complete (December 11, 2025)
+- Dark mode toggle added to header (intro page) and sidebar header (builder page)
+- Full dark mode color scheme using CSS variables in index.css
+- All UI elements properly styled for both light and dark modes
+- Theme persists via next-themes with system preference support
+
 ### Landing Page Complete (December 11, 2025)
 The intro/landing page at "/" is complete with:
 - MovieLabs 2030 Vision branding and logo

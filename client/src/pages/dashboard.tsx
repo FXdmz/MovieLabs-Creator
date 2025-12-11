@@ -305,10 +305,11 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="p-4 border-b border-sidebar-border">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
               <Logo />
             </a>
+            <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-accent" />
           </div>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-primary/50" />
@@ -363,14 +364,11 @@ export default function Dashboard() {
         </ScrollArea>
 
         <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10 space-y-2">
-          <div className="flex gap-2">
-            <Link href="/" className="flex-1">
-              <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
-                <Home className="h-4 w-4" /> Home
-              </Button>
-            </Link>
-            <ThemeToggle className="border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent border" />
-          </div>
+          <Link href="/">
+            <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
+              <Home className="h-4 w-4" /> Home
+            </Button>
+          </Link>
           <HelpDialog 
             trigger={
               <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-help-builder">
