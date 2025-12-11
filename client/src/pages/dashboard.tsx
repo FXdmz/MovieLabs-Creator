@@ -4,6 +4,7 @@ import { useOntologyStore } from "@/lib/store";
 import { DynamicForm } from "@/components/dynamic-form";
 import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ENTITY_TYPES, EntityType } from "@/lib/constants";
 import { useToast } from "@/hooks/use-toast";
 import Ajv from "ajv";
@@ -303,10 +304,11 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="p-4 border-b border-sidebar-border">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
               <Logo />
             </a>
+            <ThemeToggle />
           </div>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-primary/50" />

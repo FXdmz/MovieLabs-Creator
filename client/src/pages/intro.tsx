@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, HelpCircle } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
   <svg viewBox="1620.35 1648.8 159.848 148.03" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -62,8 +63,8 @@ const InfrastructureIcon = ({ className }: { className?: string }) => (
 
 export default function Intro() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white">
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-background dark:to-background">
+      <header className="border-b bg-white/80 dark:bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
@@ -71,6 +72,7 @@ export default function Intro() {
             </a>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <HelpDialog 
               trigger={
                 <Button variant="outline" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] transition-all duration-200" data-testid="button-help-intro">
@@ -97,19 +99,19 @@ export default function Intro() {
               className="h-48 md:h-64 mx-auto mb-8"
               data-testid="img-movielabs-logo"
             />
-            <h1 className="text-4xl md:text-5xl font-bold text-[#232073] mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#232073] dark:text-primary mb-6">
               MovieLabs Ontology for Media Creation Builder
             </h1>
           </div>
         </section>
 
-        <section className="bg-white py-16">
+        <section className="bg-white dark:bg-card py-16">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
               <div className="prose prose-lg max-w-none text-muted-foreground mb-8 text-center">
                 <p className="text-lg mb-4">
                   Create standardized metadata that speaks the language of modern media production! 
-                  The <strong className="text-[#232073]">OMC Builder</strong> helps you craft OMC-compliant JSON documents 
+                  The <strong className="text-[#232073] dark:text-primary">OMC Builder</strong> helps you craft OMC-compliant JSON documents 
                   with an intuitive form-based interface and real-time validation.
                 </p>
                 <p className="text-lg">
@@ -119,28 +121,28 @@ export default function Intro() {
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-[#232073]" />
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <AssetIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Schema Validated</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Schema Validated</h3>
                   <p className="text-sm text-muted-foreground">
                     Real-time validation against OMC-JSON Schema v2.8
                   </p>
                 </div>
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-[#232073]" />
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ContextIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Multiple Entity Types</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Multiple Entity Types</h3>
                   <p className="text-sm text-muted-foreground">
                     Support for Assets, Participants, Tasks, Locations, and more
                   </p>
                 </div>
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ArrowRight className="h-6 w-6 text-[#232073]" />
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ArrowRight className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Easy Export</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Easy Export</h3>
                   <p className="text-sm text-muted-foreground">
                     Export valid JSON ready for integration with production systems
                   </p>
@@ -158,10 +160,10 @@ export default function Intro() {
           </div>
         </section>
 
-        <section className="py-16 bg-[#CEECF2]/20">
+        <section className="py-16 bg-[#CEECF2]/20 dark:bg-secondary/20">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">What is the OMC?</h2>
+              <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-6 text-center">What is the OMC?</h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">
                 <p className="mb-6">
                   The <strong>MovieLabs Ontology for Media Creation (OMC)</strong> is an industry-standard 
@@ -186,60 +188,60 @@ export default function Intro() {
           </div>
         </section>
 
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white dark:bg-card">
           <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-[#232073] mb-12 text-center">Core Building Blocks</h2>
+            <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-12 text-center">Core Building Blocks</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-participants">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-participants">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ParticipantIcon className="h-8 w-8 text-[#232073]" />
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ParticipantIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Participants</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Participants</h3>
                   <p className="text-sm text-muted-foreground">
                     People, organizations, departments, and services involved in production
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-tasks">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-tasks">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <TaskIcon className="h-8 w-8 text-[#232073]" />
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TaskIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Tasks</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Tasks</h3>
                   <p className="text-sm text-muted-foreground">
                     Work activities and processes that move production forward
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-assets">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-assets">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AssetIcon className="h-8 w-8 text-[#232073]" />
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AssetIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Assets</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Assets</h3>
                   <p className="text-sm text-muted-foreground">
                     Digital and physical media files, documents, and materials
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-contexts">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-contexts">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ContextIcon className="h-8 w-8 text-[#232073]" />
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ContextIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Contexts</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Contexts</h3>
                   <p className="text-sm text-muted-foreground">
                     Narrative, production, and workflow contexts that group related entities
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-infrastructure">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-infrastructure">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <InfrastructureIcon className="h-8 w-8 text-[#232073]" />
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <InfrastructureIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] mb-2">Infrastructure</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Infrastructure</h3>
                   <p className="text-sm text-muted-foreground">
                     Technical resources and systems that support production workflows
                   </p>
