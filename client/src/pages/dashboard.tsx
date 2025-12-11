@@ -279,6 +279,8 @@ export default function Dashboard() {
     }
     
     setShowAssetWizard(false);
+    // Don't automatically open the form - just show the list
+    selectEntity(null);
     toast({
       title: "Assets Created",
       description: `Successfully created ${stagedAssets.length} asset${stagedAssets.length !== 1 ? 's' : ''}${groups.length > 0 ? ` and ${groups.length} group${groups.length !== 1 ? 's' : ''}` : ''}.`,
