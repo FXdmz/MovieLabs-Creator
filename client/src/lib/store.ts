@@ -149,7 +149,7 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   updateEntity: (id, content) => {
     set((state) => ({
       entities: state.entities.map((e) => 
-        e.id === id ? { ...e, content, name: content.name || e.name } : e
+        e.id === id ? { ...e, content, name: content.name ?? e.name } : e
       )
     }));
   },
