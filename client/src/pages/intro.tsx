@@ -129,8 +129,8 @@ export default function Intro() {
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
+                  <div className="w-12 h-12 bg-[#3AA608]/20 dark:bg-[#3AA608]/40 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <AssetIcon className="h-6 w-6 text-[#2E8506] dark:text-[#5FB637]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Schema Validated</h3>
                   <p className="text-sm text-muted-foreground">
@@ -138,8 +138,8 @@ export default function Intro() {
                   </p>
                 </div>
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
+                  <div className="w-12 h-12 bg-[#D97218]/20 dark:bg-[#D97218]/40 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ContextIcon className="h-6 w-6 text-[#AE5B13] dark:text-[#DF8C44]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Multiple Entity Types</h3>
                   <p className="text-sm text-muted-foreground">
@@ -147,8 +147,8 @@ export default function Intro() {
                   </p>
                 </div>
                 <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ArrowRight className="h-6 w-6 text-[#232073] dark:text-primary" />
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-[#CEECF2]/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ArrowRight className="h-6 w-6 text-[#232073] dark:text-[#CEECF2]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Easy Export</h3>
                   <p className="text-sm text-muted-foreground">
@@ -200,10 +200,10 @@ export default function Intro() {
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-12 text-center">Core Building Blocks</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-participants">
+              <Card className="border-[#3AA608]/30 dark:border-[#5FB637]/50 hover:border-[#3AA608]/60 dark:hover:border-[#5FB637] transition-colors hover:shadow-lg" data-testid="card-participants">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ParticipantIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#3AA608]/20 dark:bg-[#3AA608]/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ParticipantIcon className="h-8 w-8 text-[#2E8506] dark:text-[#5FB637]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Participants</h3>
                   <p className="text-sm text-muted-foreground">
@@ -211,10 +211,10 @@ export default function Intro() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-tasks">
+              <Card className="border-[#D97218]/30 dark:border-[#DF8C44]/50 hover:border-[#D97218]/60 dark:hover:border-[#DF8C44] transition-colors hover:shadow-lg" data-testid="card-tasks">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <TaskIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#D97218]/20 dark:bg-[#D97218]/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TaskIcon className="h-8 w-8 text-[#AE5B13] dark:text-[#DF8C44]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Tasks</h3>
                   <p className="text-sm text-muted-foreground">
@@ -222,9 +222,9 @@ export default function Intro() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-assets">
+              <Card className="border-[#232073]/30 dark:border-primary/50 hover:border-[#232073]/60 dark:hover:border-primary transition-colors hover:shadow-lg" data-testid="card-assets">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-[#232073]/20 dark:bg-primary/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <AssetIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Assets</h3>
@@ -233,10 +233,10 @@ export default function Intro() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-contexts">
+              <Card className="border-[#F2C53D]/40 dark:border-[#F3CF62]/50 hover:border-[#F2C53D]/70 dark:hover:border-[#F3CF62] transition-colors hover:shadow-lg" data-testid="card-contexts">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ContextIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#F2C53D]/25 dark:bg-[#F2C53D]/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ContextIcon className="h-8 w-8 text-[#917625] dark:text-[#F3CF62]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Contexts</h3>
                   <p className="text-sm text-muted-foreground">
@@ -244,10 +244,10 @@ export default function Intro() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors" data-testid="card-infrastructure">
+              <Card className="border-[#CEECF2]/60 dark:border-[#CEECF2]/50 hover:border-[#CEECF2] dark:hover:border-[#CEECF2] transition-colors hover:shadow-lg" data-testid="card-infrastructure">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <InfrastructureIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#CEECF2]/50 dark:bg-[#CEECF2]/35 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <InfrastructureIcon className="h-8 w-8 text-[#232073] dark:text-[#CEECF2]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Infrastructure</h3>
                   <p className="text-sm text-muted-foreground">
@@ -267,25 +267,25 @@ export default function Intro() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/builder?create=Task">
-                <Button size="lg" variant="secondary" data-testid="button-create-task" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="outline" data-testid="button-create-task" className="bg-transparent border-2 border-[#DF8C44] text-white hover:bg-[#DF8C44] hover:text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <TaskIcon className="h-5 w-5" />
                   Create Task
                 </Button>
               </Link>
               <Link href="/builder?create=Participant">
-                <Button size="lg" variant="secondary" data-testid="button-create-participant" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="outline" data-testid="button-create-participant" className="bg-transparent border-2 border-[#5FB637] text-white hover:bg-[#5FB637] hover:text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <ParticipantIcon className="h-5 w-5" />
                   Create Participant
                 </Button>
               </Link>
               <Link href="/builder?create=Asset">
-                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="bg-white hover:bg-[#CEECF2] text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <AssetIcon className="h-5 w-5" />
                   Create Asset
                 </Button>
               </Link>
               <Link href="/builder?create=Infrastructure">
-                <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="outline" data-testid="button-create-infrastructure" className="bg-transparent border-2 border-[#F3CF62] text-white hover:bg-[#F3CF62] hover:text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <InfrastructureIcon className="h-5 w-5" />
                   Create Infrastructure
                 </Button>
@@ -299,7 +299,7 @@ export default function Intro() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
-              <Logo className="h-10 w-auto" />
+              <Logo className="h-10 w-auto" variant="dark" />
             </a>
             <p className="text-white/80 text-sm max-w-md text-center md:text-right">
               We live at the intersection of art and data helping content creators entertain, influence and educate the world.

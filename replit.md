@@ -2,6 +2,17 @@
 
 ## Milestones
 
+### Branding Audit Complete (December 11, 2025)
+- Full FX-DMZ brand color audit with extended palette integration
+- CSS variables updated with exact brand colors:
+  - Primary: Light Blue #CEECF2, Dark Blue #232073
+  - Accents: Green #3AA608, Orange #D97218, Yellow #F2C53D
+  - Extended palette tints/shades for proper contrast
+- Dark mode uses Dark Blue extended palette (#070617, #0E0D2E, etc.)
+- Core Building Blocks cards use distinct accent colors per entity type
+- CTA buttons use brand accent colors with proper contrast
+- All icons have proper dark mode variants for accessibility
+
 ### Dark Mode Complete (December 11, 2025)
 - Dark mode toggle added to header (intro page) and sidebar header (builder page)
 - Full dark mode color scheme using CSS variables in index.css

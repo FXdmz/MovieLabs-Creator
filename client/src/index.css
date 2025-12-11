@@ -37,23 +37,37 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: 'azo-sans-web', sans-serif;
-  --font-uber: 'azo-sans-uber', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'azo-sans-web', ui-sans-serif, system-ui, sans-serif;
+  --font-uber: 'azo-sans-uber', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --radius: 0.5rem;
 }
 
 :root {
-  /* FX-DMZ Colors */
-  /* Dark Blue: #232073 -> HSL(242, 57%, 29%) */
+  /* ===========================================
+     FX-DMZ / ME-DMZ Brand Color System
+     =========================================== */
+  
+  /* Primary Brand Colors */
   /* Light Blue: #CEECF2 -> HSL(190, 56%, 88%) */
+  /* Dark Blue: #232073 -> HSL(242, 57%, 29%) */
+  
+  /* Secondary/Accent Colors */
   /* Green: #3AA608 -> HSL(101, 91%, 34%) */
   /* Orange: #D97218 -> HSL(28, 79%, 47%) */
   /* Yellow: #F2C53D -> HSL(45, 88%, 59%) */
+  
+  /* Extended Light Blue Tints */
+  /* 20: #D6EEF3 | 40: #DEF0F3 | 50: #E2F1F4 | 60: #E5F1F4 | 80: #EDF3F4 */
+  
+  /* Greys */
+  /* Light Grey: #D9D9D9 | Grey: #747474 */
 
-  /* Light Mode */
+  /* =========================================== 
+     LIGHT MODE
+     =========================================== */
   --background: 0 0% 100%;
-  --foreground: 242 57% 29%; /* Dark Blue Text */
+  --foreground: 242 57% 29%; /* Dark Blue */
 
   --card: 0 0% 100%;
   --card-foreground: 242 57% 29%;
@@ -61,74 +75,95 @@
   --popover: 0 0% 100%;
   --popover-foreground: 242 57% 29%;
 
-  --primary: 242 57% 29%; /* Dark Blue */
-  --primary-foreground: 190 56% 88%; /* Light Blue Text on Dark Blue */
+  --primary: 242 57% 29%; /* Dark Blue #232073 */
+  --primary-foreground: 0 0% 100%; /* White text on Dark Blue */
 
-  --secondary: 190 56% 88%; /* Light Blue */
+  --secondary: 190 56% 88%; /* Light Blue #CEECF2 */
   --secondary-foreground: 242 57% 29%;
 
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  --muted: 190 30% 95%; /* Very light blue-grey */
+  --muted-foreground: 0 0% 45%; /* Grey #747474 */
 
-  --accent: 190 56% 88%;
+  --accent: 190 56% 88%; /* Light Blue #CEECF2 */
   --accent-foreground: 242 57% 29%;
 
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
+  --border: 0 0% 85%; /* Light Grey #D9D9D9 */
+  --input: 0 0% 85%;
   --ring: 242 57% 29%;
 
   --radius: 0.5rem;
 
-  --sidebar: 242 57% 29%; /* Dark Blue Sidebar */
-  --sidebar-foreground: 190 56% 88%;
-  --sidebar-primary: 190 56% 88%;
-  --sidebar-primary-foreground: 242 57% 29%;
-  --sidebar-accent: 242 50% 35%; /* Slightly lighter dark blue */
-  --sidebar-accent-foreground: 190 56% 88%;
-  --sidebar-border: 242 50% 40%;
+  /* Chart colors using brand palette */
+  --chart-1: 242 57% 29%; /* Dark Blue */
+  --chart-2: 190 56% 70%; /* Light Blue darker */
+  --chart-3: 101 91% 34%; /* Green #3AA608 */
+  --chart-4: 28 79% 47%; /* Orange #D97218 */
+  --chart-5: 45 88% 59%; /* Yellow #F2C53D */
+
+  /* Sidebar - Dark Blue theme */
+  --sidebar: 242 57% 29%; /* Dark Blue #232073 */
+  --sidebar-foreground: 190 56% 92%; /* Lighter Light Blue */
+  --sidebar-primary: 190 56% 88%; /* Light Blue */
+  --sidebar-primary-foreground: 242 57% 20%;
+  --sidebar-accent: 242 50% 38%; /* Dark Blue 20 tint #4D4B8D */
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 242 50% 35%;
   --sidebar-ring: 190 56% 88%;
 }
 
 .dark {
-  /* Dark Mode - Inverting for usability while keeping brand identity */
-  --background: 242 57% 10%; /* Very Dark Blue */
-  --foreground: 190 56% 88%; /* Light Blue Text */
+  /* ===========================================
+     DARK MODE
+     Uses Dark Blue extended palette shades
+     80: #070617 | 60: #0E0D2E | 50: #111039 | 40: #151345 | 20: #1C1A5C
+     =========================================== */
+  
+  --background: 245 63% 5%; /* #070617 - Dark Blue 80 shade */
+  --foreground: 190 56% 92%; /* Bright Light Blue */
 
-  --card: 242 57% 15%;
-  --card-foreground: 190 56% 88%;
+  --card: 245 59% 8%; /* #0E0D2E - Dark Blue 60 shade */
+  --card-foreground: 190 56% 92%;
 
-  --popover: 242 57% 15%;
-  --popover-foreground: 190 56% 88%;
+  --popover: 245 59% 8%;
+  --popover-foreground: 190 56% 92%;
 
-  --primary: 190 56% 88%; /* Light Blue Primary in Dark Mode */
-  --primary-foreground: 242 57% 29%;
+  --primary: 190 56% 88%; /* Light Blue as primary in dark mode */
+  --primary-foreground: 242 57% 15%;
 
-  --secondary: 242 50% 25%;
+  --secondary: 245 55% 12%; /* #111039 - Dark Blue 50 shade */
   --secondary-foreground: 190 56% 88%;
 
-  --muted: 242 50% 25%;
-  --muted-foreground: 215 20.2% 65.1%;
+  --muted: 245 55% 15%; /* #151345 - Dark Blue 40 shade */
+  --muted-foreground: 190 30% 65%;
 
-  --accent: 242 50% 25%;
-  --accent-foreground: 190 56% 88%;
+  --accent: 245 50% 22%; /* #1C1A5C - Dark Blue 20 shade */
+  --accent-foreground: 190 56% 92%;
 
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 190 56% 88%;
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 242 50% 25%;
-  --input: 242 50% 25%;
+  --border: 245 55% 18%;
+  --input: 245 55% 18%;
   --ring: 190 56% 88%;
+
+  /* Chart colors - brighter for dark mode visibility */
+  --chart-1: 190 56% 75%; /* Light Blue */
+  --chart-2: 242 50% 60%; /* Dark Blue tint */
+  --chart-3: 101 80% 50%; /* Green brighter */
+  --chart-4: 28 85% 55%; /* Orange brighter */
+  --chart-5: 45 90% 65%; /* Yellow brighter */
   
-  --sidebar: 242 57% 8%; /* Even Darker Blue */
-  --sidebar-foreground: 190 56% 88%;
+  /* Sidebar - Even darker */
+  --sidebar: 245 63% 4%; /* Darker than background */
+  --sidebar-foreground: 190 56% 92%;
   --sidebar-primary: 190 56% 88%;
-  --sidebar-primary-foreground: 242 57% 29%;
-  --sidebar-accent: 242 50% 20%;
-  --sidebar-accent-foreground: 190 56% 88%;
-  --sidebar-border: 242 50% 20%;
+  --sidebar-primary-foreground: 242 57% 15%;
+  --sidebar-accent: 245 55% 15%;
+  --sidebar-accent-foreground: 190 56% 92%;
+  --sidebar-border: 245 55% 15%;
   --sidebar-ring: 190 56% 88%;
 }
 
