@@ -6,6 +6,9 @@ import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 
+// Import hero image through Vite's asset pipeline for production builds
+import heroImage from "/iStock-1278449967_1765459968008.jpg";
+
 const ParticipantIcon = ({ className }: { className?: string }) => (
   <svg viewBox="1620.35 1648.8 159.848 148.03" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path 
@@ -107,7 +110,7 @@ export default function Intro() {
         <section className="relative">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/iStock-1278449967_1765459968008.jpg')" }}
+            style={{ backgroundImage: `url('${heroImage}')` }}
           />
           <div className="absolute inset-0 bg-[#0d1129]/70" />
           <div className="relative container mx-auto px-6 py-16 md:py-24">
