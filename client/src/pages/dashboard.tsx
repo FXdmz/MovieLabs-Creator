@@ -369,7 +369,7 @@ export default function Dashboard() {
                 <Home className="h-4 w-4" /> Home
               </Button>
             </Link>
-            <ThemeToggle />
+            <ThemeToggle className="border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent border" />
           </div>
           <HelpDialog 
             trigger={
