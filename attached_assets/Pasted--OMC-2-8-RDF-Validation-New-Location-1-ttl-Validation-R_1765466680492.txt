@@ -1,0 +1,151 @@
+# OMC 2.8 RDF Validation - New_Location__1_.ttl
+
+## Validation Result: ✅ PASSED
+
+All OMC properties are valid and conform to the OMC 2.8 RDF schema.
+
+---
+
+## Summary
+
+**File:** `New_Location__1_.ttl`  
+**Entity Type:** `omc:Location`  
+**Label:** "New Location"  
+**Identifier:** `me-nexus:f97cf146-402f-4fbc-8876-725cbb244cb8`  
+**Total Triples:** 15  
+**Valid Properties:** 12  
+**Invalid Properties:** 0
+
+---
+
+## Properties Validated
+
+### Location Level (✅ All Valid)
+- ✅ `omc:hasIdentifier` → Links to identifier URI
+- ✅ `omc:hasIdentifierScope` → "me-nexus"
+- ✅ `omc:hasIdentifierValue` → UUID string
+- ✅ `omc:hasAddress` → Links to Address blank node
+- ✅ `omc:hasCoords` → Links to LatLon blank node
+- ✅ `rdfs:label` → "New Location"
+
+### Address Properties (✅ All Valid)
+- ✅ `rdf:type omc:Address` → Properly typed
+- ✅ `omc:hasStreetNumberAndName` → "2231 Rue Quesnel"
+- ✅ `omc:hasCity` → "Montreal"
+- ✅ `omc:hasPostalCode` → "H3J 2A9"
+- ✅ `omc:hasCountry` → "CA"
+
+### Coordinates Properties (✅ All Valid)
+- ✅ `rdf:type omc:LatLon` → Properly typed
+- ✅ `omc:hasLatitude` → 45.487343 (decimal)
+- ✅ `omc:hasLongitude` → -73.57547 (decimal)
+
+---
+
+## What Was Fixed from CV-home.ttl
+
+This file correctly implements all the fixes identified in the earlier validation:
+
+| Original Issue | Fixed ✓ |
+|----------------|---------|
+| `coordinates` | → `hasCoords` |
+| `street` | → `hasStreetNumberAndName` |
+| `locality` | → `hasCity` |
+| `region` (Quebec) | → Removed (not in OMC) |
+| `postalCode` | → `hasPostalCode` |
+| `latitude` | → `hasLatitude` |
+| `longitude` | → `hasLongitude` |
+| `combinedForm` | → Removed (not in OMC) |
+| Missing Address type | → Added `rdf:type omc:Address` |
+| Missing LatLon type | → Added `rdf:type omc:LatLon` |
+
+---
+
+## Address Comparison: JSON vs RDF
+
+Note how the **same location data** uses different property names in each format:
+
+### JSON Format (from New_Location__2_.json)
+```json
+{
+  "address": {
+    "street": "2231 Rue Quesnel",
+    "locality": "Montreal",
+    "region": "Quebec",
+    "postalCode": "H3J 2A9",
+    "country": "CA"
+  },
+  "coordinates": {
+    "latitude": 45.487343,
+    "longitude": -73.57547
+  }
+}
+```
+
+### RDF Format (from New_Location__1_.ttl)
+```turtle
+_:address_1
+    rdf:type omc:Address ;
+    omc:hasStreetNumberAndName "2231 Rue Quesnel" ;
+    omc:hasCity "Montreal" ;
+    omc:hasPostalCode "H3J 2A9" ;
+    omc:hasCountry "CA" .
+
+_:coordinates_2
+    rdf:type omc:LatLon ;
+    omc:hasLatitude "45.487343"^^xsd:decimal ;
+    omc:hasLongitude "-73.57547"^^xsd:decimal .
+```
+
+**Key Differences:**
+1. JSON has `region` (Quebec) - RDF doesn't support it
+2. JSON uses simple names - RDF uses explicit predicates
+3. Both are valid in their respective formats!
+
+---
+
+## Usage Recommendations
+
+This validated RDF file can now be used for:
+
+✅ **Semantic Web Applications**  
+- Triple stores (Apache Jena, Blazegraph, etc.)
+- SPARQL queries
+- Linked data applications
+
+✅ **ME-NEXUS Integration**  
+- Geographic visualization layers
+- Location metadata tracking
+- Production site management
+
+✅ **MovieLabs Ontology Compliance**  
+- Interoperable with other OMC 2.8 tools
+- Compatible with production workflow systems
+- Ready for industry data exchange
+
+---
+
+## Validation Details
+
+**OMC Schema Version:** v2.8  
+**Schema URI:** https://movielabs.com/omc/rdf/schema/v2.8  
+**Validation Date:** December 11, 2025  
+**Total Properties Checked:** 12  
+**Validation Status:** ✅ PASSED
+
+---
+
+## Next Steps
+
+1. **Use this as a template** for other ME-NEXUS locations
+2. **Maintain property naming** when adding more location attributes
+3. **Consider Quebec representation** - Could add as custom namespace if needed:
+   ```turtle
+   @prefix me-ext: <https://me-nexus.com/extension#> .
+   
+   _:address_1
+       omc:hasCity "Montreal" ;
+       me-ext:hasRegion "Quebec" .
+   ```
+
+This RDF file is production-ready and fully compliant with OMC 2.8! 🎉
