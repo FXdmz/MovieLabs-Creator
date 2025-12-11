@@ -215,10 +215,14 @@ export default function Dashboard() {
         setValidationSource('movielabs');
         setValidationResult(data.result);
         
-        // MovieLabs validator returns structured results
+        // MovieLabs validator returns { summary: { ruleId: "passed"|"failed" }, details: { issues: {...} } }
         const mlResult = data.result;
-        const isValid = mlResult?.valid === true || mlResult?.isValid === true || 
-                       (mlResult?.errors && mlResult.errors.length === 0);
+        const summary = mlResult?.summary || {};
+        const details = mlResult?.details || {};
+        
+        // Check if all rules passed (no "failed" status in summary)
+        const failedRules = Object.entries(summary).filter(([_, status]) => status === 'failed');
+        const isValid = failedRules.length === 0;
         
         if (isValid) {
           toast({
@@ -227,10 +231,28 @@ export default function Dashboard() {
             variant: "default",
             className: "bg-green-600 text-white border-none"
           });
+          setValidationErrors(null);
         } else {
-          // Show validation errors from MovieLabs
-          const errors = mlResult?.errors || mlResult?.messages || [mlResult];
-          setValidationErrors(Array.isArray(errors) ? errors : [errors]);
+          // Extract issues from the details object
+          const issues = details?.issues || {};
+          const allErrors: any[] = [];
+          
+          // Flatten issues from all failed rules
+          for (const [ruleId, ruleIssues] of Object.entries(issues)) {
+            if (Array.isArray(ruleIssues)) {
+              ruleIssues.forEach((issue: any) => {
+                allErrors.push({
+                  ruleId,
+                  issue: issue.issue,
+                  exception: issue.exception,
+                  context: issue.context,
+                  specifics: issue.specifics
+                });
+              });
+            }
+          }
+          
+          setValidationErrors(allErrors.length > 0 ? allErrors : [{ summary, details }]);
           setShowValidationDialog(true);
         }
       } else if (data.fallbackToLocal) {

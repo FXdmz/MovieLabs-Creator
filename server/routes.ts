@@ -19,14 +19,19 @@ export async function registerRoutes(
         });
       }
 
-      // Call the official MovieLabs validator API
-      const response = await fetch('https://omc-validator.mc.movielabs.com/api/validate', {
+      // MovieLabs API expects multipart/form-data with file upload
+      // Create a blob from the JSON data
+      const jsonContent = JSON.stringify(entityData, null, 2);
+      const blob = new Blob([jsonContent], { type: 'application/json' });
+      
+      // Create FormData with the file
+      const formData = new FormData();
+      formData.append('file', blob, 'entity.json');
+
+      // Call the official MovieLabs validator API at /api/check
+      const response = await fetch('https://omc-validator.mc.movielabs.com/api/check', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(entityData)
+        body: formData
       });
 
       // Handle non-OK responses (4xx, 5xx)
