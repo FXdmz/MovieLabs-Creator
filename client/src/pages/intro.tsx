@@ -48,6 +48,17 @@ const ContextIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const InfrastructureIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="2210.983 568.944 264.57 149.92" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 2418.681 574.152 C 2445.961 574.152 2468.07 605.473 2468.07 644.111 C 2468.07 682.749 2445.951 714.07 2418.681 714.07 L 2270.521 714.07 C 2243.269 714.07 2221.15 682.749 2221.15 644.111 C 2221.15 605.473 2243.269 574.152 2270.521 574.152 L 2418.681 574.152 Z" 
+      strokeWidth="4" 
+      fill="currentColor"
+      stroke="currentColor"
+    />
+  </svg>
+);
+
 export default function Intro() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white">
@@ -120,7 +131,7 @@ export default function Intro() {
         <section className="py-16 bg-[#CEECF2]/20">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-[#232073] mb-12 text-center">Core Building Blocks</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
               <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-participants">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -162,6 +173,17 @@ export default function Intro() {
                   <h3 className="font-semibold text-[#232073] mb-2">Contexts</h3>
                   <p className="text-sm text-muted-foreground">
                     Narrative, production, and workflow contexts that group related entities
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-infrastructure">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <InfrastructureIcon className="h-8 w-8 text-[#232073]" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] mb-2">Infrastructure</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Technical resources and systems that support production workflows
                   </p>
                 </CardContent>
               </Card>
