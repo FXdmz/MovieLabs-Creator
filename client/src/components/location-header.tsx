@@ -1,4 +1,48 @@
-export function LocationHeader() {
+import { AddressSearch } from "./address-search";
+
+interface AddressData {
+  street?: string;
+  locality?: string;
+  region?: string;
+  postalCode?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+  formatted?: string;
+}
+
+interface LocationHeaderProps {
+  value?: any;
+  onChange?: (newValue: any) => void;
+}
+
+export function LocationHeader({ value, onChange }: LocationHeaderProps) {
+  const handleAddressSelect = (address: AddressData) => {
+    if (!onChange || !value) return;
+
+    const existingAddress = value.address ?? {};
+    const existingCoordinates = value.coordinates ?? {};
+
+    const updatedValue = {
+      ...value,
+      address: {
+        ...existingAddress,
+        street: address.street || existingAddress.street,
+        locality: address.locality || existingAddress.locality,
+        region: address.region || existingAddress.region,
+        postalCode: address.postalCode || existingAddress.postalCode,
+        country: address.country || existingAddress.country,
+      },
+      coordinates: {
+        ...existingCoordinates,
+        latitude: address.latitude ?? existingCoordinates.latitude,
+        longitude: address.longitude ?? existingCoordinates.longitude,
+      },
+    };
+
+    onChange(updatedValue);
+  };
+
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
       <div className="flex items-start gap-4">
@@ -34,12 +78,25 @@ export function LocationHeader() {
             </svg>
             Location
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             <strong>A real-world place or address.</strong> Location represents physical places in the real 
             world that may be used for production activities. This includes addresses, geographic coordinates, 
             and other location-specific metadata for organizing production logistics.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          
+          {onChange && (
+            <div className="mb-4">
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Quick Address Lookup
+              </label>
+              <AddressSearch onAddressSelect={handleAddressSelect} />
+              <p className="text-xs text-muted-foreground mt-1">
+                Search for an address to auto-fill the location fields below
+              </p>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2">
             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
             <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full">MovieLabs Ontology</span>
           </div>

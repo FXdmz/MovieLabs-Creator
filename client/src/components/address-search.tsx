@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, MapPin, Loader2 } from "lucide-react";
+import { Search, MapPin, Loader2, AlertCircle } from "lucide-react";
 
 interface GeoapifyFeature {
   properties: {
@@ -42,6 +41,7 @@ export function AddressSearch({ onAddressSelect }: AddressSearchProps) {
   const [suggestions, setSuggestions] = useState<GeoapifyFeature[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -58,19 +58,26 @@ export function AddressSearch({ onAddressSelect }: AddressSearchProps) {
   const searchAddress = async (text: string) => {
     if (text.length < 3) {
       setSuggestions([]);
+      setError(null);
       return;
     }
 
     setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/geocode/autocomplete?text=${encodeURIComponent(text)}`);
       if (response.ok) {
         const data: GeoapifyResponse = await response.json();
         setSuggestions(data.features || []);
         setShowDropdown(true);
+      } else {
+        setError("Could not search addresses. Please try again.");
+        setSuggestions([]);
       }
-    } catch (error) {
-      console.error("Address search error:", error);
+    } catch (err) {
+      console.error("Address search error:", err);
+      setError("Address lookup failed. Check your connection.");
+      setSuggestions([]);
     } finally {
       setIsLoading(false);
     }
@@ -149,9 +156,16 @@ export function AddressSearch({ onAddressSelect }: AddressSearchProps) {
         </div>
       )}
       
-      {showDropdown && query.length >= 3 && suggestions.length === 0 && !isLoading && (
+      {showDropdown && query.length >= 3 && suggestions.length === 0 && !isLoading && !error && (
         <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg p-3 text-sm text-muted-foreground">
           No addresses found. Try a different search.
+        </div>
+      )}
+      
+      {error && (
+        <div className="mt-2 flex items-center gap-2 text-sm text-destructive">
+          <AlertCircle className="h-4 w-4" />
+          <span>{error}</span>
         </div>
       )}
     </div>
