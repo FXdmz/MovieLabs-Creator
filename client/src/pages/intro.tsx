@@ -108,9 +108,10 @@ export default function Intro() {
 
       <main>
         <section className="relative">
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url('${heroImage}')` }}
+          <img 
+            src={heroImage} 
+            alt="" 
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#0d1129]/70" />
           <div className="relative container mx-auto px-6 py-16 md:py-24">
