@@ -20,18 +20,26 @@ export async function registerRoutes(
       }
 
       // MovieLabs API expects multipart/form-data with file upload
-      // Create a blob from the JSON data
       const jsonContent = JSON.stringify(entityData, null, 2);
-      const blob = new Blob([jsonContent], { type: 'application/json' });
       
-      // Create FormData with the file
-      const formData = new FormData();
-      formData.append('file', blob, 'entity.json');
+      // Create multipart form boundary
+      const boundary = '----FormBoundary' + Math.random().toString(36).substring(2);
+      const body = [
+        `--${boundary}`,
+        'Content-Disposition: form-data; name="file"; filename="entity.json"',
+        'Content-Type: application/json',
+        '',
+        jsonContent,
+        `--${boundary}--`
+      ].join('\r\n');
 
       // Call the official MovieLabs validator API at /api/check
       const response = await fetch('https://omc-validator.mc.movielabs.com/api/check', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${boundary}`
+        },
+        body: body
       });
 
       // Handle non-OK responses (4xx, 5xx)
