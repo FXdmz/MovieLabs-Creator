@@ -7,7 +7,7 @@ import { HelpDialog } from "@/components/help-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 // Import hero image through Vite's asset pipeline for production builds
-import heroImage from "/iStock-1278449967_1765459968008.jpg";
+import heroImage from "@/assets/hero-background.jpg";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
   <svg viewBox="1620.35 1648.8 159.848 148.03" xmlns="http://www.w3.org/2000/svg" className={className}>
