@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Layers } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Logo } from "@/components/logo";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
@@ -32,6 +32,17 @@ const AssetIcon = ({ className }: { className?: string }) => (
       d="M 1550.154 1666.405 C 1550.154 1660.29 1555.112 1655.332 1561.228 1655.332 L 1677.428 1655.332 C 1683.543 1655.332 1688.501 1660.29 1688.501 1666.405 L 1688.501 1782.614 C 1688.501 1788.73 1683.543 1793.688 1677.428 1793.688 L 1561.228 1793.688 C 1555.112 1793.688 1550.154 1788.73 1550.154 1782.614 L 1550.154 1666.405 Z" 
       stroke="currentColor" 
       strokeWidth="4" 
+      fill="currentColor"
+    />
+  </svg>
+);
+
+const ContextIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="1375.27 1509.47 150 150" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      d="M 1517.343 1583.172 C 1517.343 1621.099 1486.602 1651.831 1448.684 1651.831 C 1410.767 1651.831 1380.026 1621.099 1380.026 1583.172 C 1380.026 1545.255 1410.767 1514.514 1448.684 1514.514 C 1486.602 1514.514 1517.343 1545.255 1517.343 1583.172 Z" 
+      strokeWidth="4" 
+      stroke="currentColor"
       fill="currentColor"
     />
   </svg>
@@ -146,7 +157,7 @@ export default function Intro() {
               <Card className="border-[#232073]/20 hover:border-[#232073]/40 transition-colors" data-testid="card-contexts">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 bg-[#232073]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Layers className="h-8 w-8 text-[#232073]" />
+                    <ContextIcon className="h-8 w-8 text-[#232073]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] mb-2">Contexts</h3>
                   <p className="text-sm text-muted-foreground">
@@ -182,7 +193,7 @@ export default function Intro() {
                 </div>
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-[#CEECF2] rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <Layers className="h-6 w-6 text-[#232073]" />
+                    <ContextIcon className="h-6 w-6 text-[#232073]" />
                   </div>
                   <h3 className="font-semibold text-[#232073] mb-2">Multiple Entity Types</h3>
                   <p className="text-sm text-muted-foreground">
