@@ -2,6 +2,17 @@
 
 ## Milestones
 
+### Asset Import Wizard (December 11, 2025)
+- Multi-step wizard for importing assets from files (Upload → Classify → Group → Review)
+- Step 1: Drag-and-drop multi-file upload with auto-detection of structural types from MIME types
+- Step 2: Functional classification with filtered options based on structural type, plus name and description
+- Step 3: Optional asset grouping with isOrdered checkbox for sequences (e.g., image sequences, rolls)
+- Step 4: Review summary showing all assets and groups to be created
+- Comprehensive structural-to-functional type mapping for all OMC asset types
+- Generates OMC v2.8 schema-compliant Asset entities with proper AssetSC and assetFC structures
+- Asset groups include proper member references and functional characteristics
+- Wizard components in: client/src/components/asset-wizard/
+
 ### RDF/TTL Export Feature (December 11, 2025)
 - Added dual export capability: JSON and RDF/TTL (Turtle) formats
 - Export dropdown menu in builder toolbar with format selection
