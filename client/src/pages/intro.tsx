@@ -260,25 +260,25 @@ export default function Intro() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/builder?create=Task">
-                <Button size="lg" variant="secondary" data-testid="button-create-task" className="text-[#232073] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="secondary" data-testid="button-create-task" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <TaskIcon className="h-5 w-5" />
                   Create Task
                 </Button>
               </Link>
               <Link href="/builder?create=Participant">
-                <Button size="lg" variant="secondary" data-testid="button-create-participant" className="text-[#232073] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="secondary" data-testid="button-create-participant" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <ParticipantIcon className="h-5 w-5" />
                   Create Participant
                 </Button>
               </Link>
               <Link href="/builder?create=Asset">
-                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="text-[#232073] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <AssetIcon className="h-5 w-5" />
                   Create Asset
                 </Button>
               </Link>
               <Link href="/builder?create=Infrastructure">
-                <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="text-[#232073] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+                <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="text-[#232073] bg-white dark:bg-[#CEECF2] gap-2 hover:bg-[#CEECF2] hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
                   <InfrastructureIcon className="h-5 w-5" />
                   Create Infrastructure
                 </Button>
