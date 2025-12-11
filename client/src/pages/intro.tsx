@@ -96,7 +96,7 @@ export default function Intro() {
               data-testid="img-movielabs-logo"
             />
             <h1 className="text-4xl md:text-5xl font-bold text-[#232073] mb-6">
-              MovieLabs Ontology for Media Creation
+              MovieLabs Ontology for Media Creation Builder
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
               A standardized vocabulary and data model enabling software interoperability 
