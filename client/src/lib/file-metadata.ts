@@ -12,6 +12,11 @@ export interface ExtractedMetadata {
   bitRate: number | null;
   sampleRate: number | null;
   channels: number | null;
+  bitsPerSample: number | null;
+  codec: string | null;
+  container: string | null;
+  pageCount: number | null;
+  isLikelyScript: boolean;
 }
 
 export function getStructuralTypeFromMime(mimeType: string): string | null {
@@ -134,6 +139,39 @@ export async function extractMediaMetadata(file: File): Promise<Partial<Extracte
   });
 }
 
+export async function extractServerMetadata(file: File): Promise<Partial<ExtractedMetadata>> {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch('/api/assets/metadata', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      console.warn('Server metadata extraction failed');
+      return {};
+    }
+    
+    const data = await response.json();
+    return {
+      duration: data.duration ?? null,
+      sampleRate: data.sampleRate ?? null,
+      bitRate: data.bitRate ?? null,
+      channels: data.channels ?? null,
+      bitsPerSample: data.bitsPerSample ?? null,
+      codec: data.codec ?? null,
+      container: data.container ?? null,
+      pageCount: data.pageCount ?? null,
+      isLikelyScript: data.isLikelyScript ?? false
+    };
+  } catch (error) {
+    console.warn('Server metadata extraction error:', error);
+    return {};
+  }
+}
+
 export async function extractFileMetadata(file: File): Promise<ExtractedMetadata> {
   const extension = file.name.split('.').pop()?.toLowerCase() || '';
   const structuralType = getStructuralTypeFromMime(file.type);
@@ -149,17 +187,32 @@ export async function extractFileMetadata(file: File): Promise<ExtractedMetadata
     duration: null,
     bitRate: null,
     sampleRate: null,
-    channels: null
+    channels: null,
+    bitsPerSample: null,
+    codec: null,
+    container: null,
+    pageCount: null,
+    isLikelyScript: false
   };
   
+  // Client-side extraction for images
   if (file.type.startsWith('image/')) {
     const imageData = await extractImageMetadata(file);
     return { ...baseMetadata, ...imageData };
   }
   
+  // Client-side extraction for video/audio (basic)
   if (file.type.startsWith('video/') || file.type.startsWith('audio/')) {
     const mediaData = await extractMediaMetadata(file);
-    return { ...baseMetadata, ...mediaData };
+    // Also try server extraction for deeper metadata
+    const serverData = await extractServerMetadata(file);
+    return { ...baseMetadata, ...mediaData, ...serverData };
+  }
+  
+  // Server-side extraction for PDFs
+  if (file.type === 'application/pdf') {
+    const serverData = await extractServerMetadata(file);
+    return { ...baseMetadata, ...serverData };
   }
   
   return baseMetadata;

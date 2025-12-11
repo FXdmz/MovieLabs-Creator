@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { StagedAsset, getFunctionalTypesForStructural } from "./types";
+import { useEffect } from "react";
 import { ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 
 interface Step2ClassifyProps {
@@ -15,6 +16,18 @@ interface Step2ClassifyProps {
 }
 
 export function Step2Classify({ stagedAssets, onUpdateAsset }: Step2ClassifyProps) {
+  // Auto-suggest functional types based on metadata
+  useEffect(() => {
+    for (const asset of stagedAssets) {
+      if (!asset.functionalType) {
+        // Auto-suggest script for PDFs with script keywords
+        if (asset.metadata.isLikelyScript && asset.structuralType.includes('document')) {
+          onUpdateAsset(asset.id, { functionalType: 'script' });
+        }
+      }
+    }
+  }, [stagedAssets.map(a => `${a.id}-${a.metadata.isLikelyScript}`).join(',')]); // React to metadata changes
+
   const getFileIcon = (mimeType: string, className: string = "h-8 w-8") => {
     if (mimeType.startsWith('video/')) return <FileVideo className={`${className} text-blue-500`} />;
     if (mimeType.startsWith('audio/')) return <FileAudio className={`${className} text-purple-500`} />;

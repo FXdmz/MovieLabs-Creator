@@ -199,6 +199,29 @@ export default function Dashboard() {
         if (staged.metadata.duration) {
           structuralProperties.length = formatDuration(staged.metadata.duration);
         }
+        
+        // Audio-specific properties
+        if (staged.structuralType.includes('audio') || staged.structuralType === 'digital.audioVisual') {
+          if (staged.metadata.sampleRate) {
+            structuralProperties.audioSampleRate = staged.metadata.sampleRate;
+          }
+          if (staged.metadata.channels) {
+            structuralProperties.audioChannelCount = staged.metadata.channels;
+          }
+          if (staged.metadata.bitsPerSample) {
+            structuralProperties.audioBitDepth = staged.metadata.bitsPerSample;
+          }
+          if (staged.metadata.codec) {
+            structuralProperties.codec = staged.metadata.codec;
+          }
+        }
+        
+        // Document-specific properties
+        if (staged.structuralType.includes('document')) {
+          if (staged.metadata.pageCount) {
+            structuralProperties.pageCount = staged.metadata.pageCount;
+          }
+        }
       }
       
       const asset: any = {

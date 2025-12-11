@@ -1,0 +1,37 @@
+To get the specific metadata required to map files to the **MovieLabs Assets Ontology (OMC)**, you need libraries that can dig deeper than just file size and name.
+
+For your "Step 1: Structural Derivation," these are the best Node.js libraries to recommend in your prompt.
+
+### 1. For Images (The "Digital Image" Class)
+* **Top Pick:** `exiftool-vendored`
+    * **Why:** This is a fast, robust Node.js wrapper for Phil Harvey's *ExifTool*, which is the industry standard. It extracts thousands of tags (Exif, IPTC, XMP) including camera model, lens info, and color space—critical for professional media workflows.
+    * **Alternative (Performance):** `sharp`
+    * **Why:** If you only need width, height, and format, `sharp` is incredibly fast. However, for a detailed ontology, it lacks the depth of ExifTool.
+
+### 2. For Video & Audio (The "Digital Moving Image" & "Audio" Classes)
+* **Top Pick:** `fluent-ffmpeg`
+    * **Why:** A wrapper for FFmpeg (specifically using `ffprobe`). It allows you to extract technical details like codec (e.g., ProRes vs H.264), frame rate, duration, and bit depth. This is essential for distinguishing between a "Capture" (raw camera file) and a "Proxy" or "Dailies" file.
+* **Alternative (Audio only):** `music-metadata`
+    * **Why:** Great if you are processing strictly audio files (WAV, MP3) and need ID3 tags or sample rates without installing the heavy FFmpeg binary.
+
+### 3. For PDFs & Scripts (The "Digital Document" Class)
+* **Top Pick:** `pdf-parse`
+    * **Why:** It extracts the raw text and metadata (author, page count) from a PDF.
+    * **OMC Use Case:** You can use the extracted text to scan for keywords like "EXT.", "INT.", or "FADE IN:" to intelligently guess if the document is a **Script** (Functional Class) versus a generic report.
+
+### 4. For 3D Assets (The "Digital Asset" Class)
+* **Top Pick:** `fs` (Native Node File System) + Extension Parsing
+    * **Why:** Parsing 3D files (USD, FBX, OBJ) for internal metadata is notoriously difficult in pure JavaScript. For a wizard, relying on the **file extension** and `fs.stat` (for file size/dates) is usually sufficient.
+    * **Advanced:** If you need to know if a USD file is a "composition" or a "layer," you would likely need to spawn a child process that runs the actual `usdcat` or `usdchecker` CLI tools from Pixar (if installed on the server), as there are no stable native Node.js parsers for USD deep inspection yet.
+
+---
+
+### Updated "Technical Implementation" Section for Your Prompt
+
+You can paste this directly into your previous prompt under **Technical Implementation Notes**:
+
+> **Recommended Libraries for Metadata Extraction:**
+> * **Images:** Use `exiftool-vendored` to extract deep metadata (camera make, color space) to populate Custom Data fields.
+> * **Video/Audio:** Use `fluent-ffmpeg` (specifically `ffprobe`) to extract codecs, frame rates, and duration.
+> * **PDFs:** Use `pdf-parse` to read the first few pages of text; if standard script keywords (INT/EXT/FADE IN) are found, auto-suggest "Script" as the Functional Class.
+> * **General:** Use Node's native `fs.stat` to populate standard OMC attributes like file size and creation date.

@@ -1,6 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import multer from "multer";
+import * as mm from "music-metadata";
+// pdf-parse uses CommonJS, we'll import it dynamically when needed
+
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 100 * 1024 * 1024 }
+});
 
 export async function registerRoutes(
   httpServer: Server,
@@ -111,6 +119,72 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Geocode autocomplete error:", error);
       res.status(500).json({ error: "Failed to fetch address suggestions" });
+    }
+  });
+
+  // Asset metadata extraction endpoint
+  app.post("/api/assets/metadata", upload.single('file'), async (req, res) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({ error: "No file provided" });
+      }
+
+      const result: any = {
+        fileName: file.originalname,
+        fileSize: file.size,
+        mimeType: file.mimetype
+      };
+
+      // Audio file extraction using music-metadata
+      if (file.mimetype.startsWith('audio/') || file.mimetype.startsWith('video/')) {
+        try {
+          const metadata = await mm.parseBuffer(file.buffer, { mimeType: file.mimetype, size: file.size });
+          result.duration = metadata.format.duration;
+          result.sampleRate = metadata.format.sampleRate;
+          result.bitRate = metadata.format.bitrate;
+          result.channels = metadata.format.numberOfChannels;
+          result.codec = metadata.format.codec;
+          result.bitsPerSample = metadata.format.bitsPerSample;
+          
+          if (metadata.format.container) {
+            result.container = metadata.format.container;
+          }
+          
+          // For audio files, also extract common tags
+          if (metadata.common) {
+            result.title = metadata.common.title;
+            result.artist = metadata.common.artist;
+            result.album = metadata.common.album;
+          }
+        } catch (mmError) {
+          console.log("music-metadata extraction failed:", mmError);
+        }
+      }
+
+      // PDF extraction
+      if (file.mimetype === 'application/pdf') {
+        try {
+          const pdfModule = await import('pdf-parse');
+          const pdfData = await pdfModule.default(file.buffer);
+          result.pageCount = pdfData.numpages;
+          result.pdfInfo = pdfData.info;
+          
+          // Check for script keywords in first 5000 characters
+          const textSample = pdfData.text.substring(0, 5000).toUpperCase();
+          const scriptKeywords = ['INT.', 'EXT.', 'FADE IN:', 'FADE OUT:', 'CUT TO:', 'DISSOLVE TO:'];
+          const matchCount = scriptKeywords.filter(kw => textSample.includes(kw)).length;
+          result.isLikelyScript = matchCount >= 2;
+          result.scriptKeywordsFound = matchCount;
+        } catch (pdfError) {
+          console.log("pdf-parse extraction failed:", pdfError);
+        }
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error("Metadata extraction error:", error);
+      res.status(500).json({ error: "Failed to extract metadata" });
     }
   });
 

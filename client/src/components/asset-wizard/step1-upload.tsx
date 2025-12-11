@@ -130,8 +130,42 @@ export function Step1Upload({ stagedAssets, onAddFiles, onRemoveAsset, onUpdateA
                         <div className="font-medium truncate max-w-[300px]" title={asset.metadata.fileName}>
                           {asset.metadata.fileName}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {asset.metadata.mimeType || 'Unknown type'}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {asset.metadata.duration && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {Math.floor(asset.metadata.duration / 60)}:{String(Math.floor(asset.metadata.duration % 60)).padStart(2, '0')}
+                            </Badge>
+                          )}
+                          {asset.metadata.width && asset.metadata.height && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {asset.metadata.width}×{asset.metadata.height}
+                            </Badge>
+                          )}
+                          {asset.metadata.sampleRate && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {(asset.metadata.sampleRate / 1000).toFixed(1)}kHz
+                            </Badge>
+                          )}
+                          {asset.metadata.channels && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {asset.metadata.channels}ch
+                            </Badge>
+                          )}
+                          {asset.metadata.codec && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {asset.metadata.codec}
+                            </Badge>
+                          )}
+                          {asset.metadata.pageCount && (
+                            <Badge variant="outline" className="text-[10px]">
+                              {asset.metadata.pageCount} pages
+                            </Badge>
+                          )}
+                          {asset.metadata.isLikelyScript && (
+                            <Badge className="text-[10px] bg-green-500">
+                              Script Detected
+                            </Badge>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
