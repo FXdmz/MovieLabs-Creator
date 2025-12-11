@@ -27,7 +27,8 @@ import {
   Upload,
   HelpCircle,
   Home,
-  ChevronDown
+  ChevronDown,
+  Eye
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -58,6 +59,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Copy } from "lucide-react";
+import { ViewEntityDialog } from "@/components/view-entity-dialog";
 
 const LocationIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 46" className={className} fill="currentColor">
@@ -138,6 +140,7 @@ export default function Dashboard() {
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
+  const [showViewDialog, setShowViewDialog] = useState(false);
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
 
@@ -458,6 +461,17 @@ export default function Dashboard() {
                   <CheckCircle className="h-4 w-4" /> Validate
                 </Button>
                 
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowViewDialog(true)}
+                  disabled={!selectedEntity}
+                  className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
+                  data-testid="button-view-entity"
+                >
+                  <Eye className="h-4 w-4" /> View
+                </Button>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
@@ -582,6 +596,12 @@ export default function Dashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ViewEntityDialog 
+        open={showViewDialog} 
+        onOpenChange={setShowViewDialog} 
+        entity={selectedEntity ?? null} 
+      />
     </div>
   );
 }
