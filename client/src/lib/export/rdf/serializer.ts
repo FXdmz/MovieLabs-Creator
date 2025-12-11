@@ -57,7 +57,6 @@ const jsonToRdfPredicate: Record<string, string> = {
   identifier: "omc:hasIdentifier",
   identifierScope: "omc:hasIdentifierScope",
   identifierValue: "omc:hasIdentifierValue",
-  combinedForm: "omc:combinedForm",
   
   AssetSC: "omc:hasAssetStructuralCharacteristic",
   assetFC: "omc:hasAssetFunctionalCharacteristic",
@@ -89,14 +88,16 @@ const jsonToRdfPredicate: Record<string, string> = {
   Location: "omc:hasLocation",
   location: "omc:hasLocation",
   address: "omc:hasAddress",
-  street: "omc:street",
-  city: "omc:city",
-  region: "omc:region",
-  postalCode: "omc:postalCode",
+  street: "omc:hasStreetNumberAndName",
+  streetNumber: "omc:hasStreetNumberAndName",
+  city: "omc:hasCity",
+  locality: "omc:hasCity",
+  postalCode: "omc:hasPostalCode",
   country: "omc:hasCountry",
   geo: "omc:hasCoords",
-  latitude: "omc:latitude",
-  longitude: "omc:longitude",
+  coordinates: "omc:hasCoords",
+  latitude: "omc:hasLatitude",
+  longitude: "omc:hasLongitude",
   
   Context: "omc:hasContext",
   context: "omc:hasContext",
@@ -128,7 +129,16 @@ const jsonToRdfPredicate: Record<string, string> = {
   asset: "omc:hasAssetComponent"
 };
 
-function jsonKeyToRdfPredicate(key: string): string {
+const skipProperties = new Set([
+  "combinedForm",
+  "region",
+  "schemaVersion"
+]);
+
+function jsonKeyToRdfPredicate(key: string): string | null {
+  if (skipProperties.has(key)) {
+    return null;
+  }
   return jsonToRdfPredicate[key] || `omc:${key}`;
 }
 
@@ -161,6 +171,10 @@ function entityToTriples(entity: Entity): Triple[] {
     if (depth > 5) return;
     
     const predicate = jsonKeyToRdfPredicate(key);
+    
+    if (predicate === null) {
+      return;
+    }
     
     if (key === "entityType" && depth === 0) {
       return;
@@ -215,6 +229,18 @@ function entityToTriples(entity: Entity): Triple[] {
           subject: nestedSubject,
           predicate: "rdf:type",
           object: entityTypeToRdfClass(nestedType)
+        });
+      } else if (key === "address") {
+        triples.push({
+          subject: nestedSubject,
+          predicate: "rdf:type",
+          object: "omc:Address"
+        });
+      } else if (key === "geo" || key === "coordinates") {
+        triples.push({
+          subject: nestedSubject,
+          predicate: "rdf:type",
+          object: "omc:LatLon"
         });
       }
       

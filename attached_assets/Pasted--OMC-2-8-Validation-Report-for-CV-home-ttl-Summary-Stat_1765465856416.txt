@@ -1,0 +1,74 @@
+# OMC 2.8 Validation Report for CV-home.ttl
+
+## Summary
+**Status:** FAILED (8 invalid properties found)
+**OMC Version:** 2.8
+**Schema:** https://movielabs.com/omc/rdf/schema/v2.8
+
+## Issues Found
+
+### 1. Location Properties
+
+| Original Property | Status | Correct Property |
+|------------------|--------|------------------|
+| `omc:coordinates` | ❌ INVALID | `omc:hasCoords` |
+| `omc:combinedForm` | ❌ INVALID | Not in OMC (remove or use custom namespace) |
+
+### 2. Address Properties
+
+| Original Property | Status | Correct Property |
+|------------------|--------|------------------|
+| `omc:street` | ❌ INVALID | `omc:hasStreetNumberAndName` |
+| `omc:locality` | ❌ INVALID | `omc:hasCity` |
+| `omc:region` | ❌ INVALID | Not in OMC schema* |
+| `omc:postalCode` | ❌ INVALID | `omc:hasPostalCode` |
+| `omc:hasCountry` | ✅ VALID | - |
+
+*Note: OMC 2.8 doesn't have a region/state/province property for addresses
+
+### 3. Coordinates Properties
+
+| Original Property | Status | Correct Property | Notes |
+|------------------|--------|------------------|-------|
+| `omc:latitude` | ❌ INVALID | `omc:hasLatitude` | |
+| `omc:longitude` | ❌ INVALID | `omc:hasLongitude` | |
+| Missing type | ❌ | `rdf:type omc:LatLon` | Coordinates must be typed |
+
+## Key Corrections Made
+
+1. **Renamed:** `coordinates` → `hasCoords`
+2. **Removed:** `combinedForm` (not in OMC)
+3. **Removed:** `region` (not in OMC - Quebec not represented)
+4. **Added:** `rdf:type omc:Address` to address blank node
+5. **Added:** `rdf:type omc:LatLon` to coordinates blank node
+6. **Renamed:** Address properties to use OMC naming convention:
+   - `street` → `hasStreetNumberAndName`
+   - `locality` → `hasCity`
+   - `postalCode` → `hasPostalCode`
+7. **Renamed:** Coordinate properties:
+   - `latitude` → `hasLatitude`
+   - `longitude` → `hasLongitude`
+
+## OMC Property Reference
+
+### Location Class Properties
+- `omc:hasAddress` → omc:Address
+- `omc:hasCoords` → omc:LatLon (not "coordinates")
+- `omc:hasIdentifier` → identifier URI
+- `omc:hasIdentifierScope` → string
+- `omc:hasIdentifierValue` → string
+- `rdfs:label` → string
+
+### Address Class Properties
+- `omc:hasStreetNumberAndName` → xsd:string
+- `omc:hasCity` → xsd:string
+- `omc:hasPostalCode` → xsd:string
+- `omc:hasCountry` → country code/object
+
+### LatLon Class Properties
+- `omc:hasLatitude` → xsd:string or xsd:decimal
+- `omc:hasLongitude` → xsd:string or xsd:decimal
+
+## Files Generated
+- `CV-home-corrected.ttl` - Fully OMC 2.8 compliant version
+- `validation_report.md` - This report
