@@ -1,8 +1,9 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, HelpCircle } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { HelpDialog } from "@/components/help-dialog";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
   <svg viewBox="1620.35 1648.8 159.848 148.03" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -67,12 +68,21 @@ export default function Intro() {
           <div className="flex items-center gap-3">
             <Logo className="h-8 w-auto" />
           </div>
-          <Link href="/builder">
-            <Button data-testid="button-get-started-header" className="bg-[#232073] hover:bg-[#232073]/90">
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <HelpDialog 
+              trigger={
+                <Button variant="ghost" size="icon" data-testid="button-help-intro">
+                  <HelpCircle className="h-5 w-5 text-[#232073]" />
+                </Button>
+              }
+            />
+            <Link href="/builder">
+              <Button data-testid="button-get-started-header" className="bg-[#232073] hover:bg-[#232073]/90">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
