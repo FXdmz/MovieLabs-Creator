@@ -85,5 +85,17 @@ export function getRelevantFunctionalProperties(functionalType: string | null | 
   if (!functionalType) {
     return ALL_FUNCTIONAL_PROPERTIES;
   }
-  return FUNCTIONAL_PROPERTIES_BY_TYPE[functionalType] || ALL_FUNCTIONAL_PROPERTIES;
+  // Return the mapped properties (even if empty array) or fallback to all if type not found
+  if (functionalType in FUNCTIONAL_PROPERTIES_BY_TYPE) {
+    return FUNCTIONAL_PROPERTIES_BY_TYPE[functionalType];
+  }
+  return ALL_FUNCTIONAL_PROPERTIES;
+}
+
+export function hasFunctionalProperties(functionalType: string | null | undefined): boolean {
+  if (!functionalType) return false;
+  if (functionalType in FUNCTIONAL_PROPERTIES_BY_TYPE) {
+    return FUNCTIONAL_PROPERTIES_BY_TYPE[functionalType].length > 0;
+  }
+  return true; // Unknown types get all properties
 }

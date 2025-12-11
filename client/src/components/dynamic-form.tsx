@@ -20,7 +20,7 @@ import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { ISO_COUNTRY_CODES } from "@/lib/country-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
 import { getRelevantStructuralProperties } from "@/lib/structural-properties-map";
-import { getRelevantFunctionalProperties } from "@/lib/functional-properties-map";
+import { getRelevantFunctionalProperties, hasFunctionalProperties } from "@/lib/functional-properties-map";
 import { PARTICIPANT_STRUCTURAL_TYPES, getParticipantStructuralProperties, getParticipantStructuralDefaults, getParticipantFunctionalTypes } from "@/lib/participant-types";
 import { CONTEXT_STRUCTURAL_TYPES, getContextStructuralProperties, getContextStructuralDefaults } from "@/lib/context-types";
 import { CreativeWorkHeader } from "./creativework-header";
@@ -627,20 +627,26 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
         }
       }
       
-      // Filter assetFC.functionalProperties only if we have a specific functional type with properties
-      if (functionalType && relevantFuncProps.length > 0 && filteredProperties.assetFC?.properties?.functionalProperties?.properties) {
-        const funcPropsSchema = filteredProperties.assetFC.properties.functionalProperties;
-        const filteredFuncProps: any = {};
-        
-        Object.entries(funcPropsSchema.properties || {}).forEach(([key, propSchema]) => {
-          if (relevantFuncProps.includes(key)) {
-            filteredFuncProps[key] = propSchema;
+      // Filter assetFC.functionalProperties based on functional type
+      // If the functional type has no properties defined (empty array), hide the section entirely
+      if (functionalType && filteredProperties.assetFC?.properties?.functionalProperties) {
+        if (!hasFunctionalProperties(functionalType)) {
+          // Remove functionalProperties from the schema for types with no defined properties
+          delete filteredProperties.assetFC.properties.functionalProperties;
+        } else if (relevantFuncProps.length > 0 && filteredProperties.assetFC.properties.functionalProperties?.properties) {
+          const funcPropsSchema = filteredProperties.assetFC.properties.functionalProperties;
+          const filteredFuncProps: any = {};
+          
+          Object.entries(funcPropsSchema.properties || {}).forEach(([key, propSchema]) => {
+            if (relevantFuncProps.includes(key)) {
+              filteredFuncProps[key] = propSchema;
+            }
+          });
+          
+          // Apply filter if we have relevant properties
+          if (Object.keys(filteredFuncProps).length > 0) {
+            filteredProperties.assetFC.properties.functionalProperties.properties = filteredFuncProps;
           }
-        });
-        
-        // Only apply filter if we have relevant properties, otherwise show all
-        if (Object.keys(filteredFuncProps).length > 0) {
-          filteredProperties.assetFC.properties.functionalProperties.properties = filteredFuncProps;
         }
       }
 
