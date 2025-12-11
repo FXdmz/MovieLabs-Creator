@@ -389,7 +389,7 @@ export default function Dashboard() {
               <Separator className="my-1" />
               {(['Task', 'Location', 'Participant', 'Asset', 'Infrastructure'] as const).map((type) => (
                 <DropdownMenuItem key={type} onClick={() => addEntity(type)}>
-                  {type}
+                  {getEntityIcon(type)} {type}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
