@@ -14,7 +14,7 @@ export function Logo({ className }: LogoProps) {
     >
       <defs>
         <style>
-          {`.logo-st0 { fill: #232073; } .logo-st1 { fill: #ceecf2; }`}
+          {`.logo-st0 { fill: #fff; } .logo-st1 { fill: #ceecf2; }`}
         </style>
       </defs>
       <g>
