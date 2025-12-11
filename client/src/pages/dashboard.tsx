@@ -28,7 +28,8 @@ import {
   HelpCircle,
   Home,
   ChevronDown,
-  Eye
+  Eye,
+  Loader2
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -139,6 +140,9 @@ export default function Dashboard() {
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
+  const [validationSource, setValidationSource] = useState<'movielabs' | 'local' | null>(null);
+  const [validationResult, setValidationResult] = useState<any>(null);
+  const [isValidating, setIsValidating] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
@@ -189,39 +193,79 @@ export default function Dashboard() {
     e.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleValidate = () => {
+  const handleValidate = async () => {
     if (!schema || !selectedEntity) return;
 
+    setIsValidating(true);
+    setValidationErrors(null);
+    setValidationResult(null);
+    setValidationSource(null);
+
     try {
-      // Improved validation logic:
-      // OMC Schema structure: $defs[Type].properties[Type] contains the actual entity schema
-      // First try the nested path: $defs.Asset.properties.Asset
+      // Try MovieLabs official validator first
+      const response = await fetch('/api/validate/movielabs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selectedEntity.content)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.source === 'movielabs') {
+        setValidationSource('movielabs');
+        setValidationResult(data.result);
+        
+        // MovieLabs validator returns structured results
+        const mlResult = data.result;
+        const isValid = mlResult?.valid === true || mlResult?.isValid === true || 
+                       (mlResult?.errors && mlResult.errors.length === 0);
+        
+        if (isValid) {
+          toast({
+            title: "MovieLabs Validation Passed",
+            description: "Your entity is valid according to the official MovieLabs OMC validator.",
+            variant: "default",
+            className: "bg-green-600 text-white border-none"
+          });
+        } else {
+          // Show validation errors from MovieLabs
+          const errors = mlResult?.errors || mlResult?.messages || [mlResult];
+          setValidationErrors(Array.isArray(errors) ? errors : [errors]);
+          setShowValidationDialog(true);
+        }
+      } else if (data.fallbackToLocal) {
+        // Fallback to local validation
+        runLocalValidation();
+      } else {
+        // API returned but with unexpected format
+        console.warn("MovieLabs API response:", data);
+        runLocalValidation();
+      }
+    } catch (e: any) {
+      console.error("MovieLabs validator error:", e);
+      // Fallback to local validation
+      runLocalValidation();
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const runLocalValidation = () => {
+    if (!schema || !selectedEntity) return;
+    
+    setValidationSource('local');
+    
+    try {
       let entitySchema = schema.$defs?.[selectedEntity.type]?.properties?.[selectedEntity.type];
+      if (!entitySchema) entitySchema = schema.$defs?.[selectedEntity.type];
+      if (!entitySchema) entitySchema = schema.$defs?.MediaCreationContext?.properties?.[selectedEntity.type];
+      if (!entitySchema) entitySchema = schema.$defs?.Utility?.properties?.[selectedEntity.type];
+      if (!entitySchema) entitySchema = schema.$defs?.Participant?.properties?.[selectedEntity.type];
       
-      // Fallback: try direct definition (for simpler schemas)
-      if (!entitySchema) {
-         entitySchema = schema.$defs?.[selectedEntity.type];
-      }
-      
-      // Fallback searches for nested definitions in MediaCreationContext, Utility, Participant
-      if (!entitySchema) {
-         entitySchema = schema.$defs?.MediaCreationContext?.properties?.[selectedEntity.type];
-      }
-      if (!entitySchema) {
-         entitySchema = schema.$defs?.Utility?.properties?.[selectedEntity.type];
-      }
-      if (!entitySchema) {
-         entitySchema = schema.$defs?.Participant?.properties?.[selectedEntity.type];
-      }
-      
-      // If we found a specific schema, wrap it in a standalone schema object for AJV
-      // We need to keep the $defs from the root so references work
       const schemaToValidate = entitySchema ? {
         ...entitySchema,
         $defs: schema.$defs
-      } : schema; // Fallback to full schema if specific one not found
-
-      console.log("Validating against schema for:", selectedEntity.type);
+      } : schema;
 
       const validate = ajv.compile(schemaToValidate);
       const jsonValid = validate(selectedEntity.content);
@@ -231,44 +275,37 @@ export default function Dashboard() {
       let rdfError = "";
       try {
         const ttlOutput = entityToTurtle(selectedEntity);
-        // Basic RDF validation: check that output contains expected prefixes and triples
         rdfValid = ttlOutput.includes("@prefix omc:") && 
                    ttlOutput.includes("rdf:type") &&
                    ttlOutput.length > 100;
-        if (!rdfValid) {
-          rdfError = "RDF output appears incomplete or malformed";
-        }
+        if (!rdfValid) rdfError = "RDF output appears incomplete or malformed";
       } catch (e: any) {
         rdfError = e.message || "RDF generation failed";
       }
 
       if (jsonValid && rdfValid) {
         toast({
-          title: "Validation Successful",
-          description: "JSON: Valid (OMC v2.8 Schema) | RDF: Valid (Turtle format)",
+          title: "Local Validation Passed",
+          description: "JSON: Valid (OMC v2.8 Schema) | RDF: Valid (Turtle format) - Note: Using local validation (MovieLabs API unavailable)",
           variant: "default",
           className: "bg-green-600 text-white border-none"
         });
         setValidationErrors(null);
       } else if (jsonValid && !rdfValid) {
         toast({
-          title: "Partial Validation",
-          description: `JSON: Valid | RDF: ${rdfError || "Invalid"}`,
+          title: "Partial Validation (Local)",
+          description: `JSON: Valid | RDF: ${rdfError || "Invalid"} - Using local validation`,
           variant: "default",
           className: "bg-yellow-600 text-white border-none"
         });
         setValidationErrors(null);
-      } else if (!jsonValid && rdfValid) {
-        console.error("JSON validation errors:", validate.errors);
-        setValidationErrors(validate.errors || []);
-        setShowValidationDialog(true);
       } else {
         console.error("Validation errors:", validate.errors);
         setValidationErrors(validate.errors || []);
         setShowValidationDialog(true);
       }
     } catch (e: any) {
-      console.error("Validation exception:", e);
+      console.error("Local validation exception:", e);
       toast({
         title: "Validation Error",
         description: e.message || "An error occurred during validation.",
@@ -486,8 +523,18 @@ export default function Dashboard() {
                   </Tooltip>
                 </TooltipProvider>
 
-                <Button variant="outline" size="sm" onClick={handleValidate} className="gap-2 border-green-600/20 text-green-600 hover:bg-green-600/10">
-                  <CheckCircle className="h-4 w-4" /> Validate
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleValidate} 
+                  disabled={isValidating}
+                  className="gap-2 border-green-600/20 text-green-600 hover:bg-green-600/10"
+                >
+                  {isValidating ? (
+                    <><Loader2 className="h-4 w-4 animate-spin" /> Validating...</>
+                  ) : (
+                    <><CheckCircle className="h-4 w-4" /> Validate</>
+                  )}
                 </Button>
                 
                 <Button 
@@ -600,9 +647,17 @@ export default function Dashboard() {
               Validation Failed
             </DialogTitle>
             <DialogDescription>
-              The following errors were found in your entity data against the OMC v2.8 schema.
+              {validationSource === 'movielabs' 
+                ? "The following errors were returned by the official MovieLabs OMC validator."
+                : "The following errors were found using local schema validation (MovieLabs API unavailable)."}
             </DialogDescription>
           </DialogHeader>
+          
+          <div className="mb-2 flex items-center gap-2">
+            <Badge variant={validationSource === 'movielabs' ? 'default' : 'secondary'}>
+              {validationSource === 'movielabs' ? 'MovieLabs Official Validator' : 'Local Validation'}
+            </Badge>
+          </div>
           
           <div className="flex-1 overflow-auto border rounded-md bg-muted/50 p-4 font-mono text-xs">
             <pre className="whitespace-pre-wrap break-all">

@@ -6,6 +6,72 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // MovieLabs OMC Validator API proxy
+  app.post("/api/validate/movielabs", async (req, res) => {
+    try {
+      const entityData = req.body;
+      
+      if (!entityData || typeof entityData !== 'object') {
+        return res.status(400).json({ 
+          success: false, 
+          source: 'server',
+          error: "Invalid request body" 
+        });
+      }
+
+      // Call the official MovieLabs validator API
+      const response = await fetch('https://omc-validator.mc.movielabs.com/api/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(entityData)
+      });
+
+      // Handle non-OK responses (4xx, 5xx)
+      if (!response.ok) {
+        console.error("MovieLabs validator returned HTTP", response.status);
+        return res.json({ 
+          success: false, 
+          source: 'server',
+          error: `MovieLabs validator returned HTTP ${response.status}`,
+          fallbackToLocal: true
+        });
+      }
+
+      // Safely parse JSON response
+      let validationResult;
+      try {
+        const responseText = await response.text();
+        validationResult = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Failed to parse MovieLabs response as JSON:", parseError);
+        return res.json({ 
+          success: false, 
+          source: 'server',
+          error: "MovieLabs validator returned invalid JSON",
+          fallbackToLocal: true
+        });
+      }
+      
+      res.json({
+        success: true,
+        source: 'movielabs',
+        status: response.status,
+        result: validationResult
+      });
+    } catch (error) {
+      console.error("MovieLabs validator error:", error);
+      res.json({ 
+        success: false, 
+        source: 'server',
+        error: "Failed to reach MovieLabs validator. Using local validation as fallback.",
+        fallbackToLocal: true
+      });
+    }
+  });
+
   // Geoapify address autocomplete proxy (keeps API key secure on server)
   app.get("/api/geocode/autocomplete", async (req, res) => {
     try {
