@@ -100,16 +100,6 @@ export default function Intro() {
             <h1 className="text-4xl md:text-5xl font-bold text-[#232073] mb-6">
               MovieLabs Ontology for Media Creation Builder
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              A standardized vocabulary and data model enabling software interoperability 
-              across the entire media production workflow—from script to screen.
-            </p>
-            <Link href="/builder">
-              <Button size="lg" data-testid="button-start-building" className="bg-[#232073] hover:bg-[#1a1857] hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-lg px-8 py-6">
-                Start Building Entities
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
           </div>
         </section>
 
@@ -118,6 +108,10 @@ export default function Intro() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-[#232073] mb-6 text-center">About the OMC Builder</h2>
               <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
+                <p className="mb-6 text-xl text-center">
+                  A standardized vocabulary and data model enabling software interoperability 
+                  across the entire media production workflow—from script to screen.
+                </p>
                 <p className="mb-6">
                   The <strong>OMC Builder</strong> is a web application designed to help media 
                   production professionals create and export OMC-compliant JSON documents. Whether 
@@ -153,6 +147,14 @@ export default function Intro() {
                     Export valid JSON ready for integration with production systems
                   </p>
                 </div>
+              </div>
+              <div className="text-center mt-10">
+                <Link href="/builder">
+                  <Button size="lg" data-testid="button-start-building" className="bg-[#232073] hover:bg-[#1a1857] hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-lg px-8 py-6">
+                    Start Building OMC
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
