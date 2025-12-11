@@ -1,5 +1,21 @@
 # ME-DMZ Ontology Builder
 
+## Milestones
+
+### Landing Page Complete (December 11, 2025)
+The intro/landing page at "/" is complete with:
+- MovieLabs 2030 Vision branding and logo
+- ME-DMZ branding with clickable logo linking to me-dmz.com
+- "About the OMC Builder" content with engaging copy
+- Three feature highlights: Schema Validated, Multiple Entity Types, Easy Export
+- "What is the OMC?" educational section explaining the ontology
+- Core Building Blocks cards for all 5 entity types (Participants, Tasks, Assets, Contexts, Infrastructure)
+- Call-to-action section with quick-create buttons for each entity type
+- ME-DMZ footer with tagline, copyright, and privacy policy link
+- Help dialog accessible from header
+- Consistent hover effects on all interactive elements
+- Light blue (#CEECF2) accent color throughout
+
 ## Overview
 
 ME-DMZ Ontology Builder is a web application for creating and exporting MovieLabs Ontology for Media Creation (OMC) compliant JSON documents. The application provides a visual form-based interface for building complex media production ontology entities (such as Creative Works, Assets, Characters, etc.) and validates them against the official OMC-JSON Schema v2.8.
