@@ -361,6 +361,13 @@ export default function Dashboard() {
         </ScrollArea>
 
         <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10 space-y-2">
+          <HelpDialog 
+            trigger={
+              <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-help-builder">
+                <HelpCircle className="h-4 w-4" /> Help
+              </Button>
+            }
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-full gap-2 bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 shadow-md border-0" size="lg">
