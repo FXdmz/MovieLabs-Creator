@@ -379,20 +379,13 @@ export default function Dashboard() {
                 <Upload className="h-4 w-4 mr-2" /> Import Asset from File
               </DropdownMenuItem>
               <Separator className="my-1" />
-              {ENTITY_TYPES.map((type) => (
+              {(['Task', 'Location', 'Participant', 'Asset', 'Infrastructure'] as const).map((type) => (
                 <DropdownMenuItem key={type} onClick={() => addEntity(type)}>
                   {type}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <HelpDialog 
-            trigger={
-              <Button variant="outline" className="w-full gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] transition-all duration-200" size="lg" data-testid="button-help-sidebar">
-                <HelpCircle className="h-4 w-4" /> Help & Documentation
-              </Button>
-            }
-          />
         </div>
       </aside>
 
