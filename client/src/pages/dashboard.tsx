@@ -227,11 +227,24 @@ export default function Dashboard() {
         if (isValid) {
           toast({
             title: "MovieLabs Validation Passed",
-            description: "Your entity is valid according to the official MovieLabs OMC validator.",
+            description: "Your entity is valid! Click 'View Details' to see the full report.",
             variant: "default",
-            className: "bg-green-600 text-white border-none"
+            className: "bg-green-600 text-white border-none",
+            action: (
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                onClick={() => {
+                  setValidationErrors([]);
+                  setShowValidationDialog(true);
+                }}
+                className="bg-white/20 hover:bg-white/30 text-white border-none"
+              >
+                View Details
+              </Button>
+            )
           });
-          setValidationErrors(null);
+          setValidationErrors([]);
         } else {
           // Extract issues from the details object
           const issues = details?.issues || {};
@@ -662,41 +675,124 @@ export default function Dashboard() {
       </main>
 
       <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
-        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+        <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
-              Validation Failed
+            <DialogTitle className={`flex items-center gap-2 ${validationErrors && validationErrors.length > 0 ? 'text-destructive' : 'text-green-600'}`}>
+              {validationErrors && validationErrors.length > 0 ? (
+                <AlertTriangle className="h-5 w-5" />
+              ) : (
+                <CheckCircle className="h-5 w-5" />
+              )}
+              {validationErrors && validationErrors.length > 0 ? 'Validation Issues Found' : 'Validation Passed'}
             </DialogTitle>
             <DialogDescription>
               {validationSource === 'movielabs' 
-                ? "The following errors were returned by the official MovieLabs OMC validator."
-                : "The following errors were found using local schema validation (MovieLabs API unavailable)."}
+                ? "Results from the official MovieLabs OMC validator."
+                : "Results from local schema validation (MovieLabs API unavailable)."}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="mb-2 flex items-center gap-2">
+          <div className="mb-3 flex items-center gap-2">
             <Badge variant={validationSource === 'movielabs' ? 'default' : 'secondary'}>
               {validationSource === 'movielabs' ? 'MovieLabs Official Validator' : 'Local Validation'}
             </Badge>
-          </div>
-          
-          <div className="flex-1 overflow-auto border rounded-md bg-muted/50 p-4 font-mono text-xs">
-            <pre className="whitespace-pre-wrap break-all">
-              {validationErrors ? JSON.stringify(validationErrors, null, 2) : "No details available."}
-            </pre>
+            {validationResult?.summary && (
+              <Badge variant="outline" className="text-xs">
+                v2.8 Schema
+              </Badge>
+            )}
           </div>
 
-          <DialogFooter className="sm:justify-between gap-2">
+          {validationSource === 'movielabs' && validationResult?.summary && (
+            <div className="mb-3 p-3 bg-muted/30 rounded-lg border">
+              <h4 className="text-sm font-medium mb-2">Rule Summary</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {Object.entries(validationResult.summary).map(([ruleId, status]) => (
+                  <Badge 
+                    key={ruleId}
+                    variant={status === 'passed' ? 'outline' : status === 'failed' ? 'destructive' : 'secondary'}
+                    className={`text-[10px] ${status === 'passed' ? 'border-green-500 text-green-600' : ''}`}
+                  >
+                    {ruleId}: {String(status)}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="flex-1 overflow-auto">
+            {validationErrors && validationErrors.length > 0 ? (
+              <div className="space-y-3">
+                {validationErrors.map((error: any, idx: number) => (
+                  <div key={idx} className="p-3 border rounded-lg bg-card hover:bg-muted/20 transition-colors">
+                    {validationSource === 'movielabs' && error.ruleId ? (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="destructive" className="text-xs">{error.ruleId}</Badge>
+                          {error.context?.type && (
+                            <Badge variant="outline" className="text-xs">{error.context.type}</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm font-medium text-foreground mb-1">{error.issue}</p>
+                        {error.exception && (
+                          <p className="text-xs text-muted-foreground mb-2">{error.exception}</p>
+                        )}
+                        {error.context?.jsonPointers && error.context.jsonPointers.length > 0 && (
+                          <div className="mt-2 p-2 bg-muted/50 rounded text-xs font-mono">
+                            <span className="text-muted-foreground">Location: </span>
+                            {error.context.jsonPointers.join(', ')}
+                          </div>
+                        )}
+                        {error.specifics && (
+                          <div className="mt-2 p-2 bg-yellow-500/10 rounded text-xs">
+                            <span className="text-yellow-600 font-medium">Details: </span>
+                            {error.specifics}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="destructive" className="text-xs">
+                            {error.keyword || 'Error'}
+                          </Badge>
+                          {error.instancePath && (
+                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{error.instancePath}</code>
+                          )}
+                        </div>
+                        <p className="text-sm text-foreground">{error.message}</p>
+                        {error.schemaPath && (
+                          <p className="text-xs text-muted-foreground mt-1 font-mono">Schema: {error.schemaPath}</p>
+                        )}
+                        {error.params && Object.keys(error.params).length > 0 && (
+                          <div className="mt-2 p-2 bg-muted/50 rounded text-xs font-mono">
+                            {Object.entries(error.params).map(([key, val]) => (
+                              <div key={key}><span className="text-muted-foreground">{key}:</span> {String(val)}</div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 text-center text-muted-foreground">
+                No detailed error information available.
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="sm:justify-between gap-2 pt-3 border-t">
             <div className="text-xs text-muted-foreground self-center">
-              {validationErrors?.length} error(s) found
+              {validationErrors?.length || 0} issue(s) found
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setShowValidationDialog(false)}>
                 Close
               </Button>
               <Button onClick={copyErrorsToClipboard} className="gap-2">
-                <Copy className="h-4 w-4" /> Copy Errors
+                <Copy className="h-4 w-4" /> Copy Details
               </Button>
             </div>
           </DialogFooter>
