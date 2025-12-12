@@ -581,18 +581,13 @@ export default function Dashboard() {
   };
 
   const handleExportCurrentJson = () => {
+    const { downloadCurrentAs } = useOntologyStore.getState();
     if (!selectedEntity) {
       toast({ title: "No entity selected", variant: "destructive" });
       return;
     }
-    const blob = new Blob([JSON.stringify(selectedEntity.content, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
     const fileName = `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.json`;
-    a.download = fileName;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCurrentAs("json", fileName);
     toast({
       title: "Exported as JSON",
       description: `Downloaded ${fileName}`
@@ -626,31 +621,16 @@ export default function Dashboard() {
   };
 
   const executeExportAll = () => {
+    const { downloadAs } = useOntologyStore.getState();
     const sanitizedName = exportFileName.replace(/[^a-zA-Z0-9-_]/g, '_') || "omc-ontology";
+    const ext = exportFormat === "json" ? ".json" : ".ttl";
+    const fileName = `${sanitizedName}${ext}`;
     
-    if (exportFormat === "json") {
-      const json = exportJson();
-      const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const fileName = `${sanitizedName}.json`;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast({
-        title: "Exported as JSON",
-        description: `Downloaded ${fileName} (${entities.length} entities)`
-      });
-    } else {
-      const { downloadAs } = useOntologyStore.getState();
-      const fileName = `${sanitizedName}.ttl`;
-      downloadAs("ttl", fileName);
-      toast({
-        title: "Exported as TTL (RDF)",
-        description: `Downloaded ${fileName} (${entities.length} entities)`
-      });
-    }
+    downloadAs(exportFormat, fileName);
+    toast({
+      title: `Exported as ${exportFormat.toUpperCase()}`,
+      description: `Downloaded ${fileName} (${entities.length} entities)`
+    });
     
     setShowExportNameDialog(false);
   };

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { EntityType } from './constants';
 import { v4 as uuidv4 } from 'uuid';
-import { exportEntities, downloadExport, ExportFormat } from './export';
+import { exportEntities, downloadExport, ExportFormat, prepareEntitiesForJsonExport } from './export';
 
 export interface Entity {
   id: string;
@@ -168,8 +168,9 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   selectEntity: (id) => set({ selectedEntityId: id }),
   exportJson: () => {
     const { entities } = get();
-    if (entities.length === 1) return entities[0].content;
-    return entities.map(e => e.content);
+    const transformed = prepareEntitiesForJsonExport(entities);
+    if (transformed.length === 1) return transformed[0].content;
+    return transformed.map(e => e.content);
   },
   exportAs: (format: ExportFormat) => {
     const { entities } = get();

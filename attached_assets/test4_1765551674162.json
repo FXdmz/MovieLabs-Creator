@@ -1,0 +1,177 @@
+[
+  {
+    "entityType": "CreativeWork",
+    "name": "Avatar: The Way of Water",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "18ae14b9-9043-4d32-a74a-1f6652b4bd12",
+        "combinedForm": "me-nexus:18ae14b9-9043-4d32-a74a-1f6652b4bd12"
+      }
+    ],
+    "creativeWorkTitle": [
+      {
+        "titleName": "Avatar: The Way of Water",
+        "titleType": "release",
+        "titleLanguage": "en"
+      }
+    ],
+    "description": "2022 film by James Cameron",
+    "creativeWorkType": "creativeWork",
+    "creativeWorkCategory": "movie",
+    "approximateLength": "PT3H12M"
+  },
+  {
+    "entityType": "Task",
+    "name": "edit",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "9a7df868-e044-4496-91f1-c4921c8d80d9",
+        "combinedForm": "me-nexus:9a7df868-e044-4496-91f1-c4921c8d80d9"
+      }
+    ],
+    "TaskSC": {
+      "entityType": "TaskSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "29b7343c-ba2a-4055-8301-0527a7473a25",
+          "combinedForm": "me-nexus:29b7343c-ba2a-4055-8301-0527a7473a25"
+        }
+      ],
+      "structuralType": "menexus:Production-Services",
+      "structuralProperties": {
+        "l1": "Production Services",
+        "serviceCount": 66
+      }
+    },
+    "taskFC": {
+      "entityType": "TaskFC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "8104e811-1130-400b-ad3d-a8c7c8214772",
+          "combinedForm": "me-nexus:8104e811-1130-400b-ad3d-a8c7c8214772"
+        }
+      ],
+      "functionalType": "menexus:Directing",
+      "functionalProperties": {
+        "serviceId": "c672087c-3c66-4467-8667-bf9166339d26",
+        "serviceName": "Directing",
+        "fullPath": "Production Services > Principal Photography > Directing",
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Directing",
+        "description": "Lead the filmmaking process by guiding the creative vision on set—directing actors’ performances and making decisions on camera work, lighting, and pacing to tell the story effectively",
+        "omcEquivalent": "omc:Shoot"
+      }
+    },
+    "state": "assigned",
+    "Context": [
+      {
+        "entityType": "Context",
+        "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+        "identifier": [
+          {
+            "identifierScope": "me-nexus",
+            "identifierValue": "1dc69688-1a97-4ce7-8fa7-889029478ccd",
+            "combinedForm": "me-nexus:1dc69688-1a97-4ce7-8fa7-889029478ccd"
+          }
+        ],
+        "contextType": "production",
+        "scheduling": {
+          "scheduledStart": "2025-12-26T14:57:00.000Z",
+          "scheduledEnd": "2026-01-10T14:57:00.000Z"
+        },
+        "hasInputAssets": [
+          "me-nexus:c49cc8c6-7252-4398-828c-9d63cdcd2c26"
+        ]
+      }
+    ],
+    "stateDetails": "fdfdfd",
+    "workUnit": {
+      "entityType": "WorkUnit",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "a6cd6828-56d4-46f5-aacd-28645c1aa475",
+          "combinedForm": "me-nexus:a6cd6828-56d4-46f5-aacd-28645c1aa475"
+        }
+      ],
+      "participantRef": "me-nexus:b41749be-f6cf-42e4-a948-d97b73398351"
+    }
+  },
+  {
+    "entityType": "Participant",
+    "name": "James Cameron",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "b41749be-f6cf-42e4-a948-d97b73398351",
+        "combinedForm": "me-nexus:b41749be-f6cf-42e4-a948-d97b73398351"
+      }
+    ],
+    "ParticipantSC": {
+      "structuralType": "person",
+      "personName": {
+        "fullName": "James Cameron",
+        "firstGivenName": "James",
+        "familyName": "Cameron"
+      },
+      "jobTitle": null,
+      "gender": null,
+      "contact": null,
+      "entityType": "Person",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "ab80c681-7e93-4f52-93e6-2895c636b7dc",
+          "combinedForm": "me-nexus:ab80c681-7e93-4f52-93e6-2895c636b7dc"
+        }
+      ]
+    },
+    "participantFC": null,
+    "Context": null
+  },
+  {
+    "entityType": "Asset",
+    "name": "Europa_1.27.24",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "c49cc8c6-7252-4398-828c-9d63cdcd2c26",
+        "combinedForm": "me-nexus:c49cc8c6-7252-4398-828c-9d63cdcd2c26"
+      }
+    ],
+    "assetFC": {
+      "functionalType": "script"
+    },
+    "AssetSC": {
+      "entityType": "AssetSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "c49cc8c6-7252-4398-828c-9d63cdcd2c26-sc",
+          "combinedForm": "me-nexus:c49cc8c6-7252-4398-828c-9d63cdcd2c26-sc"
+        }
+      ],
+      "structuralType": "digital.document",
+      "structuralProperties": {
+        "fileDetails": {
+          "fileName": "Europa_1.27.24.pdf",
+          "fileExtension": "pdf"
+        }
+      }
+    }
+  }
+]
