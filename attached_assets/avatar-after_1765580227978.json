@@ -1,0 +1,443 @@
+[
+  {
+    "entityType": "CreativeWork",
+    "name": "Avatar",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "f539df03-53af-4637-9dc6-0feeb7837a68",
+        "combinedForm": "me-nexus:f539df03-53af-4637-9dc6-0feeb7837a68"
+      }
+    ],
+    "creativeWorkTitle": [
+      {
+        "titleName": "Avatar",
+        "titleType": "release",
+        "titleLanguage": "en"
+      }
+    ],
+    "description": "2009 film directed by James Cameron",
+    "creativeWorkType": "creativeWork",
+    "creativeWorkCategory": "movie",
+    "approximateLength": "PT2H42M"
+  },
+  {
+    "entityType": "Location",
+    "name": "Los Angeles",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "db191366-e4b3-42ea-ab64-54bcf0cd3718",
+        "combinedForm": "me-nexus:db191366-e4b3-42ea-ab64-54bcf0cd3718"
+      }
+    ],
+    "address": {
+      "locality": "Los Angeles",
+      "region": "California",
+      "country": "US"
+    },
+    "coordinates": {
+      "latitude": 34.0536909,
+      "longitude": -118.242766
+    }
+  },
+  {
+    "entityType": "Participant",
+    "name": "James Cameron",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "b7274c41-dbfc-4659-90f9-e5e2fb082452",
+        "combinedForm": "me-nexus:b7274c41-dbfc-4659-90f9-e5e2fb082452"
+      }
+    ],
+    "ParticipantSC": {
+      "structuralType": "person",
+      "personName": {
+        "fullName": "James Cameron",
+        "firstGivenName": "James",
+        "familyName": "Cameron"
+      },
+      "jobTitle": null,
+      "gender": null,
+      "contact": null,
+      "entityType": "Person",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "ca3b54c4-e837-4db8-9d0a-d82c632f041a",
+          "combinedForm": "me-nexus:ca3b54c4-e837-4db8-9d0a-d82c632f041a"
+        }
+      ],
+      "Location": "me-nexus:db191366-e4b3-42ea-ab64-54bcf0cd3718"
+    },
+    "participantFC": {
+      "functionalType": "cast",
+      "jobTitle": "Director"
+    },
+    "Context": null
+  },
+  {
+    "entityType": "Participant",
+    "name": "Arnold Schwarzenegger",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "929cb984-567d-4a27-a40c-177bffdaddb6",
+        "combinedForm": "me-nexus:929cb984-567d-4a27-a40c-177bffdaddb6"
+      }
+    ],
+    "ParticipantSC": {
+      "structuralType": "person",
+      "personName": {
+        "fullName": "Arnold Schwarzenegger",
+        "firstGivenName": "Arnold",
+        "familyName": "Schwarzenegger"
+      },
+      "jobTitle": null,
+      "gender": null,
+      "contact": null,
+      "entityType": "Person",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "bc4807ef-5124-4170-b841-20bd28c01046",
+          "combinedForm": "me-nexus:bc4807ef-5124-4170-b841-20bd28c01046"
+        }
+      ],
+      "Location": "me-nexus:db191366-e4b3-42ea-ab64-54bcf0cd3718"
+    },
+    "participantFC": {
+      "functionalType": "cast",
+      "jobTitle": "Actor"
+    },
+    "Context": null
+  },
+  {
+    "entityType": "Asset",
+    "name": "Europa_1.27.24",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "137e45d1-9d5b-481c-9f8e-6e2679c2c9aa",
+        "combinedForm": "me-nexus:137e45d1-9d5b-481c-9f8e-6e2679c2c9aa"
+      }
+    ],
+    "assetFC": {
+      "functionalType": "script"
+    },
+    "AssetSC": {
+      "entityType": "AssetSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "137e45d1-9d5b-481c-9f8e-6e2679c2c9aa-sc",
+          "combinedForm": "me-nexus:137e45d1-9d5b-481c-9f8e-6e2679c2c9aa-sc"
+        }
+      ],
+      "structuralType": "digital.document",
+      "structuralProperties": {
+        "fileDetails": {
+          "fileName": "Europa_1.27.24.pdf",
+          "fileExtension": "pdf"
+        }
+      }
+    }
+  },
+  {
+    "entityType": "Task",
+    "name": "Script Writing",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "b6e052e5-1538-4f13-93f6-ad26b372c723",
+        "combinedForm": "me-nexus:b6e052e5-1538-4f13-93f6-ad26b372c723"
+      }
+    ],
+    "TaskSC": {
+      "entityType": "TaskSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "94d027e5-0a27-4778-a7cb-be6305b4e632",
+          "combinedForm": "me-nexus:94d027e5-0a27-4778-a7cb-be6305b4e632"
+        }
+      ],
+      "structuralType": "menexus:Production-Services",
+      "structuralProperties": {
+        "l1": "Production Services",
+        "serviceCount": 66
+      }
+    },
+    "taskFC": {
+      "entityType": "TaskFC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "81de3131-c023-470d-9e51-73ed1243f334",
+          "combinedForm": "me-nexus:81de3131-c023-470d-9e51-73ed1243f334"
+        }
+      ],
+      "functionalType": "menexus:Script-writing",
+      "functionalProperties": {
+        "serviceId": "e10daa51-6b5d-49e6-9a34-aaa6ed8c5f4b",
+        "serviceName": "Script writing",
+        "fullPath": "Production Services",
+        "l1": "Production Services",
+        "l2": null,
+        "l3": null,
+        "description": "Write Script represents all of the necessary activities to develop, iterate and finalize a script for pre-production.",
+        "omcEquivalent": "omc:Task"
+      }
+    },
+    "Context": [
+      {
+        "entityType": "Context",
+        "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+        "identifier": [
+          {
+            "identifierScope": "me-nexus",
+            "identifierValue": "616eca2c-19a4-496d-b76e-415017e9212b",
+            "combinedForm": "me-nexus:616eca2c-19a4-496d-b76e-415017e9212b"
+          }
+        ],
+        "contextType": "production",
+        "contributesTo": {
+          "CreativeWork": [
+            "me-nexus:f539df03-53af-4637-9dc6-0feeb7837a68"
+          ]
+        },
+        "uses": {
+          "Infrastructure": [
+            "me-nexus:bb4a3e1a-e19a-4e6e-b51e-20f78a4f320d"
+          ],
+          "Asset": [
+            "me-nexus:137e45d1-9d5b-481c-9f8e-6e2679c2c9aa"
+          ]
+        },
+        "customData": [
+          {
+            "domain": "me-nexus",
+            "namespace": "scheduling",
+            "value": {
+              "scheduling": {
+                "scheduledStart": "2025-12-11T22:53:00.000Z",
+                "scheduledEnd": "2026-01-01T22:53:00.000Z"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "customData": [
+      {
+        "domain": "me-nexus",
+        "namespace": "workflow",
+        "value": {
+          "state": "assigned",
+          "stateDetails": "yes"
+        }
+      },
+      {
+        "domain": "me-nexus",
+        "namespace": "work",
+        "value": {
+          "workUnit": {
+            "entityType": "WorkUnit",
+            "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+            "identifier": [
+              {
+                "identifierScope": "me-nexus",
+                "identifierValue": "144fe2b7-6f3c-414c-aee3-77d51065ce00",
+                "combinedForm": "me-nexus:144fe2b7-6f3c-414c-aee3-77d51065ce00"
+              }
+            ],
+            "participantRef": "me-nexus:b7274c41-dbfc-4659-90f9-e5e2fb082452"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "entityType": "Infrastructure",
+    "name": "Final Draft",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "bb4a3e1a-e19a-4e6e-b51e-20f78a4f320d",
+        "combinedForm": "me-nexus:bb4a3e1a-e19a-4e6e-b51e-20f78a4f320d"
+      }
+    ],
+    "InfrastructureSC": {
+      "entityType": "InfrastructureSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "50205cef-7db9-4850-9139-1a5971224980",
+          "combinedForm": "me-nexus:50205cef-7db9-4850-9139-1a5971224980"
+        }
+      ],
+      "structuralType": null,
+      "structuralProperties": {}
+    },
+    "infrastructureFC": null,
+    "Context": null
+  },
+  {
+    "entityType": "Infrastructure",
+    "name": "Maya",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "49a26b6c-0111-426c-af6f-afe0bce176a0",
+        "combinedForm": "me-nexus:49a26b6c-0111-426c-af6f-afe0bce176a0"
+      }
+    ],
+    "InfrastructureSC": {
+      "entityType": "InfrastructureSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "8c3105b7-a54c-4d77-a5d4-380815a6cd8d",
+          "combinedForm": "me-nexus:8c3105b7-a54c-4d77-a5d4-380815a6cd8d"
+        }
+      ],
+      "structuralType": null,
+      "structuralProperties": {}
+    },
+    "infrastructureFC": null,
+    "Context": null
+  },
+  {
+    "entityType": "Task",
+    "name": "Previz",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "4bfdaa3d-e47b-45dd-b499-ff483c6f99d9",
+        "combinedForm": "me-nexus:4bfdaa3d-e47b-45dd-b499-ff483c6f99d9"
+      }
+    ],
+    "TaskSC": {
+      "entityType": "TaskSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "084a508c-8edb-4c15-9330-401461e9449a",
+          "combinedForm": "me-nexus:084a508c-8edb-4c15-9330-401461e9449a"
+        }
+      ],
+      "structuralType": "menexus:Production-Services",
+      "structuralProperties": {
+        "l1": "Production Services",
+        "serviceCount": 66
+      }
+    },
+    "taskFC": {
+      "entityType": "TaskFC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifier": [
+        {
+          "identifierScope": "me-nexus",
+          "identifierValue": "f49905fb-27da-479e-a91b-896979ca4cbf",
+          "combinedForm": "me-nexus:f49905fb-27da-479e-a91b-896979ca4cbf"
+        }
+      ],
+      "functionalType": "menexus:Previsualization",
+      "functionalProperties": {
+        "serviceId": "e1dba8dc-3c82-4b13-b01c-1f35ce897660",
+        "serviceName": "Previsualization",
+        "fullPath": "Production Services > Pre-Production Services > Previsualization",
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Previsualization",
+        "description": "Visually map out the scenes in a production before principal photography.",
+        "omcEquivalent": "omc:DevelopCreativeStyle"
+      }
+    },
+    "Context": [
+      {
+        "entityType": "Context",
+        "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+        "identifier": [
+          {
+            "identifierScope": "me-nexus",
+            "identifierValue": "21a97689-2412-4296-9503-35f8065a8a4e",
+            "combinedForm": "me-nexus:21a97689-2412-4296-9503-35f8065a8a4e"
+          }
+        ],
+        "contextType": "production",
+        "contributesTo": {
+          "CreativeWork": [
+            "me-nexus:f539df03-53af-4637-9dc6-0feeb7837a68"
+          ]
+        },
+        "uses": {
+          "Infrastructure": [
+            "me-nexus:49a26b6c-0111-426c-af6f-afe0bce176a0"
+          ],
+          "Asset": [
+            "me-nexus:137e45d1-9d5b-481c-9f8e-6e2679c2c9aa"
+          ]
+        },
+        "customData": [
+          {
+            "domain": "me-nexus",
+            "namespace": "scheduling",
+            "value": {
+              "scheduling": {
+                "scheduledStart": "2025-12-03T22:55:00.000Z",
+                "scheduledEnd": "2025-12-16T22:55:00.000Z"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "customData": [
+      {
+        "domain": "me-nexus",
+        "namespace": "workflow",
+        "value": {
+          "state": "assigned",
+          "stateDetails": "yes"
+        }
+      },
+      {
+        "domain": "me-nexus",
+        "namespace": "work",
+        "value": {
+          "workUnit": {
+            "entityType": "WorkUnit",
+            "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+            "identifier": [
+              {
+                "identifierScope": "me-nexus",
+                "identifierValue": "afa2374f-204c-4571-a560-e7c6908a6119",
+                "combinedForm": "me-nexus:afa2374f-204c-4571-a560-e7c6908a6119"
+              }
+            ],
+            "participantRef": "me-nexus:929cb984-567d-4a27-a40c-177bffdaddb6"
+          }
+        }
+      }
+    ]
+  }
+]
