@@ -286,7 +286,7 @@ function combinedFormToUri(combinedForm: string): string {
 }
 
 function processTaskSpecificProperties(subject: string, content: any, triples: Triple[]): void {
-  if (content.state) {
+  if (content.state && typeof content.state === 'string') {
     const stateNodeId = generateBlankNodeId("state");
     triples.push({ subject, predicate: "omc:hasState", object: stateNodeId });
     triples.push({ subject: stateNodeId, predicate: "rdf:type", object: "omc:State" });
