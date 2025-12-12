@@ -54,35 +54,35 @@ const createSvgDataUri = (svgContent: string) => {
 };
 
 const ENTITY_SVG_SHAPES: Record<string, string> = {
-  Asset: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Asset: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <rect x="5" y="5" width="90" height="90" rx="12" ry="12" fill="#D97218" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  Task: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Task: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="45" fill="#3AA608" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  Participant: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Participant: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <rect x="5" y="5" width="90" height="90" fill="#232073" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  Context: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Context: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="#F2C53D" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  Infrastructure: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Infrastructure: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill="#CEECF2" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  CreativeWork: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  CreativeWork: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill="#9B59B6" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  Location: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  Location: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 95,95 5,95" fill="#E74C3C" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
-  array: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  array: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 95,50 50,95 5,50" fill="#BDC3C7" stroke="#5e5e5e" stroke-width="2"/>
   </svg>`),
 };
@@ -393,8 +393,10 @@ export function VisualizeEntityDialog({
         selector: `node[type="${type}"]`,
         style: {
           "background-image": svgUri,
-          "background-fit": "cover",
+          "background-fit": "contain",
           "background-clip": "none",
+          "background-width": "100%",
+          "background-height": "100%",
         },
       })),
       ...Object.entries(ENTITY_TYPE_COLORS).filter(([type]) => !ENTITY_SVG_SHAPES[type]).map(([type, color]) => ({
