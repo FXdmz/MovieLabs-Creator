@@ -1,0 +1,97 @@
+```markdown
+# Replit Prompt: Add ME-NEXUS Service Selector to Task Form
+
+I need to add a searchable service selector to my OMC Task creation form. Here's what I need:
+
+## Requirements
+
+1. **Service Selector Component**
+   - Searchable dropdown with 132 services
+   - Hierarchical display: "Animation > 2D Animation"
+   - Stores the service UUID when selected
+   - Shows service description on hover/selection
+
+2. **Data Structure**
+   - Load from attached me-nexus-services.json
+   - Index by service name for fast search
+   - Support filtering by L1 category
+
+3. **Form Integration**
+   - Add to existing Task form
+   - Field label: "Service Type (ME-NEXUS)"
+   - Optional field with "Generic Task" as fallback
+   - Autocomplete with fuzzy matching
+
+4. **JSON Export**
+   When generating OMC JSON, include service info like this:
+   ```json
+   {
+     "taskFunctionalCharacteristics": {
+       "identifier": "omc:CreateVisualEffects",
+       "name": "Create Visual Effects",
+       "customData": {
+         "meNexusService": {
+           "serviceId": "5af24c14-2e68-4d90-bf8b-8f64d80d99c7",
+           "serviceName": "2D Animation",
+           "l1": "Animation",
+           "l2": "2D Animation",
+           "l3": null
+         }
+       }
+     }
+   }
+   ```
+
+5. **RDF Export**
+   When generating Turtle/RDF, include:
+   ```turtle
+   omc:taskFunctionalCharacteristics [
+     a omc:TaskFunctionalClass ;
+     omc:identifier "omc:CreateVisualEffects" ;
+     omc:name "Create Visual Effects" ;
+     omc:customData [
+       menexus:serviceId "5af24c14-2e68-4d90-bf8b-8f64d80d99c7" ;
+       menexus:serviceName "2D Animation" ;
+       menexus:l1 "Animation" ;
+       menexus:l2 "2D Animation"
+     ]
+   ] .
+   ```
+
+6. **OMC Mapping**
+   Map ME-NEXUS services to OMC functional classes:
+   - Animation services → "omc:CreateVisualEffects"
+   - Production Services > Pre-Production → "omc:DevelopCreativeStyle"
+   - Production Services > Principal Photography → "omc:Shoot"
+   - Production Services > Post-Production → "omc:ConformFinish"
+   - Compositing services → "omc:CreateVisualEffects"
+   - Default fallback → "omc:Task"
+
+## Component Style
+
+Make it look like a standard form field with:
+- Clear label
+- Search icon
+- Dropdown arrow
+- Highlight on focus
+- Show "X services found" when filtering
+
+## Data File
+
+Attach: me-nexus-services.json (contains all 132 services)
+
+## Implementation Notes
+
+- Use existing UI components/patterns from the app
+- Keep it simple - just search, select, store ID
+- Don't change existing Task form structure
+- Add service info to exports automatically
+- If no service selected, use generic "Task" functional class
+
+Build this as a reusable component I can add to my Task creation form.
+```
+
+**Files to attach to Replit:**
+1. `me-nexus-services.json` (download the one I created)
+
+That's it. Paste that prompt and attach the JSON file. Replit should build you a service selector that integrates with your existing form.

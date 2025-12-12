@@ -1,0 +1,1855 @@
+{
+  "version": "1.0",
+  "source": "ME-NEXUS",
+  "totalServices": 132,
+  "services": [
+    {
+      "serviceId": "db9c86dd-6add-440d-945b-bdbfdd7deece",
+      "serviceName": "Animation",
+      "description": "Create believable movement of characters and props using rigs.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5af24c14-2e68-4d90-bf8b-8f64d80d99c7",
+      "serviceName": "2D Animation",
+      "description": "Create animated content in a two-dimensional style, using flat drawings or vector art to produce motion on a flat plane.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "2D Animation",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "bf94c80c-bea9-44df-af62-ca02280b16e8",
+      "serviceName": "3D Animation",
+      "description": "Develop animated content with three-dimensional models, creating depth and immersive environments for a more lifelike visual experience.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "67b568a8-4424-43da-a443-251af48c0cf6",
+      "serviceName": "Crowd Animation",
+      "description": "Animate large groups of characters (crowds) for scenes, often using software to simulate group behavior so the crowd movement looks natural at scale.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": "Crowd Animation"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "988acf17-cbc1-41db-9c02-86d75606cc5b",
+      "serviceName": "Digital Doubles",
+      "description": "Create CGI replicas of real actors (or characters) for use in stunts, dangerous scenes, or VFX, ensuring the digital stand-ins move and appear like the real performers.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": "Digital Doubles"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d3c33603-e2ff-4e06-b757-11352e91b649",
+      "serviceName": "Motion Capture",
+      "description": "Record the movements of real actors using sensors or markers, and transfer those motions to digital character models for highly realistic animation.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": "Motion Capture"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5416c6c2-0baa-43aa-8c34-172754c45e14",
+      "serviceName": "Character Animation",
+      "description": "Animate individual characters by bringing their movements and expressions to life, injecting personality and emotion to make them believable on screen.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "Character Animation",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "22adea4a-0511-4070-a8d8-9ef4f858fe03",
+      "serviceName": "Grooming",
+      "description": "Design and simulate hair, fur, and feathers on CG characters—crafting their styles and then using physics simulations so that these features move realistically.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "Grooming",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c868a841-bac3-4da1-9ed7-e5e4b075ea32",
+      "serviceName": "Keyframe Animation",
+      "description": "Manually animate objects or characters by setting key poses at specific frames (the animator defines important positions, and software fills in between) to craft motion.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "Keyframe Animation",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "6d78c0d5-54ef-4a6b-a696-13ffe390fc6a",
+      "serviceName": "Rigging",
+      "description": "Create a series of interconnected digital bones to drive surfaces via weighted values.",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "Rigging",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "ae9a6a73-4a89-4063-bfc9-75eaf9fe6ceb",
+      "serviceName": "Skinning",
+      "description": "Bind a 3D character’s mesh (skin) to its rig (skeleton), ensuring that the character’s surface deforms believably (muscles and skin moving naturally with the bones).",
+      "hierarchy": {
+        "l1": "Animation",
+        "l2": "Skinning",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "82a4edc7-b335-4ca6-9f99-8909c3df2512",
+      "serviceName": "Asset Creation",
+      "description": "Create mesh objects that match the concept art and visual style of the film based on the shot breakdown task list.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "400021d2-8733-480c-a880-1d851af7c59c",
+      "serviceName": "CAD Conversion",
+      "description": "Convert detailed CAD (computer-aided design) files into 3D models or formats suitable for animation and VFX, optimizing complex engineering data for creative use.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "CAD Conversion",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "fa499629-5b06-40ab-b1ca-309c9591fe43",
+      "serviceName": "Character Design",
+      "description": "Conceive and develop the visual look of characters (their appearance, attire, and overall style) to fit the story’s world and make them instantly recognizable and compelling.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "Character Design",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5d1f09ab-05a0-4747-a03c-6de904657631",
+      "serviceName": "Look Development",
+      "description": "Define and refine the appearance of digital assets by creating the right colors, textures, and materials—ensuring every 3D character or environment looks just right in final renders.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "Look Development",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "83d0108c-3391-49b2-81c2-d42af330c99b",
+      "serviceName": "Modeling",
+      "description": "Create mesh objects that match the concept art and visual style of the film based on the shot breakdown task list.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "Modeling",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "2187d9f1-5509-4437-b9a8-b5bd27836a9d",
+      "serviceName": "Reality Capture",
+      "description": "Digitally scan real-world objects or environments (using 3D laser scanning, photogrammetry, etc.) to create accurate 3D models of them for use in the production.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "Reality Capture",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "77316ceb-6685-4353-a4ed-56aa0f09b58a",
+      "serviceName": "Technical Modeling",
+      "description": "Build precise, highly detailed 3D models of complex objects (machines, architecture, etc.) based on technical specifications, so they are accurate and ready for animation.",
+      "hierarchy": {
+        "l1": "Asset Creation",
+        "l2": "Technical Modeling",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "04877c54-58cc-4a04-9583-1b7b066ae2d1",
+      "serviceName": "Compositing",
+      "description": "Layer the various plates and use various blending techniques to create a believable composite image.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "f4b6fe45-040f-4ffa-aef6-cf7114071baf",
+      "serviceName": "Crowd Multiplication",
+      "description": "Use VFX techniques to replicate and composite groups of people, filling out scenes (stadiums, streets, etc.) with a digitally enlarged crowd for a realistic busy look.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Crowd Multiplication",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "08d234aa-6034-4d84-b139-e30d344d23df",
+      "serviceName": "Digital Cosmetics",
+      "description": "Retouch and enhance footage by digitally removing blemishes, smoothing skin, de-aging actors or otherwise improving on-camera appearances for a polished final look.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Digital Cosmetics",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "6fd4204b-b8d9-4c1c-a554-3bb78035e1ce",
+      "serviceName": "Face Replacement",
+      "description": "Use CGI to replace an actor’s face with another face in footage—commonly done to make a stunt double or body double look like the principal actor on screen.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Face Replacement",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5af90f8f-b19b-49e8-b0b8-9fd352c206be",
+      "serviceName": "Matchmove",
+      "description": "Track and recreate the exact movement of the real camera (or objects) in 3D space, allowing CGI elements to be placed into live-action footage with perfect alignment.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Matchmove",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "051f3497-4790-4cfe-a3d4-1bec7809bb0c",
+      "serviceName": "Matte Painting",
+      "description": "Create highly detailed digital backdrops or set extensions by painting or compositing images, then seamlessly integrate them into scenes to represent locations too costly or impossible to film",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Matte Painting",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "042840ff-292a-46cb-9ecd-cb6109b56591",
+      "serviceName": "RPM",
+      "description": "Roto/Paint/Matchmove – Perform a combination of rotoscoping (tracing elements to isolate them), digital paint clean-ups, and matchmoving (tracking), preparing VFX shots for seamless compositing.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "RPM",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "ab176226-9eaa-45a5-b00d-fa5653dfe6f0",
+      "serviceName": "Keying",
+      "description": "Composite two images together by removing specific colors (i.e. green) and refining the edges of the matte to improve the composite.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "RPM",
+        "l3": "Keying"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "2dfe7a11-5a22-4c4c-af80-58ef996ab0ba",
+      "serviceName": "Paint",
+      "description": "Frame-by-frame digitally remove or fix unwanted visual elements (wires, rigs, blemishes, etc.) from footage, painting over them to produce a clean, seamless final image.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "RPM",
+        "l3": "Paint"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0b35e731-6cac-4cc4-916f-1e8a0f87b66d",
+      "serviceName": "Rotoscoping",
+      "description": "Create animated mattes to remove actors, rigging or objects from a shot or vfx sequence.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "RPM",
+        "l3": "Rotoscoping"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "eb83d7c7-e34d-4bbe-8c3c-e0b15832239e",
+      "serviceName": "Split Screen",
+      "description": "Composite multiple camera takes or images into one frame (often dividing the screen), allowing two or more scenes or performances to appear side by side or in one seamless shot.",
+      "hierarchy": {
+        "l1": "Compositing",
+        "l2": "Split Screen",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "3afe1cd6-60cf-4982-b2c0-b4eee83440d3",
+      "serviceName": "Concept Development",
+      "description": "Develop the core creative concept or premise of a project—brainstorming and refining the story idea, themes, and style at an early stage to set a strong foundation for the production.",
+      "hierarchy": {
+        "l1": "Concept Development",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "76f427ca-bbb5-47d4-9c99-6fab0524493a",
+      "serviceName": "Create Visual Effects",
+      "description": "Design and produce visual effects shots using CGI, miniature models, or other techniques to achieve scenes that cannot be filmed live, bringing fantastical or complex visuals to life.",
+      "hierarchy": {
+        "l1": "Create Visual Effects",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "48bf7a7b-1ac4-41d5-b76f-3baa416d4bab",
+      "serviceName": "Creative Research",
+      "description": "Explore inspirations, references, and background information to inform the creative process—researching styles, history, or technology to ground and enhance the project’s creative direction.",
+      "hierarchy": {
+        "l1": "Creative Research",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1a6ca4c4-c1da-435c-a2d4-45d33cf6c312",
+      "serviceName": "Creative Supervision",
+      "description": "Explore inspirations, references, and background information to inform the creative process—researching styles, history, or technology to ground and enhance the project’s creative direction.",
+      "hierarchy": {
+        "l1": "Creative Supervision",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "7def15bb-c4f5-49c0-8907-80ea755aa18c",
+      "serviceName": "Editorial",
+      "description": "Assembling shots into a coherent sequence according to the script and director's guidance.",
+      "hierarchy": {
+        "l1": "Editorial",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0f58bc41-ddf7-41a7-bba9-7f840465ea7c",
+      "serviceName": "Extended Reality",
+      "description": "Encompass all immersive technologies (XR) like virtual reality (VR), augmented reality (AR), and mixed reality (MR) that blend digital elements with the real world for interactive experiences",
+      "hierarchy": {
+        "l1": "Extended Reality",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "ed3d404c-905a-4004-9eb2-05ea90140141",
+      "serviceName": "FX-Simulation",
+      "description": "Simulate complex physical phenomena such as smoke, fire, water, and explosions for a VFX shot.",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1bf4e680-181b-492a-a02e-18a143f0e1b8",
+      "serviceName": "Character FX",
+      "description": "Simulate character-specific effects such as cloth movement, hair/fur dynamics, and muscle jiggle, so that clothing and hair on CG characters move realistically in line with physics",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Character FX",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1ce7d360-613b-47fa-a669-46f9913f87fc",
+      "serviceName": "Crowd Simulation",
+      "description": "Use specialized software to animate and simulate large crowds of characters, controlling their behaviors and movements so massive groups look realistic and natural",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Crowd Simulation",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "9900e5ca-1853-4413-aca9-f117606fdbea",
+      "serviceName": "Destruction",
+      "description": "Simulate objects breaking apart, crumbling, or exploding using physics-based effects, creating dramatic destruction scenes that look believably real",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Destruction",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d77b6e95-a013-4f35-a59d-b07d0d356237",
+      "serviceName": "Liquids",
+      "description": "Generate realistic fluid simulations (water, oil, lava, etc.) where liquids flow, splash, and behave naturally according to physics, adding lifelike water and fluid effects to scenes",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Liquids",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1a36d9b9-7bc2-4182-88c6-09bfab438b2e",
+      "serviceName": "Particles",
+      "description": "Create and animate large numbers of tiny elements (dust, sparks, magic particles, etc.) to produce natural particle effects like smoke, spray, or fairy dust that enhance visual detail",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Particles",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "27f8c932-5fde-4233-98c9-1632143c08c8",
+      "serviceName": "Pyro",
+      "description": "Simulate fire, smoke, and explosions using advanced fluid dynamics, producing realistic flames, billowing smoke, and blasts for high-intensity scenes",
+      "hierarchy": {
+        "l1": "FX-Simulation",
+        "l2": "Pyro",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "12e0d531-8372-40f2-9cc8-b2b512296210",
+      "serviceName": "Game Development",
+      "description": "Manage the end-to-end process of creating a video game from concept to completion—combining design, art, coding, and testing to build a playable, polished final product.",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c5438e50-d429-4263-8f8e-676b5414fff0",
+      "serviceName": "2D Game Development",
+      "description": "Develop video games with two-dimensional graphics and gameplay, utilizing flat art and side-scrolling or top-down perspectives to create engaging interactive experiences",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "2D Game Development",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e07cf549-1a1e-467e-a0b2-3693d9f7e8d5",
+      "serviceName": "3D Game Development",
+      "description": "Create video games using three-dimensional models and environments, building immersive worlds with depth where players can move and interact in 3D space",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "3D Game Development",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d869dd1d-3e61-40c1-8842-d35ade7118b5",
+      "serviceName": "Cinematics",
+      "description": "Cinematics performs specialized functions within the media creation process.",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "Cinematics",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0fe2329f-b037-4683-9329-6fb15c3771a9",
+      "serviceName": "Game Coding",
+      "description": "Program the software logic of a game—writing code that implements gameplay mechanics, controls, AI behaviors, and engine features to turn the game’s design into a playable product.",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "Game Coding",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1bc17580-3bce-4c40-8c3b-e38cfc8bf3de",
+      "serviceName": "Game Design",
+      "description": "Craft the rules, mechanics, objectives, and overall player experience of a game, defining how it plays and what makes it fun or challenging.",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "Game Design",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "dc330228-3f71-4f40-87d2-cdd7b2880428",
+      "serviceName": "Level Design",
+      "description": "Plan and construct the playable levels or environments of a game, defining layouts, obstacles, and objectives in each stage to ensure a balanced and engaging player experience.",
+      "hierarchy": {
+        "l1": "Game Development",
+        "l2": "Level Design",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "95738914-96c9-40b0-b19f-0abdefc19bba",
+      "serviceName": "Generative AI",
+      "description": "Leverage artificial intelligence models to automatically generate creative content (text, images, audio, etc.), or assist in content creation, bringing speed and novel ideas to the production.",
+      "hierarchy": {
+        "l1": "Generative AI",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "aefdf238-4ffb-4c00-9b2f-5ab757e8a70e",
+      "serviceName": "Layout",
+      "description": "Create a base 3D assembly of 3D assets, mattes, and cameras to match the environment based on the shot breakdown list.",
+      "hierarchy": {
+        "l1": "Layout",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "f058537d-2989-48a3-9702-ea9f45a49658",
+      "serviceName": "Lighting",
+      "description": "Add digital lights to 3D scenes and simulate global illumination to create believable CG imagery.",
+      "hierarchy": {
+        "l1": "Lighting",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d2077823-86c9-4a73-b408-cc887318185f",
+      "serviceName": "Managed Services",
+      "description": "Provide ongoing outsourced management and support for certain business or IT functions, where a specialized provider handles day-to-day operations and maintenance of those services",
+      "hierarchy": {
+        "l1": "Managed Services",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0d2c081e-8b0a-4ab5-8fc7-a3a9a091b703",
+      "serviceName": "System Integration",
+      "description": "Connect and coordinate different software or hardware systems into one cohesive setup, ensuring all components communicate properly so that data and processes flow smoothly between them.",
+      "hierarchy": {
+        "l1": "Managed Services",
+        "l2": "System Integration",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "299e0be6-d18d-4dd2-afa8-70199b7efa4b",
+      "serviceName": "Service Oriented Architecture",
+      "description": "Design software systems as a suite of interoperable services (instead of one big application), so that each service can communicate over a network and be reused, making the overall system more modular and flexible.",
+      "hierarchy": {
+        "l1": "Managed Services",
+        "l2": "System Integration",
+        "l3": "Service Oriented Architecture"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d5e1c963-7564-455d-b3b4-84173b407d0c",
+      "serviceName": "Workflow Consultation",
+      "description": "Evaluate a team’s production or business workflows and provide expert advice on improving efficiency—recommending process optimizations, tool integrations, or best practices to streamline the overall operation.",
+      "hierarchy": {
+        "l1": "Managed Services",
+        "l2": "System Integration",
+        "l3": "Workflow Consultation"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "4e06046b-22ad-4bbf-ba97-9d04f544dcc6",
+      "serviceName": "Motion Graphics",
+      "description": "Design and animate graphic elements (titles, logos, lower-thirds, etc.) to convey information or enhance visuals in video content, making static graphics come alive in an engaging way",
+      "hierarchy": {
+        "l1": "Motion Graphics",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0a8068c7-b1f0-4849-bbb6-6b59ad5b662d",
+      "serviceName": "Production Services",
+      "description": "All of the services offered to produce a creative work",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e10daa51-6b5d-49e6-9a34-aaa6ed8c5f4b",
+      "serviceName": "Script writing",
+      "description": "Write Script represents all of the necessary activities to develop, iterate and finalize a script for pre-production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "98971831-cc37-42ef-9b71-5d728fe26b35",
+      "serviceName": "Post-Production Services",
+      "description": "Pre-production represents all of the necessary activities to edit, mix final sound, add vfx and titles, finish and create digital masters for distribution.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1f857e37-a785-4e05-9b3f-95109eed9a38",
+      "serviceName": "Archiving",
+      "description": "Create the various packages for distribution and archiving.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Archiving"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "4d19ef91-d55c-4eac-baed-9973cc0de123",
+      "serviceName": "Color Grading",
+      "description": "Color match the film and add color changes to create a particular mood or style. ",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Color Grading"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "01ae0aec-31a0-4d98-bb4c-00c2d1eb0738",
+      "serviceName": "Digital Asset Management",
+      "description": "Securely store, organize, and retrieve digital content (videos, images, audio, documents, etc.) in a centralized library with controlled acces",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Digital Asset Management"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e786acc1-5985-48bb-9974-55db74dc1f4c",
+      "serviceName": "Digital Cinema Packaging",
+      "description": "Create the theatrical rendered images and audio sequence into a digital master.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Digital Cinema Packaging"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "01140c62-060e-402b-b66c-051029b66b66",
+      "serviceName": "Encoding",
+      "description": "Compress raw video or audio into a specific digital format or codec for efficient distribution, reducing file size while maintaining qualit",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Encoding"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c922f713-eebe-4371-bf45-f7651be84648",
+      "serviceName": "Localization",
+      "description": "Adapt and translate content for different languages and regions, including dubbing or subtitles and cultural tweaks, so it resonates with local audiences",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Localization"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0589a8dd-689f-4c6d-be73-8d7e6d750509",
+      "serviceName": "Mastering",
+      "description": "Create the various packages for distribution and archiving.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Mastering"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d18ecbe2-9719-46a9-ba0e-95abc93e546f",
+      "serviceName": "Quality Control",
+      "description": "Reviewing audio, video, and images to ensure they meet basic distribution standards",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Quality Control"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "612ba1d9-9136-4268-9736-60d170ba3429",
+      "serviceName": "Transcoding",
+      "description": "Convert already-encoded video or audio files from one format or bitrate to another to meet specific playback requirements (for example, creating various file sizes for streaming).",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Transcoding"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "75b4865d-6e93-45af-9cd7-bbc88472f03c",
+      "serviceName": "Transcription",
+      "description": "Convert spoken audio (dialogue, interviews, etc.) into written text—listening to video or audio and producing an accurate text transcript, often for subtitles, captions, or documentation.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Post-Production Services",
+        "l3": "Transcription"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "02cc7199-1292-4ab2-a78a-95a4f9b66ce5",
+      "serviceName": "Pre-Production Services",
+      "description": "Pre-production represents all of the necessary activities to take an approved script to production and shoot.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c2088657-361d-41aa-b7e8-4e4e261042f3",
+      "serviceName": "Script Breakdown",
+      "description": "Break down the script to identify locations, characters, stunts, and fx to be prepped and budgeted.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "1e51bdd3-0c42-4271-ba0b-0c0f5edc5252",
+      "serviceName": "Casting",
+      "description": "Casting selects and secures personnel or talent for production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Casting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "43245252-fa5b-496b-8f91-4763dc80a648",
+      "serviceName": "Costume Design",
+      "description": "Prepare the proposed cost and schedules for the wardobe for the production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Costume Design"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0ee9e1da-abb5-4e44-98e8-e0314ea2256b",
+      "serviceName": "Crew Hiring",
+      "description": "Write up and sign contracts for the entire production crew.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Crew Hiring"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "ccd216bb-1192-4ccd-aa66-0540c68c0a2e",
+      "serviceName": "Equipment Acquisition",
+      "description": "Source and procure all of the required equipment approved in the breakdown and budget.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Equipment Acquisition"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "bf93e5d4-58f1-4431-9c24-b9be9496ff2e",
+      "serviceName": "Finance Development",
+      "description": "Procure the initial money to fund the development activities.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Finance Development"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "73c38520-feba-4db7-9196-f3ac71325a3d",
+      "serviceName": "Hire Leadership",
+      "description": "Write up and sign contracts for above the line talent. ",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Hire Leadership"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "b65eb23e-c24a-45dc-8b16-5cc34ebf876a",
+      "serviceName": "Licensing",
+      "description": "Ensure all referenced material and characters are licensed for the production or series.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Licensing"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "bff38222-5d81-4c40-abb7-027b3f24b5dd",
+      "serviceName": "Location-Scouting",
+      "description": "Scout locations for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Location-Scouting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e1dba8dc-3c82-4b13-b01c-1f35ce897660",
+      "serviceName": "Previsualization",
+      "description": "Visually map out the scenes in a production before principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Previsualization"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "bbd6e01b-24fb-40aa-bb14-2739ecf71de5",
+      "serviceName": "Production Budgeting",
+      "description": "Prepare the overall budget for the production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Production Budgeting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "bc70861a-07d9-4aae-a790-536f5f85e410",
+      "serviceName": "Production Design",
+      "description": "Prepare the look, color, and tone of the picture of the production. ",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Production Design"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "88243e5a-8733-47c5-bfb7-3e9aaf8361e9",
+      "serviceName": "Production Logistics",
+      "description": "Prepare all of the various schedules, check-lists, and plans for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Production Logistics"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "0d7c385d-87de-4c8d-85f0-ff04809c8ffd",
+      "serviceName": "Production Scheduling",
+      "description": "Use the breakdown and crew and location availability to create a master shoot schedule.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Production Scheduling"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "259fd0a2-b557-42c3-8d90-4824a12ad789",
+      "serviceName": "Production Scouting",
+      "description": "Scout locations for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Production Scouting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "2d523f0b-5c0b-49a2-afe2-21632916973f",
+      "serviceName": "Resource Planning",
+      "description": "Prepare all of the various schedules, check-lists, and plans for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Resource Planning"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "06b5ca62-35de-4ecb-898a-5659985128bb",
+      "serviceName": "Set Design",
+      "description": "Design set approved in the breakdown and budget.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Set Design"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "f2980735-9783-4d28-84f3-c57c50b5a7e0",
+      "serviceName": "Shoot Scheduling",
+      "description": "Use the breakdown and crew and location availability to create a master shoot schedule.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Shoot Scheduling"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "3bcc59ad-d3a4-4777-939b-f70c49a4f8f1",
+      "serviceName": "Shot List Creation",
+      "description": "Create a list of shots in scheduled shooting order with angles and setups defined.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Shot List Creation"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "93d4fb73-be2e-4acd-a3e7-b85ee12fc947",
+      "serviceName": "Stunt Coordination",
+      "description": "Plan, rehearse and secure all necessary equipment for all stunts approved in the budget and breakdown.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Stunt Coordination"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "3136e361-8c1f-40a6-9ce2-6faf5d340a3a",
+      "serviceName": "VFX & SFX Budgeting",
+      "description": "Prepare and segment all of the logistics information required per department and vendor.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "VFX & SFX Budgeting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "3672a386-b80b-44ec-8a84-163bb005160e",
+      "serviceName": "Visual Style Design",
+      "description": "Prepare the look, color, and tone of the picture of the production. ",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Pre-Production Services",
+        "l3": "Visual Style Design"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5db74599-892a-4811-9f0f-58c2710fbc59",
+      "serviceName": "Principal Photography",
+      "description": "All of the actions and recording of data broken down into shots and takes.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "62a41782-2155-451a-8c3e-a254de6f1e8d",
+      "serviceName": "Acting",
+      "description": "Actors perform actions and dialog.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Acting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "b759defc-f9ac-480b-b36f-d5ff2c030adb",
+      "serviceName": "Aerial Photography",
+      "description": "Source, prepare, and install cameras on UAVs or aeroplanes to capture principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Aerial Photography"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e48e8cc5-eba6-46c5-a378-216bf3217510",
+      "serviceName": "Audio Setup",
+      "description": "Source, prepare, and install audio recording equipment for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Audio Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "a56833d4-6fe6-46f7-a84c-b09495eef52a",
+      "serviceName": "Camera Lens Setup",
+      "description": "Source, prepare and install cameras and storage for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Camera Lens Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "a8cc189f-5ae1-4db3-a14d-77ab54d70bf8",
+      "serviceName": "Camera Operations",
+      "description": "Recording devices capture rotational and positional movements of cameras and lens for virtual production and post production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Camera Operations"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "b41d5d42-cc36-43aa-bd0d-0815c7782a58",
+      "serviceName": "Camera Setup",
+      "description": "Source, prepare and install cameras and storage for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Camera Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "e116d3bc-0018-4e11-9fff-988a4d259c74",
+      "serviceName": "Capture",
+      "description": "All of the actions and recording of data broken down into shots and takes.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Capture"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "a46c8183-9b2b-412a-b8e5-efcc09cba42c",
+      "serviceName": "Continuity & Notes",
+      "description": "Script Supervisor works between takes and shoot days to ensure continuity of the production in relation to the script.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Continuity & Notes"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "69b5efe6-7b25-4c53-8d63-511f9c501656",
+      "serviceName": "Costume Setup",
+      "description": "Source and prepare costumes and dress actors on the shoot day.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Costume Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "a8cdf801-164f-465d-a560-80dd42ecc7eb",
+      "serviceName": "Dailies",
+      "description": "Create encompasses all of the activities to create reviewable video and audio of a given day's shoot by the key members of a production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Dailies"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c672087c-3c66-4467-8667-bf9166339d26",
+      "serviceName": "Directing",
+      "description": "Lead the filmmaking process by guiding the creative vision on set—directing actors’ performances and making decisions on camera work, lighting, and pacing to tell the story effectively",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Directing"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "dce6f422-4e5b-4e06-855b-76c6b775372e",
+      "serviceName": "Equipment Rental",
+      "description": "Source and procure all of the required equipment approved in the breakdown and budget.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Equipment Rental"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "8b10ed5b-cd6e-4d98-a185-2a9443de4d58",
+      "serviceName": "Foley ADR",
+      "description": "Reproduction and recording of common sounds to accompany movement, VFX, and environment in a film production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Foley ADR"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "839cdcf7-e171-4a94-b1f2-f8bd35f00136",
+      "serviceName": "Hair & Makeup",
+      "description": "Source and prepare hair and makeup and prepare actors on the shoot day.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Hair & Makeup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "52a4b05c-215d-4f99-b18c-75636a60ad8e",
+      "serviceName": "LED Volume",
+      "description": "Source, preparing, and setting up an LED volume for virtual production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "LED Volume"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "6a9140a3-ebf7-4ebb-b527-09bb4e0c23b2",
+      "serviceName": "Lighting Setup",
+      "description": "Source, prepare, install and adjust ligthing to match visual style approved in breakdown.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Lighting Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "17c5855b-545e-45b2-8fcd-4525bd243064",
+      "serviceName": "Live Capture",
+      "description": "All of the actions and recording of data broken down into shots and takes.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Live Capture"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "b204182f-a5b3-41fa-b6c5-e4a3c97f4bd4",
+      "serviceName": "Monitoring Setup",
+      "description": "Setup video and audio playback devices onset for key creatives to oversee picture and sound on a given shoot day.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Monitoring Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "9da19109-8054-4d0c-a739-22e4c029bdf1",
+      "serviceName": "Motion Control Setup",
+      "description": "Source, prepare, and install motion control units for principal photography to match movements in the breakdown.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Motion Control Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "5a284924-5624-4209-bb20-867ea8a3cb9c",
+      "serviceName": "On-Set Services",
+      "description": "All services related to prepping, building, and running a set on a given shoot day.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "On-Set Services"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d5eee1a6-5a14-4e9f-b0e9-0538201c2c6d",
+      "serviceName": "Picture Setup",
+      "description": "Source, prepare and install cameras and storage for principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Picture Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "350018b6-3f4e-445d-8700-caf78cb0ab86",
+      "serviceName": "Real Time",
+      "description": "Ability to create assets, animations, and setups that can perform in a virtual production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Real Time"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "165d2af9-a4c0-4d0d-a4a3-37025af83182",
+      "serviceName": "Reference Capture",
+      "description": "Capture digitally the state of a set for continuity and post production.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Reference Capture"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "80e0abcc-2861-43b2-b97e-63a48455dad0",
+      "serviceName": "Rehearsals",
+      "description": "Run through the actions and dialogue of a given scene before principal photography.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Rehearsals"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "c98f802b-a7c7-4d96-8b81-112fb4a614cb",
+      "serviceName": "Remote Production Direction",
+      "description": "Guiding or instructing performances from a remote location offset via the internet.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Remote Production Direction"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "909e8b26-0cc8-4657-bd64-0b03a7f36c28",
+      "serviceName": "Rigging Setup",
+      "description": "Source, prepare, and install all elements to move and manipulative cameras and lights during a shoot.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Rigging Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "f0027c62-af7d-48a7-a0fe-0aab83e83b40",
+      "serviceName": "Scene Shooting",
+      "description": "All of the actions and recording of data broken down into shots and takes.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Scene Shooting"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "3bb767a5-40ce-4bc6-a5b1-46e50562ee29",
+      "serviceName": "Set Dressing",
+      "description": "Place props, design elements, draperies, and marks to match a shot setup for the shoot day.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Set Dressing"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "8fdbaa4e-0e42-4d7f-8ad6-19fde07c25e3",
+      "serviceName": "Special Effects Setup",
+      "description": "Source, prepare, install and rehearse all of the special effects (fog, fire, explosions, water) approved in the budget and breakdown.",
+      "hierarchy": {
+        "l1": "Production Services",
+        "l2": "Principal Photography",
+        "l3": "Special Effects Setup"
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "00667a18-7d5b-428a-b328-3825df3d6c8f",
+      "serviceName": "Rendering",
+      "description": "Generate final high-quality images or video frames from 3D scenes by processing models, textures, lighting, and effects through computer render engines to produce the photorealistic output.",
+      "hierarchy": {
+        "l1": "Rendering",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "72f22331-4e74-4edf-a124-5ee7c9e9c8ae",
+      "serviceName": "Scripting",
+      "description": "Write custom code scripts (small software programs or automation routines) to streamline workflows or add functionality in the pipeline, automating repetitive tasks and linking software tools.",
+      "hierarchy": {
+        "l1": "Scripting",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "50c17742-39cb-4ab0-8df8-5a39de292918",
+      "serviceName": "Sound Design",
+      "description": "Create sound represents all of the necessary activities to create dialog and sounds to accompany movement, VFX, and environment in a creative work.",
+      "hierarchy": {
+        "l1": "Sound Design",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "d48ccfa2-ccbe-4470-b936-463ce8191df5",
+      "serviceName": "Special Effects",
+      "description": "Create special effects in coordination with the actor and stunt performances.",
+      "hierarchy": {
+        "l1": "Special Effects",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "db1174b8-b4bf-4ee2-a0f3-83b89fb9b498",
+      "serviceName": "UI Design",
+      "description": "Design the user interface of an application or game, focusing on the visual layout and interactive elements (buttons, menus, icons) to ensure it is aesthetically pleasing and easy to use",
+      "hierarchy": {
+        "l1": "UI Design",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "fe46230e-0cd2-4617-84b1-55b214262286",
+      "serviceName": "Virtual Production",
+      "description": "A cutting-edge filmmaking method that combines real-time CGI, motion capture, LED wall backdrops, and other technologies to blend virtual elements with live action in-camera.",
+      "hierarchy": {
+        "l1": "Virtual Production",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "8974f7c8-4ba5-4d99-b53b-901dbecd74f8",
+      "serviceName": "Virtual Camera",
+      "description": "Operate a camera in a virtual 3D environment (often with a tablet or VR rig) to “film” CG scenes in real time, giving filmmakers a hands-on way to frame shots inside digital worlds.",
+      "hierarchy": {
+        "l1": "Virtual Production",
+        "l2": "Virtual Camera",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "7cd1c2a7-1d87-4cab-933c-0c197b8de7d1",
+      "serviceName": "Virtual Scouting",
+      "description": "Use VR or digital tools to scout locations and sets remotely—navigating virtual environments or 3D scans of real places to plan shots and set designs without needing a physical visit.",
+      "hierarchy": {
+        "l1": "Virtual Production",
+        "l2": "Virtual Scouting",
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    },
+    {
+      "serviceId": "10e9fbe0-147c-4854-89eb-ac8b4873f784",
+      "serviceName": "Worldbuilding",
+      "description": "Develop the fictional universe of a story in detail, defining its geography, cultures, history, and rules (everything from ecology to social norms) to create a rich, believable world for the narrative.",
+      "hierarchy": {
+        "l1": "Worldbuilding",
+        "l2": null,
+        "l3": null
+      },
+      "steamroller": {
+        "name": null,
+        "supported": null
+      }
+    }
+  ]
+}
