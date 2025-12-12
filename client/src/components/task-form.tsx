@@ -169,7 +169,8 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
         identifierScope: "me-nexus",
         identifierValue: contextId,
         combinedForm: `me-nexus:${contextId}`
-      }]
+      }],
+      contextType: "production"
     };
     
     onChange({
