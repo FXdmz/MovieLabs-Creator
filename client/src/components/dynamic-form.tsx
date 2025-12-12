@@ -10,12 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronRight, Info, X, MapPin } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFieldDescription } from "@/lib/field-descriptions";
+import { useOntologyStore } from "@/lib/store";
 import { IETF_LANGUAGE_CODES } from "@/lib/language-codes";
 import { ISO_COUNTRY_CODES } from "@/lib/country-codes";
 import { ASSET_STRUCTURAL_TYPES, ASSET_FUNCTIONAL_TYPES } from "@/lib/asset-types";
@@ -447,6 +448,8 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           onChange={onChange}
           placeholder="Enter value"
         />
+      ) : schema['x-entity-reference'] === 'Location' ? (
+        <LocationEntityPicker value={value} onChange={onChange} />
       ) : (
         <Input 
           value={value || ''} 
@@ -454,6 +457,80 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
           type={schemaType === 'number' || schemaType === 'integer' ? 'number' : 'text'}
           className="bg-background"
         />
+      )}
+    </div>
+  );
+}
+
+function LocationEntityPicker({ value, onChange }: { value: string | null; onChange: (val: string | null) => void }) {
+  const { entities } = useOntologyStore();
+  
+  const locationEntities = entities.filter(e => e.entityType === 'Location');
+  
+  const getLocationLabel = (entity: any) => {
+    const name = entity.name || 'Unnamed Location';
+    const locSC = entity.LocationSC;
+    if (locSC?.address?.streetAddress || locSC?.address?.locality) {
+      const parts = [locSC.address.streetAddress, locSC.address.locality].filter(Boolean);
+      return `${name} - ${parts.join(', ')}`;
+    }
+    return name;
+  };
+  
+  const getCombinedForm = (entity: any) => {
+    if (entity.identifier?.[0]?.combinedForm) {
+      return entity.identifier[0].combinedForm;
+    }
+    return entity.id || entity.identifier?.[0]?.identifierValue;
+  };
+  
+  const selectedLocation = value ? locationEntities.find(e => getCombinedForm(e) === value) : null;
+  
+  return (
+    <div className="flex items-center gap-2">
+      <Select value={value || ""} onValueChange={(val) => onChange(val || null)}>
+        <SelectTrigger data-testid="select-location-reference" className="flex-1">
+          <SelectValue placeholder="Select a location...">
+            {selectedLocation ? (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-3 w-3 text-red-500" />
+                {getLocationLabel(selectedLocation)}
+              </div>
+            ) : (
+              "Select a location..."
+            )}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {locationEntities.length === 0 ? (
+            <div className="py-4 px-2 text-center text-sm text-muted-foreground">
+              No Location entities found.<br/>Create a Location entity first.
+            </div>
+          ) : (
+            <ScrollArea className="max-h-60">
+              {locationEntities.map((entity) => (
+                <SelectItem key={getCombinedForm(entity)} value={getCombinedForm(entity)}>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3 w-3 text-red-500" />
+                    {getLocationLabel(entity)}
+                  </div>
+                </SelectItem>
+              ))}
+            </ScrollArea>
+          )}
+        </SelectContent>
+      </Select>
+      {value && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 shrink-0"
+          onClick={() => onChange(null)}
+          data-testid="clear-location-reference"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       )}
     </div>
   );
@@ -778,15 +855,10 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
             }
           },
           Location: {
-            type: 'object',
-            title: 'Location',
-            properties: {
-              address: { type: 'string', title: 'Address' },
-              city: { type: 'string', title: 'City' },
-              region: { type: 'string', title: 'Region' },
-              country: { type: 'string', title: 'Country' },
-              postalCode: { type: 'string', title: 'Postal Code' }
-            }
+            type: 'string',
+            title: 'Based In',
+            description: 'Reference to an existing Location entity',
+            'x-entity-reference': 'Location'
           }
         }
       };
