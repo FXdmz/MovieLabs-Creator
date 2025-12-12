@@ -8,64 +8,157 @@ export interface ExportOptions {
   pretty?: boolean;
 }
 
-function cleanContextForExport(context: any): any {
-  if (!context) return context;
-  const { 
-    scheduling, 
-    hasInputAssets, 
-    hasOutputAssets, 
-    informs, 
-    isInformedBy,
-    ...rest 
-  } = context;
-  return rest;
+interface CustomDataEntry {
+  domain: string;
+  namespace: string;
+  value: any;
 }
 
-function cleanEntityForExport(content: any): any {
+function ensureCustomDataArray(customData: any): CustomDataEntry[] {
+  if (!customData) return [];
+  if (Array.isArray(customData)) return customData;
+  return [customData];
+}
+
+function addOrMergeCustomData(
+  customData: CustomDataEntry[],
+  domain: string,
+  namespace: string,
+  valueToMerge: any
+): CustomDataEntry[] {
+  const existingIndex = customData.findIndex(
+    entry => entry.domain === domain && entry.namespace === namespace
+  );
+  
+  if (existingIndex >= 0) {
+    customData[existingIndex] = {
+      ...customData[existingIndex],
+      value: {
+        ...customData[existingIndex].value,
+        ...valueToMerge
+      }
+    };
+  } else {
+    customData.push({
+      domain,
+      namespace,
+      value: valueToMerge
+    });
+  }
+  
+  return customData;
+}
+
+function applySchemaComplianceTransform(content: any, entityType: string): any {
   if (!content) return content;
   
-  const { 
-    taskClassification, 
-    meNexusService,
-    state,
-    stateDetails,
-    workUnit,
-    taskGroup,
-    customData,
-    ...rest 
-  } = content;
+  const result = { ...content };
+  let customData = ensureCustomDataArray(result.customData);
   
-  if (rest.Context && Array.isArray(rest.Context)) {
-    rest.Context = rest.Context.map(cleanContextForExport).filter(Boolean);
-    if (rest.Context.length === 0) {
-      delete rest.Context;
+  if (entityType === "Task") {
+    const { state, stateDetails, workUnit, taskClassification, meNexusService, ...taskRest } = result;
+    
+    if (state !== undefined || stateDetails !== undefined) {
+      const workflowValue: any = {};
+      if (state !== undefined) workflowValue.state = state;
+      if (stateDetails !== undefined) workflowValue.stateDetails = stateDetails;
+      customData = addOrMergeCustomData(customData, "me-nexus", "workflow", workflowValue);
+    }
+    
+    if (workUnit !== undefined) {
+      customData = addOrMergeCustomData(customData, "me-nexus", "work", { workUnit });
+    }
+    
+    Object.assign(result, taskRest);
+    delete result.state;
+    delete result.stateDetails;
+    delete result.workUnit;
+    delete result.taskClassification;
+    delete result.meNexusService;
+    
+    if (result.Context && Array.isArray(result.Context)) {
+      result.Context = result.Context.map((ctx: any) => 
+        applyContextTransform(ctx, customData)
+      ).filter(Boolean);
+      if (result.Context.length === 0) {
+        delete result.Context;
+      }
     }
   }
   
-  return rest;
+  if (entityType === "Context") {
+    const transformed = applyContextTransform(result, customData);
+    Object.assign(result, transformed);
+    customData = transformed._customData || customData;
+    delete result._customData;
+  }
+  
+  if (customData.length > 0) {
+    result.customData = customData;
+  } else {
+    delete result.customData;
+  }
+  
+  return result;
 }
 
-function transformEntityForExport(entity: Entity): any {
-  return cleanEntityForExport(entity.content);
+function applyContextTransform(context: any, parentCustomData?: CustomDataEntry[]): any {
+  if (!context) return context;
+  
+  const { scheduling, hasInputAssets, hasOutputAssets, informs, isInformedBy, ...rest } = context;
+  const result = { ...rest };
+  let customData = parentCustomData || ensureCustomDataArray(result.customData);
+  
+  if (hasInputAssets && Array.isArray(hasInputAssets) && hasInputAssets.length > 0) {
+    result.uses = result.uses || {};
+    result.uses.Asset = hasInputAssets;
+  }
+  
+  if (scheduling !== undefined) {
+    customData = addOrMergeCustomData(customData, "me-nexus", "scheduling", { scheduling });
+  }
+  
+  if (parentCustomData) {
+    result._customData = customData;
+  } else if (customData.length > 0) {
+    result.customData = customData;
+  }
+  
+  return result;
 }
 
-export function prepareEntitiesForExport(entities: Entity[]): Entity[] {
+function transformEntityForJsonExport(entity: Entity): any {
+  return applySchemaComplianceTransform(entity.content, entity.type);
+}
+
+function cleanEntityForRdfExport(content: any): any {
+  return content;
+}
+
+export function prepareEntitiesForJsonExport(entities: Entity[]): Entity[] {
   return entities.map(entity => ({
     ...entity,
-    content: transformEntityForExport(entity)
+    content: transformEntityForJsonExport(entity)
+  }));
+}
+
+export function prepareEntitiesForRdfExport(entities: Entity[]): Entity[] {
+  return entities.map(entity => ({
+    ...entity,
+    content: cleanEntityForRdfExport(entity.content)
   }));
 }
 
 export function exportEntities(entities: Entity[], options: ExportOptions): string {
   const { format, pretty = true } = options;
   
-  const transformedEntities = prepareEntitiesForExport(entities);
-  
   if (format === "ttl") {
-    return entitiesToTurtle(transformedEntities);
+    const rdfEntities = prepareEntitiesForRdfExport(entities);
+    return entitiesToTurtle(rdfEntities);
   }
   
-  const transformedContent = transformedEntities.map(e => e.content);
+  const jsonEntities = prepareEntitiesForJsonExport(entities);
+  const transformedContent = jsonEntities.map(e => e.content);
   const jsonContent = transformedContent.length === 1 
     ? transformedContent[0] 
     : transformedContent;
