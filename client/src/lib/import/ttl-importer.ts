@@ -21,6 +21,66 @@ function transformTaskEntity(parsed: any): any {
     }
   }
 
+  if (parsed.state && typeof parsed.state === 'object') {
+    if (parsed.state.stateDescriptor) {
+      const stateValue = parsed.state.stateDescriptor;
+      if (typeof stateValue === 'string') {
+        const stateLower = stateValue.toLowerCase().replace('omc:', '').replace('https://movielabs.com/omc/rdf/schema/v2.8#', '');
+        transformed.state = stateLower;
+      }
+    }
+    if (parsed.state.comment) {
+      transformed.stateDetails = parsed.state.comment;
+    }
+  }
+
+  if (parsed.scheduledStart || parsed.scheduledEnd) {
+    const contextId = crypto.randomUUID();
+    const existingContext = Array.isArray(parsed.Context) && parsed.Context.length > 0 
+      ? parsed.Context[0] 
+      : {
+          entityType: "Context",
+          schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+          identifier: [{
+            identifierScope: 'me-nexus',
+            identifierValue: contextId,
+            combinedForm: `me-nexus:${contextId}`
+          }],
+          contextType: "production"
+        };
+    
+    existingContext.scheduling = {
+      scheduledStart: parsed.scheduledStart || null,
+      scheduledEnd: parsed.scheduledEnd || null
+    };
+    
+    transformed.Context = [existingContext];
+    delete transformed.scheduledStart;
+    delete transformed.scheduledEnd;
+  }
+
+  if (parsed.uses && !transformed.Context?.[0]?.hasInputAssets) {
+    const usesArray = Array.isArray(parsed.uses) ? parsed.uses : [parsed.uses];
+    const assetRefs = usesArray.filter((ref: any) => typeof ref === 'string' && ref.startsWith('me-nexus:'));
+    
+    if (assetRefs.length > 0) {
+      if (!transformed.Context || transformed.Context.length === 0) {
+        const contextId = crypto.randomUUID();
+        transformed.Context = [{
+          entityType: "Context",
+          schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+          identifier: [{
+            identifierScope: 'me-nexus',
+            identifierValue: contextId,
+            combinedForm: `me-nexus:${contextId}`
+          }],
+          contextType: "production"
+        }];
+      }
+      transformed.Context[0].hasInputAssets = assetRefs;
+    }
+  }
+
   if (Array.isArray(parsed.Context)) {
     transformed.Context = parsed.Context.map((ctx: any) => {
       const transformedCtx = { ...ctx };
