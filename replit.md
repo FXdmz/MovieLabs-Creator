@@ -169,6 +169,7 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 12, 2025
+- JSON import Task relationship transformation (workUnit, scheduling, state, assets)
 - Undo/redo with keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
 - Enhanced search & filter with type dropdown and clear controls
 - Graph relationship edge visualization fix for imported entities
