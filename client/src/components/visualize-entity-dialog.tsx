@@ -256,12 +256,15 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
     identifiers.forEach((id: any) => {
       if (id.combinedForm) {
         entityIdMap.set(id.combinedForm, entity.id);
+        console.log(`[Graph] Registered: ${id.combinedForm} -> ${entity.id}`);
       }
       if (id.identifierValue) {
         entityIdMap.set(id.identifierValue, entity.id);
       }
     });
   });
+  
+  console.log(`[Graph] EntityIdMap size: ${entityIdMap.size}`);
   
   entities.forEach(entity => {
     elements.push({
@@ -310,9 +313,11 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
       Object.entries(obj).forEach(([key, value]) => {
         if (typeof value === 'string') {
           const targetId = entityIdMap.get(value);
+          console.log(`[Graph] Checking string ref: "${value}" (key: ${key}), found: ${targetId || 'NO'}`);
           if (targetId && targetId !== entity.id) {
             const edgeKey = `${entity.id}-${targetId}`;
             if (!addedEdges.has(edgeKey)) {
+              console.log(`[Graph] Adding edge: ${entity.name} -> ${targetId} (${key})`);
               elements.push({
                 data: {
                   source: entity.id,
@@ -331,6 +336,8 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
     
     findReferences(content, entity.type);
   });
+  
+  console.log(`[Graph] Total elements: ${elements.length}, edges: ${elements.filter(e => e.data.source).length}`);
   
   return elements;
 }
