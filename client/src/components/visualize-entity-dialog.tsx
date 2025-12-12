@@ -19,12 +19,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CytoscapeComponent from "react-cytoscapejs";
 import type { Core, ElementDefinition } from "cytoscape";
 
-interface NodeData {
+interface SelectedElement {
   id: string;
   label: string;
   type: string;
   isRoot?: boolean;
   rawData?: any;
+  isEdge?: boolean;
+  source?: string;
+  target?: string;
 }
 
 interface VisualizeEntityDialogProps {
@@ -210,7 +213,7 @@ export function VisualizeEntityDialog({
 }: VisualizeEntityDialogProps) {
   const cyRef = useRef<Core | null>(null);
   const [layoutName, setLayoutName] = useState("circle");
-  const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+  const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null);
   const [showLegend, setShowLegend] = useState(true);
 
   const elements = useMemo(() => {
@@ -313,19 +316,34 @@ export function VisualizeEntityDialog({
     cy.on('tap', 'node', (evt) => {
       const node = evt.target;
       const nodeData = node.data();
-      setSelectedNode({
+      setSelectedElement({
         id: nodeData.id,
         label: nodeData.label,
         type: nodeData.type,
         isRoot: nodeData.isRoot,
         rawData: nodeData.rawData,
+        isEdge: false,
+      });
+    });
+    
+    // Add click handler for edge selection
+    cy.on('tap', 'edge', (evt) => {
+      const edge = evt.target;
+      const edgeData = edge.data();
+      setSelectedElement({
+        id: edgeData.id,
+        label: edgeData.label || 'relationship',
+        type: 'Edge',
+        source: edgeData.source,
+        target: edgeData.target,
+        isEdge: true,
       });
     });
     
     // Clear selection when clicking background
     cy.on('tap', (evt) => {
       if (evt.target === cy) {
-        setSelectedNode(null);
+        setSelectedElement(null);
       }
     });
   }, []);
@@ -341,15 +359,21 @@ export function VisualizeEntityDialog({
       };
 
       if (name === "cose") {
-        layoutOptions.nodeRepulsion = () => 8000;
-        layoutOptions.idealEdgeLength = () => 80;
-        layoutOptions.gravity = 0.3;
+        layoutOptions.nodeRepulsion = () => 20000;
+        layoutOptions.idealEdgeLength = () => 150;
+        layoutOptions.gravity = 0.1;
+        layoutOptions.numIter = 500;
       } else if (name === "breadthfirst") {
         layoutOptions.directed = true;
-        layoutOptions.spacingFactor = 1.2;
+        layoutOptions.spacingFactor = 2.0;
       } else if (name === "concentric") {
         layoutOptions.concentric = (node: any) => (node.data("isRoot") ? 10 : 1);
         layoutOptions.levelWidth = () => 2;
+        layoutOptions.minNodeSpacing = 80;
+      } else if (name === "circle") {
+        layoutOptions.spacingFactor = 1.8;
+      } else if (name === "grid") {
+        layoutOptions.spacingFactor = 1.5;
       }
 
       cyRef.current.layout(layoutOptions).run();
@@ -376,7 +400,7 @@ export function VisualizeEntityDialog({
   useEffect(() => {
     if (!open) {
       setCyReady(false);
-      setSelectedNode(null);
+      setSelectedElement(null);
     }
   }, [open]);
 
@@ -550,19 +574,25 @@ export function VisualizeEntityDialog({
             )}
           </div>
 
-          {/* Node Details Panel */}
-          {selectedNode && (
-            <div className="w-72 border rounded-lg bg-white dark:bg-slate-900 overflow-hidden flex flex-col" data-testid="node-details-panel">
+          {/* Element Details Panel */}
+          {selectedElement && (
+            <div className="w-80 border rounded-lg bg-white dark:bg-slate-900 overflow-hidden flex flex-col" data-testid="element-details-panel">
               <div className="flex items-center justify-between p-3 border-b bg-muted/30">
                 <div className="flex items-center gap-2">
-                  <div 
-                    className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
-                    style={{ backgroundColor: getNodeColor(selectedNode.type) }}
-                  />
-                  <span className="font-medium text-sm truncate">{selectedNode.label}</span>
+                  {selectedElement.isEdge ? (
+                    <div className="w-6 h-0.5 bg-slate-400" />
+                  ) : (
+                    <div 
+                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
+                      style={{ backgroundColor: getNodeColor(selectedElement.type) }}
+                    />
+                  )}
+                  <span className="font-medium text-sm truncate">
+                    {selectedElement.isEdge ? `Edge: ${selectedElement.label}` : selectedElement.label}
+                  </span>
                 </div>
                 <button 
-                  onClick={() => setSelectedNode(null)}
+                  onClick={() => setSelectedElement(null)}
                   className="text-muted-foreground hover:text-foreground"
                   data-testid="button-close-details"
                 >
@@ -573,20 +603,41 @@ export function VisualizeEntityDialog({
                 <div className="space-y-3 text-sm">
                   <div>
                     <span className="text-xs text-muted-foreground block mb-1">Type</span>
-                    <span className="font-medium">{selectedNode.type}</span>
-                    {selectedNode.isRoot && (
+                    <span className="font-medium">{selectedElement.type}</span>
+                    {selectedElement.isRoot && (
                       <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">Root</span>
                     )}
                   </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block mb-1">ID</span>
-                    <span className="font-mono text-xs break-all">{selectedNode.id}</span>
-                  </div>
-                  {selectedNode.rawData && (
+                  
+                  {selectedElement.isEdge && (
+                    <>
+                      <div>
+                        <span className="text-xs text-muted-foreground block mb-1">Relationship</span>
+                        <span className="font-medium">{selectedElement.label}</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block mb-1">Source</span>
+                        <span className="font-mono text-xs break-all">{selectedElement.source}</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted-foreground block mb-1">Target</span>
+                        <span className="font-mono text-xs break-all">{selectedElement.target}</span>
+                      </div>
+                    </>
+                  )}
+                  
+                  {!selectedElement.isEdge && (
+                    <div>
+                      <span className="text-xs text-muted-foreground block mb-1">ID</span>
+                      <span className="font-mono text-xs break-all">{selectedElement.id}</span>
+                    </div>
+                  )}
+                  
+                  {selectedElement.rawData && !selectedElement.isEdge && (
                     <div>
                       <span className="text-xs text-muted-foreground block mb-1">Attributes</span>
-                      <div className="bg-muted/30 rounded p-2 text-xs space-y-1">
-                        {Object.entries(selectedNode.rawData)
+                      <div className="bg-muted/30 rounded p-2 text-xs space-y-1.5">
+                        {Object.entries(selectedElement.rawData)
                           .filter(([key, value]) => 
                             key !== 'entityType' && 
                             key !== 'schemaVersion' && 
@@ -595,23 +646,23 @@ export function VisualizeEntityDialog({
                             value !== '' &&
                             typeof value !== 'object'
                           )
-                          .slice(0, 10)
                           .map(([key, value]) => (
-                            <div key={key} className="flex justify-between gap-2">
-                              <span className="text-muted-foreground truncate">{key}:</span>
-                              <span className="font-mono text-right truncate max-w-[120px]">
-                                {String(value).substring(0, 30)}
-                                {String(value).length > 30 && '...'}
+                            <div key={key} className="flex flex-col">
+                              <span className="text-muted-foreground text-xs">{key}:</span>
+                              <span className="font-mono text-xs break-all pl-2">
+                                {String(value)}
                               </span>
                             </div>
                           ))
                         }
-                        {Object.entries(selectedNode.rawData)
+                        {Object.entries(selectedElement.rawData)
                           .filter(([key, value]) => typeof value === 'object' && value !== null)
-                          .slice(0, 5)
-                          .map(([key]) => (
-                            <div key={key} className="text-muted-foreground italic">
-                              {key}: [nested object]
+                          .map(([key, value]) => (
+                            <div key={key} className="flex flex-col">
+                              <span className="text-muted-foreground text-xs">{key}:</span>
+                              <span className="font-mono text-xs break-all pl-2 italic">
+                                {Array.isArray(value) ? `[${value.length} items]` : '[object]'}
+                              </span>
                             </div>
                           ))
                         }
@@ -629,7 +680,7 @@ export function VisualizeEntityDialog({
             {elements.filter((e) => !e.data.source).length} nodes,{" "}
             {elements.filter((e) => e.data.source).length} edges
           </div>
-          <div>Scroll to zoom • Drag to pan • Click nodes to select</div>
+          <div>Scroll to zoom • Drag to pan • Click nodes or edges to select</div>
         </div>
       </DialogContent>
     </Dialog>
