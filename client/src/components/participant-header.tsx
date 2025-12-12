@@ -2,6 +2,9 @@ import { PersonSearch } from "./person-search";
 import { WikidataPerson, extractWikidataPersonData } from "@/lib/wikidata";
 import { getParticipantStructuralDefaults } from "@/lib/participant-types";
 import { v4 as uuidv4 } from "uuid";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const ParticipantIcon = ({ className, size = 48 }: { className?: string; size?: number }) => (
   <svg 
@@ -75,12 +78,49 @@ export function ParticipantHeader({ value, onChange }: ParticipantHeaderProps) {
           </p>
           
           {onChange && (
-            <div className="mb-4">
-              <label className="text-sm font-medium text-foreground mb-2 block">
-                Quick Person Lookup
-              </label>
-              <PersonSearch onPersonSelect={handlePersonSelect} />
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 mb-4">
+                <div>
+                  <Label htmlFor="participant-name" className="text-sm font-medium mb-2 block">
+                    Participant Name
+                  </Label>
+                  <Input
+                    id="participant-name"
+                    value={value?.name || ''}
+                    onChange={(e) => onChange({ ...value, name: e.target.value })}
+                    placeholder="e.g., John Smith, Acme Productions"
+                    data-testid="input-participant-name"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    The display name for this participant
+                  </p>
+                </div>
+                
+                <div>
+                  <Label htmlFor="participant-description" className="text-sm font-medium mb-2 block">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="participant-description"
+                    value={value?.description || ''}
+                    onChange={(e) => onChange({ ...value, description: e.target.value })}
+                    placeholder="Describe this participant's role or background..."
+                    rows={3}
+                    data-testid="input-participant-description"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Additional details about this participant
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <Label className="text-sm font-medium mb-2 block">
+                  Quick Person Lookup
+                </Label>
+                <PersonSearch onPersonSelect={handlePersonSelect} />
+              </div>
+            </>
           )}
           
           <div className="flex flex-wrap gap-2">
