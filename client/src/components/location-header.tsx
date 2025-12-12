@@ -1,4 +1,7 @@
 import { AddressSearch } from "./address-search";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface AddressData {
   street?: string;
@@ -85,15 +88,52 @@ export function LocationHeader({ value, onChange }: LocationHeaderProps) {
           </p>
           
           {onChange && (
-            <div className="mb-4">
-              <label className="text-sm font-medium text-foreground mb-2 block">
-                Quick Address Lookup
-              </label>
-              <AddressSearch onAddressSelect={handleAddressSelect} />
-              <p className="text-xs text-muted-foreground mt-1">
-                Search for an address to auto-fill the location fields below
-              </p>
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 mb-4">
+                <div>
+                  <Label htmlFor="location-name" className="text-sm font-medium mb-2 block">
+                    Location Name
+                  </Label>
+                  <Input
+                    id="location-name"
+                    value={value?.name || ''}
+                    onChange={(e) => onChange({ ...value, name: e.target.value })}
+                    placeholder="e.g., Main Studio, Central Park Location"
+                    data-testid="input-location-name"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    A friendly name for this location
+                  </p>
+                </div>
+                
+                <div>
+                  <Label htmlFor="location-description" className="text-sm font-medium mb-2 block">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="location-description"
+                    value={value?.description || ''}
+                    onChange={(e) => onChange({ ...value, description: e.target.value })}
+                    placeholder="Describe this location and its purpose in the production..."
+                    rows={3}
+                    data-testid="input-location-description"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Additional details about this location
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <Label className="text-sm font-medium mb-2 block">
+                  Quick Address Lookup
+                </Label>
+                <AddressSearch onAddressSelect={handleAddressSelect} />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Search for an address to auto-fill the location fields below
+                </p>
+              </div>
+            </>
           )}
           
           <div className="flex flex-wrap gap-2">
