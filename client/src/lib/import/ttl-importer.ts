@@ -157,11 +157,20 @@ const rdfClassToEntityType: Record<string, string> = {
 
 const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.rdfs}label`]: "name",
+  [`${RDF_PREFIXES.rdfs}comment`]: "comment",
   [`${RDF_PREFIXES.skos}definition`]: "description",
   [`${RDF_PREFIXES.omc}schemaVersion`]: "schemaVersion",
   [`${RDF_PREFIXES.omc}hasIdentifier`]: "identifier",
   [`${RDF_PREFIXES.omc}hasIdentifierScope`]: "identifierScope",
   [`${RDF_PREFIXES.omc}hasIdentifierValue`]: "identifierValue",
+  
+  // Task state and scheduling
+  [`${RDF_PREFIXES.omc}hasScheduledStart`]: "scheduledStart",
+  [`${RDF_PREFIXES.omc}hasScheduledEnd`]: "scheduledEnd",
+  [`${RDF_PREFIXES.omc}hasActualStart`]: "actualStart",
+  [`${RDF_PREFIXES.omc}hasActualEnd`]: "actualEnd",
+  [`${RDF_PREFIXES.omc}hasStateDescriptor`]: "stateDescriptor",
+  [`${RDF_PREFIXES.omc}contextType`]: "contextType",
   
   [`${RDF_PREFIXES.omc}hasAssetStructuralCharacteristic`]: "AssetSC",
   [`${RDF_PREFIXES.omc}hasAssetFunctionalCharacteristic`]: "assetFC",
@@ -296,8 +305,6 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   
   [`${RDF_PREFIXES.omc}hasStart`]: "start",
   [`${RDF_PREFIXES.omc}hasEnd`]: "end",
-  [`${RDF_PREFIXES.omc}hasActualStart`]: "actualStart",
-  [`${RDF_PREFIXES.omc}hasActualEnd`]: "actualEnd",
   [`${RDF_PREFIXES.omc}hasSourceStart`]: "sourceStart",
   [`${RDF_PREFIXES.omc}hasSourceEnd`]: "sourceEnd",
   
