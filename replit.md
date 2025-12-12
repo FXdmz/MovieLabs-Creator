@@ -2,6 +2,17 @@
 
 ## Milestones
 
+### JSON Export Schema Compliance Transform (December 12, 2025)
+- Added post-processing transform applied only to JSON export (RDF export unchanged)
+- Task entities: state/stateDetails moved to customData (domain="me-nexus", namespace="workflow")
+- Task entities: workUnit moved to customData (domain="me-nexus", namespace="work")
+- Context entities: hasInputAssets replaced with uses.Asset array
+- Context entities: scheduling moved to customData (domain="me-nexus", namespace="scheduling")
+- customData uses array form with {domain, namespace, value} structure
+- Merges into existing customData entries when domain/namespace matches
+- Each Context transformed independently (no shared customData with parent Task)
+- Export file: client/src/lib/export/index.ts
+
 ### Task RDF/TTL Export Enhancements (December 12, 2025)
 - Enhanced Task-specific RDF serialization with proper OMC ontology patterns
 - Task State: Exports omc:hasState with omc:State objects containing omc:hasStateDescriptor
