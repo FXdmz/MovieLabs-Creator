@@ -2,6 +2,20 @@
 
 ## Milestones
 
+### ME-NEXUS Hierarchical Task Classification (December 12, 2025)
+- Implemented hierarchical classification system for Tasks using ME-NEXUS taxonomy
+- L1 category maps to TaskSC structuralType (e.g., "Animation", "Production Services", "Compositing")
+- L2/L3 service maps to taskFC functionalType (e.g., "3D Animation > Crowd Animation")
+- Two-step cascading UI: select category first, then filtered service options
+- TaskClassifier component with L1 dropdown (sorted by service count) and L2/L3 service tree
+- L3 services display with tree indentation under their L2 parents
+- Selected service shows description and OMC equivalent mapping
+- Export transformation merges ME-NEXUS data into existing TaskSC/taskFC without overwriting
+- JSON export outputs menexus: prefixed structuralType/functionalType values
+- RDF export includes menexus namespace predicates (menexus:l1, menexus:l2, menexus:l3, etc.)
+- Validation strips taskClassification field to prevent schema errors
+- Component located in: client/src/components/task-classifier.tsx
+
 ### OMC File Import Feature (December 12, 2025)
 - Import single-entity OMC files in JSON or RDF/TTL format
 - Import dialog with drag-and-drop file upload
