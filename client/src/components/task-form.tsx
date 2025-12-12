@@ -259,9 +259,14 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
       />
 
       <div className="p-4 bg-muted/30 rounded-lg border">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
-          <Info className="h-4 w-4" />
-          Status
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <Info className="h-4 w-4" />
+            Status
+          </div>
+          <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded">
+            Internal use only
+          </span>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

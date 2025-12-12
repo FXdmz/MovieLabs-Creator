@@ -39,8 +39,40 @@ import { ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
 import { ImportResult } from "@/lib/import";
 import { entityToTurtle } from "@/lib/export";
 
+function cleanContextForValidation(context: any): any {
+  if (!context) return context;
+  const { 
+    scheduling, 
+    hasInputAssets, 
+    hasOutputAssets, 
+    informs, 
+    isInformedBy,
+    ...rest 
+  } = context;
+  return rest;
+}
+
 function prepareContentForValidation(content: any): any {
-  const { meNexusService, taskClassification, ...rest } = content || {};
+  if (!content) return content;
+  
+  const { 
+    meNexusService, 
+    taskClassification,
+    state,
+    stateDetails,
+    workUnit,
+    taskGroup,
+    customData,
+    ...rest 
+  } = content;
+  
+  if (rest.Context && Array.isArray(rest.Context)) {
+    rest.Context = rest.Context.map(cleanContextForValidation).filter(Boolean);
+    if (rest.Context.length === 0) {
+      delete rest.Context;
+    }
+  }
+  
   return rest;
 }
 import { Button } from "@/components/ui/button";

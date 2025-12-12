@@ -8,8 +8,40 @@ export interface ExportOptions {
   pretty?: boolean;
 }
 
+function cleanContextForExport(context: any): any {
+  if (!context) return context;
+  const { 
+    scheduling, 
+    hasInputAssets, 
+    hasOutputAssets, 
+    informs, 
+    isInformedBy,
+    ...rest 
+  } = context;
+  return rest;
+}
+
 function cleanEntityForExport(content: any): any {
-  const { taskClassification, meNexusService, ...rest } = content || {};
+  if (!content) return content;
+  
+  const { 
+    taskClassification, 
+    meNexusService,
+    state,
+    stateDetails,
+    workUnit,
+    taskGroup,
+    customData,
+    ...rest 
+  } = content;
+  
+  if (rest.Context && Array.isArray(rest.Context)) {
+    rest.Context = rest.Context.map(cleanContextForExport).filter(Boolean);
+    if (rest.Context.length === 0) {
+      delete rest.Context;
+    }
+  }
+  
   return rest;
 }
 
