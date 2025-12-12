@@ -231,7 +231,13 @@ const jsonToRdfPredicate: Record<string, string> = {
   source: "omc:hasSource",
   software: "omc:hasSoftware",
   softwareVersion: "omc:hasSoftwareVersion",
-  apiVersion: "omc:hasAPIVersion"
+  apiVersion: "omc:hasAPIVersion",
+  
+  contributesTo: "omc:contributesTo",
+  uses: "omc:uses",
+  CreativeWork: "omc:CreativeWork",
+  Infrastructure: "omc:Infrastructure",
+  Asset: "omc:Asset"
 };
 
 const skipProperties = new Set([
@@ -319,7 +325,10 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
       }
     }
     
-    if (context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
+    // Only output hasInputAssets as direct triples if no structured uses.Asset exists
+    // This avoids conflict between legacy flat format and structured nested format
+    const hasStructuredUses = context.uses && typeof context.uses === 'object' && context.uses.Asset;
+    if (!hasStructuredUses && context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
       context.hasInputAssets.forEach((assetRef: string) => {
         triples.push({ subject, predicate: "omc:uses", object: combinedFormToUri(assetRef) });
       });
@@ -340,12 +349,6 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
     if (context.isInformedBy && Array.isArray(context.isInformedBy)) {
       context.isInformedBy.forEach((taskRef: string) => {
         triples.push({ subject, predicate: "omc:isInformedBy", object: combinedFormToUri(taskRef) });
-      });
-    }
-    
-    if (context.uses?.Infrastructure && Array.isArray(context.uses.Infrastructure)) {
-      context.uses.Infrastructure.forEach((infraRef: string) => {
-        triples.push({ subject, predicate: "omc:uses", object: combinedFormToUri(infraRef) });
       });
     }
     
@@ -372,6 +375,45 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
     
     if (context.description) {
       triples.push({ subject: ctxSubject, predicate: "skos:definition", object: formatLiteral(context.description) });
+    }
+    
+    // Export contributesTo nested object
+    if (context.contributesTo) {
+      const contributesToNode = generateBlankNodeId("contributesTo");
+      triples.push({ subject: ctxSubject, predicate: "omc:contributesTo", object: contributesToNode });
+      
+      if (context.contributesTo.CreativeWork) {
+        const cwRefs = Array.isArray(context.contributesTo.CreativeWork) 
+          ? context.contributesTo.CreativeWork 
+          : [context.contributesTo.CreativeWork];
+        cwRefs.forEach((cwRef: string) => {
+          triples.push({ subject: contributesToNode, predicate: "omc:CreativeWork", object: combinedFormToUri(cwRef) });
+        });
+      }
+    }
+    
+    // Export uses nested object (with full structure)
+    if (context.uses && typeof context.uses === 'object') {
+      const usesNode = generateBlankNodeId("uses");
+      triples.push({ subject: ctxSubject, predicate: "omc:uses", object: usesNode });
+      
+      if (context.uses.Infrastructure) {
+        const infraRefs = Array.isArray(context.uses.Infrastructure) 
+          ? context.uses.Infrastructure 
+          : [context.uses.Infrastructure];
+        infraRefs.forEach((infraRef: string) => {
+          triples.push({ subject: usesNode, predicate: "omc:Infrastructure", object: combinedFormToUri(infraRef) });
+        });
+      }
+      
+      if (context.uses.Asset) {
+        const assetRefs = Array.isArray(context.uses.Asset) 
+          ? context.uses.Asset 
+          : [context.uses.Asset];
+        assetRefs.forEach((assetRef: string) => {
+          triples.push({ subject: usesNode, predicate: "omc:Asset", object: combinedFormToUri(assetRef) });
+        });
+      }
     }
   });
 
@@ -531,7 +573,8 @@ function entityToTriples(entity: Entity): Triple[] {
         if (entity.type === "Task" && key === "Context" && Array.isArray(value)) {
           const taskContextSkipFields = new Set([
             "scheduling", "hasInputAssets", "hasOutputAssets", 
-            "informs", "isInformedBy", "identifier", "contextType", "description"
+            "informs", "isInformedBy", "identifier", "contextType", "description",
+            "contributesTo", "uses"
           ]);
           
           value.forEach((ctx: any, ctxIndex: number) => {
