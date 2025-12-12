@@ -24,6 +24,51 @@ export interface MultiImportResult {
 
 const VALID_ENTITY_TYPES: readonly string[] = ENTITY_TYPES;
 
+function transformTaskEntity(parsed: any): any {
+  const transformed = { ...parsed };
+
+  if (Array.isArray(parsed.customData)) {
+    for (const cd of parsed.customData) {
+      if (cd.namespace === 'work' && cd.value?.workUnit) {
+        transformed.workUnit = cd.value.workUnit;
+      }
+      if (cd.namespace === 'workflow' && cd.value) {
+        if (cd.value.state) {
+          transformed.state = cd.value.state;
+        }
+        if (cd.value.stateDetails) {
+          transformed.stateDetails = cd.value.stateDetails;
+        }
+      }
+    }
+  }
+
+  if (Array.isArray(parsed.Context)) {
+    transformed.Context = parsed.Context.map((ctx: any) => {
+      const transformedCtx = { ...ctx };
+      
+      if (Array.isArray(ctx.customData)) {
+        for (const cd of ctx.customData) {
+          if (cd.namespace === 'scheduling' && cd.value?.scheduling) {
+            transformedCtx.scheduling = cd.value.scheduling;
+          }
+        }
+      }
+      
+      return transformedCtx;
+    });
+  }
+
+  return transformed;
+}
+
+function transformEntity(parsed: any): any {
+  if (parsed.entityType === 'Task') {
+    return transformTaskEntity(parsed);
+  }
+  return parsed;
+}
+
 function validateAndExtractEntity(parsed: any): { valid: boolean; entity?: ImportedEntity; error?: string } {
   if (typeof parsed !== 'object' || parsed === null) {
     return { valid: false, error: 'Entity must be an object' };
@@ -64,12 +109,14 @@ function validateAndExtractEntity(parsed: any): { valid: boolean; entity?: Impor
     (parsed.creativeWorkTitle?.[0]?.titleName) || 
     `${entityType} ${entityId.slice(0, 8)}`;
 
+  const transformedContent = transformEntity(parsed);
+
   return {
     valid: true,
     entity: {
       entityType: entityType as EntityType,
       entityId,
-      content: parsed,
+      content: transformedContent,
       name
     }
   };
