@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -16,9 +16,24 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search } from "lucide-react";
 import { TaskClassifier } from "./task-classifier";
+import { useOntologyStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
+import { cn } from "@/lib/utils";
 
 interface TaskFormProps {
   value: any;
@@ -148,6 +163,21 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
   const [schedulingOpen, setSchedulingOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [participantSearchOpen, setParticipantSearchOpen] = useState(false);
+
+  const entities = useOntologyStore((state) => state.entities);
+  
+  const participants = useMemo(() => {
+    return entities.filter((e) => e.type === "Participant");
+  }, [entities]);
+
+  const selectedParticipant = useMemo(() => {
+    const participantRef = value?.workUnit?.participantRef;
+    if (!participantRef) return null;
+    return participants.find(
+      (p) => p.content?.identifier?.[0]?.combinedForm === participantRef
+    );
+  }, [participants, value?.workUnit?.participantRef]);
 
   const updateField = (field: string, fieldValue: any) => {
     onChange({ ...value, [field]: fieldValue });
@@ -313,39 +343,113 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
           icon={Users}
           isOpen={assignmentOpen}
           onToggle={() => setAssignmentOpen(!assignmentOpen)}
-          badge={value?.workUnit?.participantRef ? "1 assigned" : undefined}
+          badge={selectedParticipant ? "1 assigned" : undefined}
         />
         <CollapsibleContent className="pt-4 px-4 pb-4 border border-t-0 rounded-b-lg">
           <div>
-            <Label htmlFor="participant-ref" className="text-sm font-medium mb-2 block">
-              Assigned To (Participant Reference)
+            <Label className="text-sm font-medium mb-2 block">
+              Assigned To
             </Label>
-            <Input
-              id="participant-ref"
-              value={value?.workUnit?.participantRef || ''}
-              onChange={(e) => {
-                if (e.target.value) {
-                  const workUnitId = value?.workUnit?.identifier?.[0]?.identifierValue || uuidv4();
-                  updateField('workUnit', {
-                    entityType: "WorkUnit",
-                    schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
-                    identifier: [{
-                      identifierScope: "me-nexus",
-                      identifierValue: workUnitId,
-                      combinedForm: `me-nexus:${workUnitId}`
-                    }],
-                    participantRef: e.target.value
-                  });
-                } else {
-                  updateField('workUnit', null);
-                }
-              }}
-              placeholder="e.g., me-nexus:participant-uuid"
-              data-testid="input-participant-ref"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Reference to a Participant entity (use identifier combinedForm)
-            </p>
+            <Popover open={participantSearchOpen} onOpenChange={setParticipantSearchOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={participantSearchOpen}
+                  className="w-full justify-between font-normal"
+                  data-testid="select-participant"
+                >
+                  {selectedParticipant ? (
+                    <span className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      {selectedParticipant.name}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">Search participants...</span>
+                  )}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[400px] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Search by name..." />
+                  <CommandList>
+                    <CommandEmpty>
+                      <div className="py-6 text-center text-sm">
+                        <Users className="h-8 w-8 mx-auto mb-2 text-muted-foreground opacity-50" />
+                        <p className="text-muted-foreground">No participants found.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Create a Participant entity first.</p>
+                      </div>
+                    </CommandEmpty>
+                    <CommandGroup heading="Participants">
+                      {participants.map((participant) => (
+                        <CommandItem
+                          key={participant.id}
+                          value={participant.name}
+                          onSelect={() => {
+                            const combinedForm = participant.content?.identifier?.[0]?.combinedForm;
+                            if (combinedForm) {
+                              const workUnitId = value?.workUnit?.identifier?.[0]?.identifierValue || uuidv4();
+                              updateField('workUnit', {
+                                entityType: "WorkUnit",
+                                schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+                                identifier: [{
+                                  identifierScope: "me-nexus",
+                                  identifierValue: workUnitId,
+                                  combinedForm: `me-nexus:${workUnitId}`
+                                }],
+                                participantRef: combinedForm
+                              });
+                            }
+                            setParticipantSearchOpen(false);
+                          }}
+                          data-testid={`participant-option-${participant.id}`}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value?.workUnit?.participantRef === participant.content?.identifier?.[0]?.combinedForm
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{participant.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {participant.content?.ParticipantSC?.structuralType || 'Participant'} • {participant.content?.identifier?.[0]?.combinedForm?.slice(0, 30)}...
+                            </span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {selectedParticipant && (
+              <div className="mt-2 flex items-center justify-between p-2 bg-muted/50 rounded-md">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium">{selectedParticipant.name}</p>
+                    <p className="text-xs text-muted-foreground">{value?.workUnit?.participantRef}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => updateField('workUnit', null)}
+                  data-testid="clear-participant"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            {!selectedParticipant && participants.length === 0 && (
+              <p className="text-xs text-muted-foreground mt-2">
+                No Participant entities exist yet. Create one first to assign to this task.
+              </p>
+            )}
           </div>
         </CollapsibleContent>
       </Collapsible>
