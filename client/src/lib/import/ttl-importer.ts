@@ -412,9 +412,12 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
             const nestedQuads = store.getQuads(quad.object, null, null, null);
             if (nestedQuads.length > 0) {
               // Check if this is a reference to another root entity
-              if (rootUris.has(quad.object.value)) {
+              const isRootEntity = rootUris.has(quad.object.value);
+              console.log(`[TTL Import] Checking reference: ${quad.object.value}, isRootEntity: ${isRootEntity}, predicate: ${predicateUri}`);
+              if (isRootEntity) {
                 // Return as a reference string for relationships
                 const refId = extractIdFromUri(quad.object.value);
+                console.log(`[TTL Import] Converting to reference: me-nexus:${refId}`);
                 if (refId) {
                   value = `me-nexus:${refId}`;
                 } else {
