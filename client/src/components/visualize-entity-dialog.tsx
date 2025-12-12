@@ -59,7 +59,7 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   Task: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="45" fill="#3AA608" stroke="#5e5e5e" stroke-width="3"/>
+    <path d="M 8 5 L 35 8 L 50 10 L 75 13 L 92 16 C 96 17 98 20 98 24 L 98 78 C 98 82 95 86 91 86 L 10 98 C 6 99 3 96 3 92 L 3 78 L 8 5 Z" fill="#3AA608" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
   Participant: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -688,7 +688,7 @@ export function VisualizeEntityDialog({
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <circle cx="50" cy="50" r="45" fill={ENTITY_TYPE_COLORS.Task} stroke="#5e5e5e" strokeWidth="3"/>
+                      <path d="M 8 5 L 35 8 L 50 10 L 75 13 L 92 16 C 96 17 98 20 98 24 L 98 78 C 98 82 95 86 91 86 L 10 98 C 6 99 3 96 3 92 L 3 78 L 8 5 Z" fill={ENTITY_TYPE_COLORS.Task} stroke="#5e5e5e" strokeWidth="3"/>
                     </svg>
                     <span>Task</span>
                   </div>
