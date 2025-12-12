@@ -2,6 +2,24 @@
 
 ## Milestones
 
+### MovieLabs Visual Language Graph Icons (December 12, 2025)
+- Graph visualization now uses custom SVG shapes matching MovieLabs visual language
+- Task: Circle (green), Asset: Rounded rectangle (orange), Participant: Square (dark blue)
+- Context: Hexagon (yellow), Infrastructure: Octagon (light blue), CreativeWork: Star (purple)
+- Location: Triangle (red), Array/Collection: Diamond (gray)
+- SVG shapes rendered via Cytoscape background-image with data URIs
+- Legend updated with matching SVG icons for each entity type
+- Detail panel shows SVG icon for known types, falls back to colored circle for others
+- Component: client/src/components/visualize-entity-dialog.tsx
+
+### Creative Work Field in Task Form (December 12, 2025)
+- Added "Creative Work" collapsible section to Task form between Assignment and Scheduling
+- Single-select dropdown to link a Task to a CreativeWork entity (film/project)
+- Automatically creates/updates hidden Context entity with contributesTo.CreativeWork
+- User never sees Context directly - it's managed automatically
+- Clear button to remove Creative Work selection
+- Component: client/src/components/task-form.tsx
+
 ### JSON Export Schema Compliance Transform (December 12, 2025)
 - Added post-processing transform applied only to JSON export (RDF export unchanged)
 - Task entities: state/stateDetails moved to customData (domain="me-nexus", namespace="workflow")
