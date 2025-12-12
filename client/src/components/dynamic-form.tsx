@@ -462,7 +462,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
   );
 }
 
-function LocationEntityPicker({ value, onChange }: { value: string | null; onChange: (val: string | null) => void }) {
+function LocationEntityPicker({ value, onChange }: { value: string | undefined; onChange: (val: string | undefined) => void }) {
   const { entities } = useOntologyStore();
   
   const locationEntities = entities.filter(e => e.entityType === 'Location');
@@ -477,18 +477,15 @@ function LocationEntityPicker({ value, onChange }: { value: string | null; onCha
     return name;
   };
   
-  const getCombinedForm = (entity: any) => {
-    if (entity.identifier?.[0]?.combinedForm) {
-      return entity.identifier[0].combinedForm;
-    }
-    return entity.id || entity.identifier?.[0]?.identifierValue;
+  const getEntityId = (entity: any): string => {
+    return entity.id || entity.identifier?.[0]?.identifierValue || '';
   };
   
-  const selectedLocation = value ? locationEntities.find(e => getCombinedForm(e) === value) : null;
+  const selectedLocation = value ? locationEntities.find(e => getEntityId(e) === value) : null;
   
   return (
     <div className="flex items-center gap-2">
-      <Select value={value || ""} onValueChange={(val) => onChange(val || null)}>
+      <Select value={value || ""} onValueChange={(val) => onChange(val || undefined)}>
         <SelectTrigger data-testid="select-location-reference" className="flex-1">
           <SelectValue placeholder="Select a location...">
             {selectedLocation ? (
@@ -509,7 +506,7 @@ function LocationEntityPicker({ value, onChange }: { value: string | null; onCha
           ) : (
             <ScrollArea className="max-h-60">
               {locationEntities.map((entity) => (
-                <SelectItem key={getCombinedForm(entity)} value={getCombinedForm(entity)}>
+                <SelectItem key={getEntityId(entity)} value={getEntityId(entity)}>
                   <div className="flex items-center gap-2">
                     <MapPin className="h-3 w-3 text-red-500" />
                     {getLocationLabel(entity)}
@@ -526,7 +523,7 @@ function LocationEntityPicker({ value, onChange }: { value: string | null; onCha
           variant="ghost"
           size="icon"
           className="h-9 w-9 shrink-0"
-          onClick={() => onChange(null)}
+          onClick={() => onChange(undefined)}
           data-testid="clear-location-reference"
         >
           <X className="h-4 w-4" />

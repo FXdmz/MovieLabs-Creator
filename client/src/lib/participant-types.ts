@@ -19,19 +19,16 @@ export const PARTICIPANT_STRUCTURAL_TYPE_DEFAULTS: Record<string, any> = {
     jobTitle: null,
     gender: null,
     contact: null,
-    Location: null,
   },
   Department: {
     structuralType: 'department',
     departmentName: null,
     contact: null,
-    Location: null,
   },
   Organization: {
     structuralType: 'organization',
     organizationName: null,
     contact: null,
-    Location: null,
   },
   Service: {
     structuralType: 'service',
