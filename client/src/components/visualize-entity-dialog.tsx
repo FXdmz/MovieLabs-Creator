@@ -48,6 +48,45 @@ const ME_DMZ_COLORS = {
   defaultColor: "#95A5A6",
 };
 
+const createSvgDataUri = (svgContent: string) => {
+  const encoded = encodeURIComponent(svgContent);
+  return `data:image/svg+xml,${encoded}`;
+};
+
+const ENTITY_SVG_SHAPES: Record<string, string> = {
+  Asset: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="5" width="90" height="90" rx="12" ry="12" fill="#D97218" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  Task: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="45" fill="#3AA608" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  Participant: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="5" width="90" height="90" fill="#232073" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  Context: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="#F2C53D" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  Infrastructure: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill="#CEECF2" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  CreativeWork: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill="#9B59B6" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  Location: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 95,95 5,95" fill="#E74C3C" stroke="#5e5e5e" stroke-width="3"/>
+  </svg>`),
+  
+  array: createSvgDataUri(`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 95,50 50,95 5,50" fill="#BDC3C7" stroke="#5e5e5e" stroke-width="2"/>
+  </svg>`),
+};
+
 const ENTITY_TYPE_COLORS: Record<string, string> = {
   Asset: ME_DMZ_COLORS.orange,
   Task: ME_DMZ_COLORS.green,
@@ -330,12 +369,12 @@ export function VisualizeEntityDialog({
           "font-size": "10px",
           "font-family": "Inter, system-ui, sans-serif",
           color: "#333",
-          "text-margin-y": 5,
-          width: 40,
-          height: 40,
-          "background-color": ME_DMZ_COLORS.defaultColor,
-          "border-width": 2,
-          "border-color": "#fff",
+          "text-margin-y": 8,
+          width: 44,
+          height: 44,
+          "background-color": "transparent",
+          "background-opacity": 0,
+          "border-width": 0,
           "text-wrap": "ellipsis",
           "text-max-width": "80px",
         },
@@ -347,25 +386,26 @@ export function VisualizeEntityDialog({
           height: 60,
           "font-size": "12px",
           "font-weight": "bold",
-          "border-width": 3,
-          "border-color": ME_DMZ_COLORS.darkBlue,
+          "text-margin-y": 10,
         },
       },
-      ...Object.entries(ENTITY_TYPE_COLORS).map(([type, color]) => ({
+      ...Object.entries(ENTITY_SVG_SHAPES).map(([type, svgUri]) => ({
+        selector: `node[type="${type}"]`,
+        style: {
+          "background-image": svgUri,
+          "background-fit": "cover",
+          "background-clip": "none",
+        },
+      })),
+      ...Object.entries(ENTITY_TYPE_COLORS).filter(([type]) => !ENTITY_SVG_SHAPES[type]).map(([type, color]) => ({
         selector: `node[type="${type}"]`,
         style: {
           "background-color": color,
+          "background-opacity": 1,
+          "border-width": 2,
+          "border-color": "#5e5e5e",
         },
       })),
-      {
-        selector: "node[type='array']",
-        style: {
-          shape: "diamond",
-          width: 30,
-          height: 30,
-          "background-color": "#BDC3C7",
-        },
-      },
       {
         selector: "edge",
         style: {
@@ -390,9 +430,8 @@ export function VisualizeEntityDialog({
       {
         selector: ":selected",
         style: {
-          "background-color": ME_DMZ_COLORS.lightBlue,
-          "border-color": ME_DMZ_COLORS.darkBlue,
-          "border-width": 3,
+          "overlay-color": ME_DMZ_COLORS.darkBlue,
+          "overlay-opacity": 0.2,
           "line-color": ME_DMZ_COLORS.darkBlue,
           "target-arrow-color": ME_DMZ_COLORS.darkBlue,
         },
@@ -646,31 +685,51 @@ export function VisualizeEntityDialog({
                 </div>
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Task }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <circle cx="50" cy="50" r="45" fill={ENTITY_TYPE_COLORS.Task} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>Task</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Asset }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <rect x="5" y="5" width="90" height="90" rx="12" ry="12" fill={ENTITY_TYPE_COLORS.Asset} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>Asset</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Participant }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <rect x="5" y="5" width="90" height="90" fill={ENTITY_TYPE_COLORS.Participant} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>Participant</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Context }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill={ENTITY_TYPE_COLORS.Context} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>Context</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Infrastructure }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill={ENTITY_TYPE_COLORS.Infrastructure} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>Infrastructure</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.CreativeWork }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
                     <span>CreativeWork</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rotate-45" style={{ backgroundColor: "#BDC3C7" }} />
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <polygon points="50,5 95,95 5,95" fill={ENTITY_TYPE_COLORS.Location} stroke="#5e5e5e" strokeWidth="3"/>
+                    </svg>
+                    <span>Location</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg viewBox="0 0 100 100" className="w-4 h-4">
+                      <polygon points="50,5 95,50 50,95 5,50" fill="#BDC3C7" stroke="#5e5e5e" strokeWidth="2"/>
+                    </svg>
                     <span>Array/Collection</span>
                   </div>
                 </div>
@@ -685,6 +744,12 @@ export function VisualizeEntityDialog({
                 <div className="flex items-center gap-2">
                   {selectedElement.isEdge ? (
                     <div className="w-6 h-0.5 bg-slate-400" />
+                  ) : ENTITY_SVG_SHAPES[selectedElement.type] ? (
+                    <img 
+                      src={ENTITY_SVG_SHAPES[selectedElement.type]}
+                      alt={selectedElement.type}
+                      className="w-5 h-5"
+                    />
                   ) : (
                     <div 
                       className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
