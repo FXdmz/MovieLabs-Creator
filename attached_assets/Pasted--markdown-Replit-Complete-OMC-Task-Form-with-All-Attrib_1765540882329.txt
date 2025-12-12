@@ -1,0 +1,532 @@
+```markdown
+# Replit: Complete OMC Task Form with All Attributes
+
+Add all missing OMC Task attributes with appropriate UI components. Organize into logical sections.
+
+## Form Structure
+
+```
+┌────────────────────────────────────────────────────────┐
+│ CREATE TASK                                            │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ BASIC INFORMATION                                      │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Task Name *                                            │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Archive Movie                                      │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Description                                            │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Please archive this movie                          │ │
+│ │                                                    │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ CLASSIFICATION                                         │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Task Category (Structural) *                           │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Production Services                     (66)    ▼ │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Service Type (Functional) *                            │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Post-Production > Archiving                     ▼ │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ ℹ Create the various packages for distribution...     │
+│ ✓ OMC Equivalent: omc:ConformFinish                    │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ STATUS                                                 │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ State *                                                │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ assigned                                        ▼ │ │
+│ └────────────────────────────────────────────────────┘ │
+│   Options: assigned, in_process, waiting, complete    │
+│                                                        │
+│ State Details (optional)                               │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Waiting for final cut approval                    │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ ▶ ASSIGNMENT (Optional)                                │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ ▶ SCHEDULING (Optional)                                │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ ▶ ASSETS & RELATIONSHIPS (Optional)                    │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ ═══════════════════════════════════════════════════    │
+│ ▶ ADVANCED (Optional)                                  │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│                    [Cancel]  [Create Task]            │
+└────────────────────────────────────────────────────────┘
+```
+
+## Section 4: ASSIGNMENT (Collapsible)
+
+When expanded:
+
+```
+│ ═══════════════════════════════════════════════════    │
+│ ▼ ASSIGNMENT                                           │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Assigned To (Work Unit)                                │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search participants...                          🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Selected: John Smith (Archivist)                       │
+│ Participant ID: me-nexus:participant-abc123            │
+```
+
+**UI Component:** Searchable participant selector
+- Search box with autocomplete
+- Shows participant name and role
+- Stores participant UUID reference
+- Can be left empty (null)
+
+**JSON Output:**
+```json
+"workUnit": {
+  "entityType": "WorkUnit",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "workunit-uuid",
+    "combinedForm": "me-nexus:workunit-uuid"
+  }],
+  "participantRef": "me-nexus:participant-abc123"
+}
+```
+
+## Section 5: SCHEDULING (Collapsible)
+
+When expanded:
+
+```
+│ ═══════════════════════════════════════════════════    │
+│ ▼ SCHEDULING                                           │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Scheduled Start                                        │
+│ ┌──────────────────────┐  ┌──────────────────────┐    │
+│ │ 2025-01-15        📅 │  │ 09:00 AM          🕐 │    │
+│ └──────────────────────┘  └──────────────────────┘    │
+│                                                        │
+│ Scheduled End                                          │
+│ ┌──────────────────────┐  ┌──────────────────────┐    │
+│ │ 2025-01-20        📅 │  │ 05:00 PM          🕐 │    │
+│ └──────────────────────┘  └──────────────────────┘    │
+│                                                        │
+│ Actual Start (filled when task starts)                 │
+│ ┌──────────────────────┐  ┌──────────────────────┐    │
+│ │                   📅 │  │                   🕐 │    │
+│ └──────────────────────┘  └──────────────────────┘    │
+│                                                        │
+│ Actual End (filled when task completes)                │
+│ ┌──────────────────────┐  ┌──────────────────────┐    │
+│ │                   📅 │  │                   🕐 │    │
+│ └──────────────────────┘  └──────────────────────┘    │
+```
+
+**UI Components:**
+- Date pickers for each field
+- Time pickers for each field
+- All fields optional
+- Combine date + time into ISO 8601 format
+
+**JSON Output (in Context):**
+```json
+"Context": [{
+  "entityType": "Context",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "context-uuid",
+    "combinedForm": "me-nexus:context-uuid"
+  }],
+  "scheduling": {
+    "scheduledStart": "2025-01-15T09:00:00Z",
+    "scheduledEnd": "2025-01-20T17:00:00Z",
+    "actualStart": null,
+    "actualEnd": null
+  }
+}]
+```
+
+## Section 6: ASSETS & RELATIONSHIPS (Collapsible)
+
+When expanded:
+
+```
+│ ═══════════════════════════════════════════════════    │
+│ ▼ ASSETS & RELATIONSHIPS                              │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Input Assets (what this task needs)                    │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search assets...                                🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Selected:                                              │
+│ • Final Cut Master (Video Asset)              [Remove] │
+│ • Audio Mix Stems (Audio Asset)               [Remove] │
+│                                                        │
+│ [+ Add Input Asset]                                    │
+│                                                        │
+│ ─────────────────────────────────────────────────      │
+│                                                        │
+│ Output Assets (what this task produces)                │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search assets...                                🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Selected:                                              │
+│ • Archive Package DCP (Archive Asset)         [Remove] │
+│                                                        │
+│ [+ Add Output Asset]                                   │
+│                                                        │
+│ ─────────────────────────────────────────────────      │
+│                                                        │
+│ Task Dependencies                                      │
+│                                                        │
+│ This task informs (sends info to):                     │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search tasks...                                 🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│ Selected:                                              │
+│ • Quality Control Review                      [Remove] │
+│                                                        │
+│ [+ Add Task]                                           │
+│                                                        │
+│ This task is informed by (receives info from):         │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search tasks...                                 🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│ Selected:                                              │
+│ • Final Edit Complete                         [Remove] │
+│                                                        │
+│ [+ Add Task]                                           │
+```
+
+**UI Components:**
+- Multi-select searchable lists for assets
+- Multi-select searchable lists for tasks
+- Show asset/task name and type
+- Remove button for each selected item
+- All optional (can be empty arrays)
+
+**JSON Output (in Context):**
+```json
+"Context": [{
+  "entityType": "Context",
+  "identifier": [...],
+  "hasInputAssets": [
+    "me-nexus:asset-final-cut",
+    "me-nexus:asset-audio-stems"
+  ],
+  "hasOutputAssets": [
+    "me-nexus:asset-archive-package"
+  ],
+  "informs": [
+    "me-nexus:task-qc-review"
+  ],
+  "isInformedBy": [
+    "me-nexus:task-final-edit"
+  ]
+}]
+```
+
+## Section 7: ADVANCED (Collapsible)
+
+When expanded:
+
+```
+│ ═══════════════════════════════════════════════════    │
+│ ▼ ADVANCED                                             │
+│ ═══════════════════════════════════════════════════    │
+│                                                        │
+│ Task Group (if this is part of a larger task set)      │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ Search task groups...                           🔍 │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ Selected: Post-Production Package                      │
+│ Group ID: me-nexus:taskgroup-post                      │
+│                                                        │
+│ ─────────────────────────────────────────────────      │
+│                                                        │
+│ Custom Data (JSON format)                              │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ {                                                  │ │
+│ │   "priority": "high",                              │ │
+│ │   "estimatedHours": 8,                             │ │
+│ │   "department": "Post-Production",                 │ │
+│ │   "externalId": "shotgrid-12345"                   │ │
+│ │ }                                                  │ │
+│ └────────────────────────────────────────────────────┘ │
+│                                                        │
+│ ℹ Valid JSON only. Used for system-specific data.      │
+```
+
+**UI Components:**
+- Task group selector (searchable)
+- JSON editor with validation
+- Both optional
+
+**JSON Output:**
+```json
+"taskGroup": {
+  "entityType": "TaskGroup",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "taskgroup-uuid",
+    "combinedForm": "me-nexus:taskgroup-uuid"
+  }],
+  "name": "Post-Production Package",
+  "taskComponents": [
+    "me-nexus:task-color-grade",
+    "me-nexus:task-archive",
+    "me-nexus:task-qc"
+  ]
+},
+"customData": {
+  "priority": "high",
+  "estimatedHours": 8,
+  "department": "Post-Production",
+  "externalId": "shotgrid-12345"
+}
+```
+
+## Complete JSON Output Example
+
+```json
+{
+  "entityType": "Task",
+  "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "1ec9915d-ac92-4037-be30-1f3d383be11a",
+    "combinedForm": "me-nexus:1ec9915d-ac92-4037-be30-1f3d383be11a"
+  }],
+  
+  "name": "Archive Movie",
+  "description": "Please archive this movie",
+  
+  "TaskSC": {
+    "entityType": "TaskSC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "9b66bceb-05ec-42d9-9f12-e5f99b9d382c",
+      "combinedForm": "me-nexus:9b66bceb-05ec-42d9-9f12-e5f99b9d382c"
+    }],
+    "structuralType": "menexus:Production-Services",
+    "structuralProperties": {
+      "l1": "Production Services",
+      "serviceCount": 66
+    }
+  },
+  
+  "taskFC": {
+    "entityType": "TaskFC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "70ac5c30-0006-46f1-97a6-42c336cac8d9",
+      "combinedForm": "me-nexus:70ac5c30-0006-46f1-97a6-42c336cac8d9"
+    }],
+    "functionalType": "menexus:Archiving",
+    "functionalProperties": {
+      "serviceId": "1f857e37-a785-4e05-9b3f-95109eed9a38",
+      "serviceName": "Archiving",
+      "fullPath": "Production Services > Post-Production Services > Archiving",
+      "l1": "Production Services",
+      "l2": "Post-Production Services",
+      "l3": "Archiving",
+      "description": "Create the various packages for distribution and archiving.",
+      "omcEquivalent": "omc:ConformFinish"
+    }
+  },
+  
+  "state": "assigned",
+  "stateDetails": "Waiting for final cut approval",
+  
+  "workUnit": {
+    "entityType": "WorkUnit",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "workunit-uuid",
+      "combinedForm": "me-nexus:workunit-uuid"
+    }],
+    "participantRef": "me-nexus:participant-abc123"
+  },
+  
+  "taskGroup": {
+    "entityType": "TaskGroup",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "taskgroup-uuid",
+      "combinedForm": "me-nexus:taskgroup-uuid"
+    }],
+    "name": "Post-Production Package",
+    "taskComponents": [
+      "me-nexus:task-color-grade",
+      "me-nexus:task-archive",
+      "me-nexus:task-qc"
+    ]
+  },
+  
+  "Context": [{
+    "entityType": "Context",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "context-uuid",
+      "combinedForm": "me-nexus:context-uuid"
+    }],
+    "hasInputAssets": [
+      "me-nexus:asset-final-cut",
+      "me-nexus:asset-audio-stems"
+    ],
+    "hasOutputAssets": [
+      "me-nexus:asset-archive-package"
+    ],
+    "informs": [
+      "me-nexus:task-qc-review"
+    ],
+    "isInformedBy": [
+      "me-nexus:task-final-edit"
+    ],
+    "scheduling": {
+      "scheduledStart": "2025-01-15T09:00:00Z",
+      "scheduledEnd": "2025-01-20T17:00:00Z",
+      "actualStart": null,
+      "actualEnd": null
+    }
+  }],
+  
+  "customData": {
+    "priority": "high",
+    "estimatedHours": 8,
+    "department": "Post-Production",
+    "externalId": "shotgrid-12345"
+  }
+}
+```
+
+## UI Implementation Notes
+
+### Collapsible Sections
+- Use accordion/collapse components
+- Save collapse state in local storage
+- Show badge with count when collapsed (e.g., "⚡ 2 assets, 1 dependency")
+
+### Validation
+- Name is required
+- Task Category (L1) is required
+- Service Type (L2/L3) is required
+- State is required
+- All other fields optional
+- Validate JSON in Custom Data field
+- Validate date ranges (end >= start)
+
+### Smart Defaults
+- State defaults to "assigned"
+- Generate UUIDs automatically
+- Context array only created if scheduling or relationships added
+- workUnit only included if participant selected
+- taskGroup only included if group selected
+
+### Search/Autocomplete
+For participant/asset/task selectors:
+- Fuzzy search by name
+- Show type/role in dropdown
+- Display selected items as chips/badges
+- Allow removal of selected items
+
+### Date/Time Handling
+- Use date pickers for dates
+- Use time pickers for times
+- Combine into ISO 8601 format: "YYYY-MM-DDTHH:mm:ssZ"
+- Show in user's timezone but store as UTC
+
+## Turtle/RDF Export
+
+Also generate corresponding RDF output with all these fields:
+
+```turtle
+@prefix omc: <https://movielabs.com/omc/> .
+@prefix menexus: <https://me-nexus.com/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<me-nexus:1ec9915d-ac92-4037-be30-1f3d383be11a> a omc:Task ;
+    omc:name "Archive Movie" ;
+    omc:description "Please archive this movie" ;
+    omc:state "assigned" ;
+    omc:stateDetails "Waiting for final cut approval" ;
+    omc:taskSC <me-nexus:9b66bceb-05ec-42d9-9f12-e5f99b9d382c> ;
+    omc:taskFC <me-nexus:70ac5c30-0006-46f1-97a6-42c336cac8d9> ;
+    omc:workUnit <me-nexus:workunit-uuid> ;
+    omc:taskGroup <me-nexus:taskgroup-uuid> ;
+    omc:context <me-nexus:context-uuid> .
+
+<me-nexus:9b66bceb-05ec-42d9-9f12-e5f99b9d382c> a omc:TaskSC ;
+    omc:structuralType menexus:Production-Services ;
+    menexus:l1 "Production Services" ;
+    menexus:serviceCount 66 .
+
+<me-nexus:70ac5c30-0006-46f1-97a6-42c336cac8d9> a omc:TaskFC ;
+    omc:functionalType menexus:Archiving ;
+    menexus:serviceId "1f857e37-a785-4e05-9b3f-95109eed9a38" ;
+    menexus:serviceName "Archiving" ;
+    menexus:fullPath "Production Services > Post-Production Services > Archiving" ;
+    menexus:omcEquivalent "omc:ConformFinish" .
+
+<me-nexus:workunit-uuid> a omc:WorkUnit ;
+    omc:participantRef <me-nexus:participant-abc123> .
+
+<me-nexus:context-uuid> a omc:Context ;
+    omc:hasInputAssets <me-nexus:asset-final-cut>, <me-nexus:asset-audio-stems> ;
+    omc:hasOutputAssets <me-nexus:asset-archive-package> ;
+    omc:informs <me-nexus:task-qc-review> ;
+    omc:isInformedBy <me-nexus:task-final-edit> ;
+    omc:scheduling [
+        omc:scheduledStart "2025-01-15T09:00:00Z"^^xsd:dateTime ;
+        omc:scheduledEnd "2025-01-20T17:00:00Z"^^xsd:dateTime
+    ] .
+
+<me-nexus:taskgroup-uuid> a omc:TaskGroup ;
+    omc:name "Post-Production Package" ;
+    omc:taskComponents <me-nexus:task-color-grade>, <me-nexus:task-archive>, <me-nexus:task-qc> .
+```
+
+## Implementation Priority
+
+1. **Phase 1** (Do first): State field + State Details
+2. **Phase 2**: Work Unit assignment
+3. **Phase 3**: Scheduling dates
+4. **Phase 4**: Asset relationships
+5. **Phase 5**: Task dependencies
+6. **Phase 6**: Task Groups + Custom Data
+
+Build incrementally - each section can be added independently.
+```
+
+This gives you the complete production-ready Task form with all OMC attributes properly structured.

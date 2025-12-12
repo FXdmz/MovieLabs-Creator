@@ -91,6 +91,7 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
          structuralProperties: {}
        };
        defaultContent.taskFC = null;
+       defaultContent.state = "assigned";
        defaultContent.Context = null;
     }
 
