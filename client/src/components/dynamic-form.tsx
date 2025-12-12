@@ -469,9 +469,9 @@ function LocationEntityPicker({ value, onChange }: { value: string | undefined; 
   
   const getLocationLabel = (entity: any) => {
     const name = entity.name || 'Unnamed Location';
-    const locSC = entity.LocationSC;
-    if (locSC?.address?.streetAddress || locSC?.address?.locality) {
-      const parts = [locSC.address.streetAddress, locSC.address.locality].filter(Boolean);
+    const address = entity.address;
+    if (address?.street || address?.locality) {
+      const parts = [address.street, address.locality].filter(Boolean);
       return `${name} - ${parts.join(', ')}`;
     }
     return name;
