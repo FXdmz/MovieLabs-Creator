@@ -5,7 +5,8 @@ export const RDF_PREFIXES = {
   xsd: "http://www.w3.org/2001/XMLSchema#",
   skos: "http://www.w3.org/2004/02/skos/core#",
   owl: "http://www.w3.org/2002/07/owl#",
-  me: "https://me-nexus.com/id/"
+  me: "https://me-nexus.com/id/",
+  menexus: "https://me-nexus.com/schema#"
 } as const;
 
 export function getPrefixDeclarations(): string {

@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { ServiceSelector } from "./service-selector";
 
 interface TaskHeaderProps {
   value?: any;
@@ -86,6 +87,11 @@ export function TaskHeader({ value, onChange }: TaskHeaderProps) {
                   Additional details about this task
                 </p>
               </div>
+              
+              <ServiceSelector
+                value={value?.meNexusService}
+                onChange={(service) => onChange({ ...value, meNexusService: service })}
+              />
             </div>
           )}
           

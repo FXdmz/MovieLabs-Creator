@@ -169,6 +169,13 @@ const jsonToRdfPredicate: Record<string, string> = {
   tag: "omc:hasTag",
   tagValue: "omc:hasTagValue",
   
+  meNexusService: "menexus:hasService",
+  serviceId: "menexus:serviceId",
+  l1: "menexus:l1",
+  l2: "menexus:l2",
+  l3: "menexus:l3",
+  taskFunctionalCharacteristics: "omc:hasTaskFunctionalCharacteristic",
+  
   participant: "omc:hasParticipant",
   participantComponent: "omc:hasParticipantComponent",
   task: "omc:hasTask",
