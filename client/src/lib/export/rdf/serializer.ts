@@ -272,13 +272,27 @@ function generateBlankNodeId(prefix: string): string {
   return `_:${prefix}_${blankNodeCounter}`;
 }
 
+function combinedFormToUri(combinedForm: string): string {
+  if (combinedForm.startsWith("me-nexus:")) {
+    return `me:${combinedForm.replace("me-nexus:", "")}`;
+  }
+  const colonIndex = combinedForm.indexOf(":");
+  if (colonIndex > 0) {
+    const scope = combinedForm.substring(0, colonIndex);
+    const value = combinedForm.substring(colonIndex + 1);
+    return `<urn:${scope}:${value}>`;
+  }
+  return `me:${combinedForm}`;
+}
+
 function processTaskSpecificProperties(subject: string, content: any, triples: Triple[]): void {
   if (content.state) {
     const stateNodeId = generateBlankNodeId("state");
     triples.push({ subject, predicate: "omc:hasState", object: stateNodeId });
     triples.push({ subject: stateNodeId, predicate: "rdf:type", object: "omc:State" });
     
-    const stateDescriptor = STATE_DESCRIPTOR_MAP[content.state.toLowerCase()] || `omc:${content.state}`;
+    const normalizedState = content.state.toLowerCase().replace(/[\s-]+/g, "_");
+    const stateDescriptor = STATE_DESCRIPTOR_MAP[normalizedState] || formatLiteral(content.state);
     triples.push({ subject: stateNodeId, predicate: "omc:hasStateDescriptor", object: stateDescriptor });
     
     if (content.stateDetails) {
@@ -286,61 +300,51 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
     }
   }
 
-  const context = content.Context?.[0];
-  if (context?.scheduling) {
-    const sched = context.scheduling;
-    if (sched.scheduledStart) {
-      triples.push({ subject, predicate: "omc:hasScheduledStart", object: `"${sched.scheduledStart}"^^xsd:dateTime` });
-    }
-    if (sched.scheduledEnd) {
-      triples.push({ subject, predicate: "omc:hasScheduledEnd", object: `"${sched.scheduledEnd}"^^xsd:dateTime` });
-    }
-    if (sched.actualStart) {
-      triples.push({ subject, predicate: "omc:hasActualStart", object: `"${sched.actualStart}"^^xsd:dateTime` });
-    }
-    if (sched.actualEnd) {
-      triples.push({ subject, predicate: "omc:hasActualEnd", object: `"${sched.actualEnd}"^^xsd:dateTime` });
-    }
-  }
-
-  if (content.workUnit) {
-    const wu = content.workUnit;
-    const wuId = wu.identifier?.[0]?.identifierValue || `workunit_${blankNodeCounter++}`;
-    const wuSubject = `me:${wuId}`;
-    
-    triples.push({ subject, predicate: "omc:hasWorkUnit", object: wuSubject });
-    triples.push({ subject: wuSubject, predicate: "rdf:type", object: "omc:WorkUnit" });
-    
-    if (wu.identifier?.[0]) {
-      const id = wu.identifier[0];
-      if (id.identifierScope) {
-        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierScope", object: formatLiteral(id.identifierScope) });
+  const contexts = content.Context || [];
+  contexts.forEach((context: any, index: number) => {
+    if (context?.scheduling) {
+      const sched = context.scheduling;
+      if (sched.scheduledStart) {
+        triples.push({ subject, predicate: "omc:hasScheduledStart", object: `"${sched.scheduledStart}"^^xsd:dateTime` });
       }
-      if (id.identifierValue) {
-        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierValue", object: formatLiteral(id.identifierValue) });
+      if (sched.scheduledEnd) {
+        triples.push({ subject, predicate: "omc:hasScheduledEnd", object: `"${sched.scheduledEnd}"^^xsd:dateTime` });
+      }
+      if (sched.actualStart) {
+        triples.push({ subject, predicate: "omc:hasActualStart", object: `"${sched.actualStart}"^^xsd:dateTime` });
+      }
+      if (sched.actualEnd) {
+        triples.push({ subject, predicate: "omc:hasActualEnd", object: `"${sched.actualEnd}"^^xsd:dateTime` });
       }
     }
     
-    if (wu.participantRef) {
-      const participantUri = wu.participantRef.startsWith("me-nexus:")
-        ? `me:${wu.participantRef.replace("me-nexus:", "")}`
-        : formatLiteral(wu.participantRef);
-      
-      triples.push({
-        subject: wuSubject,
-        predicate: "<https://movielabs.com/omc/rdf/schema/v2.8Tentative#aWorkUnitHas.Participant>",
-        object: participantUri
+    if (context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
+      context.hasInputAssets.forEach((assetRef: string) => {
+        triples.push({ subject, predicate: "omc:uses", object: combinedFormToUri(assetRef) });
       });
-      
-      if (participantUri.startsWith("me:")) {
-        triples.push({ subject: participantUri, predicate: "omc:hasWorkUnit", object: wuSubject });
-      }
     }
-  }
-
-  if (context) {
+    
+    if (context.hasOutputAssets && Array.isArray(context.hasOutputAssets)) {
+      context.hasOutputAssets.forEach((assetRef: string) => {
+        triples.push({ subject, predicate: "omc:hasProduct", object: combinedFormToUri(assetRef) });
+      });
+    }
+    
+    if (context.informs && Array.isArray(context.informs)) {
+      context.informs.forEach((taskRef: string) => {
+        triples.push({ subject, predicate: "omc:informs", object: combinedFormToUri(taskRef) });
+      });
+    }
+    
+    if (context.isInformedBy && Array.isArray(context.isInformedBy)) {
+      context.isInformedBy.forEach((taskRef: string) => {
+        triples.push({ subject, predicate: "omc:isInformedBy", object: combinedFormToUri(taskRef) });
+      });
+    }
+    
     const ctxId = context.identifier?.[0]?.identifierValue || `context_${blankNodeCounter++}`;
-    const ctxSubject = `me:${ctxId}`;
+    const ctxScope = context.identifier?.[0]?.identifierScope || "me-nexus";
+    const ctxSubject = ctxScope === "me-nexus" ? `me:${ctxId}` : `<urn:${ctxScope}:${ctxId}>`;
     
     triples.push({ subject, predicate: "omc:hasContext", object: ctxSubject });
     triples.push({ subject: ctxSubject, predicate: "rdf:type", object: "omc:MediaCreationContextComponent" });
@@ -359,40 +363,48 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
       triples.push({ subject: ctxSubject, predicate: "omc:contextType", object: formatLiteral(context.contextType) });
     }
     
-    if (context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
-      context.hasInputAssets.forEach((assetRef: string) => {
-        const assetUri = assetRef.startsWith("me-nexus:")
-          ? `me:${assetRef.replace("me-nexus:", "")}`
-          : formatLiteral(assetRef);
-        triples.push({ subject: ctxSubject, predicate: "omc:uses", object: assetUri });
-      });
+    if (context.description) {
+      triples.push({ subject: ctxSubject, predicate: "skos:definition", object: formatLiteral(context.description) });
+    }
+  });
+
+  if (content.workUnit) {
+    const wu = content.workUnit;
+    const hasId = wu.identifier?.[0]?.identifierValue;
+    let wuSubject: string;
+    
+    if (hasId) {
+      const wuScope = wu.identifier[0].identifierScope || "me-nexus";
+      wuSubject = wuScope === "me-nexus" ? `me:${hasId}` : `<urn:${wuScope}:${hasId}>`;
+    } else {
+      wuSubject = generateBlankNodeId("workunit");
     }
     
-    if (context.hasOutputAssets && Array.isArray(context.hasOutputAssets)) {
-      context.hasOutputAssets.forEach((assetRef: string) => {
-        const assetUri = assetRef.startsWith("me-nexus:")
-          ? `me:${assetRef.replace("me-nexus:", "")}`
-          : formatLiteral(assetRef);
-        triples.push({ subject: ctxSubject, predicate: "omc:hasProduct", object: assetUri });
-      });
+    triples.push({ subject, predicate: "omc:hasWorkUnit", object: wuSubject });
+    triples.push({ subject: wuSubject, predicate: "rdf:type", object: "omc:WorkUnit" });
+    
+    if (wu.identifier?.[0]) {
+      const id = wu.identifier[0];
+      if (id.identifierScope) {
+        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierScope", object: formatLiteral(id.identifierScope) });
+      }
+      if (id.identifierValue) {
+        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierValue", object: formatLiteral(id.identifierValue) });
+      }
     }
     
-    if (context.informs && Array.isArray(context.informs)) {
-      context.informs.forEach((taskRef: string) => {
-        const taskUri = taskRef.startsWith("me-nexus:")
-          ? `me:${taskRef.replace("me-nexus:", "")}`
-          : formatLiteral(taskRef);
-        triples.push({ subject, predicate: "omc:informs", object: taskUri });
+    if (wu.participantRef) {
+      const participantUri = combinedFormToUri(wu.participantRef);
+      
+      triples.push({
+        subject: wuSubject,
+        predicate: "omcT:aWorkUnitHas.Participant",
+        object: participantUri
       });
-    }
-    
-    if (context.isInformedBy && Array.isArray(context.isInformedBy)) {
-      context.isInformedBy.forEach((taskRef: string) => {
-        const taskUri = taskRef.startsWith("me-nexus:")
-          ? `me:${taskRef.replace("me-nexus:", "")}`
-          : formatLiteral(taskRef);
-        triples.push({ subject, predicate: "omc:isInformedBy", object: taskUri });
-      });
+      
+      if (!participantUri.startsWith('"')) {
+        triples.push({ subject: participantUri, predicate: "omc:hasWorkUnit", object: wuSubject });
+      }
     }
   }
 }
@@ -507,10 +519,28 @@ function entityToTriples(entity: Entity): Triple[] {
   }
   
   if (content) {
-    const taskSkipKeys = entity.type === "Task" ? ["Context"] : [];
     Object.entries(content).forEach(([key, value]) => {
-      if (key !== "entityType" && key !== "schemaVersion" && !taskSkipKeys.includes(key)) {
-        processValue(subject, key, value, 0);
+      if (key !== "entityType" && key !== "schemaVersion") {
+        if (entity.type === "Task" && key === "Context" && Array.isArray(value)) {
+          const taskContextSkipFields = new Set([
+            "scheduling", "hasInputAssets", "hasOutputAssets", 
+            "informs", "isInformedBy", "identifier", "contextType", "description"
+          ]);
+          
+          value.forEach((ctx: any, ctxIndex: number) => {
+            const ctxId = ctx.identifier?.[0]?.identifierValue || `context_${blankNodeCounter++}`;
+            const ctxScope = ctx.identifier?.[0]?.identifierScope || "me-nexus";
+            const ctxSubject = ctxScope === "me-nexus" ? `me:${ctxId}` : `<urn:${ctxScope}:${ctxId}>`;
+            
+            Object.entries(ctx).forEach(([ctxKey, ctxValue]) => {
+              if (!taskContextSkipFields.has(ctxKey) && ctxKey !== "entityType" && ctxKey !== "schemaVersion") {
+                processValue(ctxSubject, ctxKey, ctxValue, 1);
+              }
+            });
+          });
+        } else {
+          processValue(subject, key, value, 0);
+        }
       }
     });
   }
