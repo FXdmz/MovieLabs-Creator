@@ -1,6 +1,6 @@
 import { Entity } from "../store";
 import { entitiesToTurtle, entityToTurtle } from "./rdf/serializer";
-import { getOmcFunctionalClass, MeNexusServiceData } from "../omc-service-mapping";
+import { v4 as uuidv4 } from "uuid";
 import servicesData from "../me-nexus-services.json";
 
 export type ExportFormat = "json" | "ttl";
@@ -10,39 +10,123 @@ export interface ExportOptions {
   pretty?: boolean;
 }
 
+interface TaskClassification {
+  l1Category: string | null;
+  serviceId: string | null;
+  serviceName: string | null;
+  fullPath: string | null;
+  l1: string | null;
+  l2: string | null;
+  l3: string | null;
+  description: string | null;
+}
+
+function sanitizeForUri(name: string): string {
+  return name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
+}
+
+function mapToOMC(l1: string | null, l2: string | null): string {
+  switch (l1) {
+    case 'Animation':
+    case 'Compositing':
+    case 'Asset Creation':
+    case 'FX-Simulation':
+    case 'Lighting':
+    case 'Rendering':
+    case 'Layout':
+    case 'Create Visual Effects':
+      return 'omc:CreateVisualEffects';
+    
+    case 'Production Services':
+      if (l2?.includes('Pre-Production')) return 'omc:DevelopCreativeStyle';
+      if (l2?.includes('Principal Photography')) return 'omc:Shoot';
+      if (l2?.includes('Post-Production')) return 'omc:ConformFinish';
+      return 'omc:Shoot';
+    
+    case 'Editorial':
+      return 'omc:ConformFinish';
+    
+    case 'Game Development':
+    case 'Extended Reality':
+      return 'omc:CreateInteractiveContent';
+    
+    case 'Concept Development':
+    case 'Creative Research':
+    case 'Creative Supervision':
+    case 'Previs-Techvis-Postvis':
+      return 'omc:DevelopCreativeStyle';
+    
+    case 'Virtual Production':
+      return 'omc:Shoot';
+    
+    default:
+      return 'omc:Task';
+  }
+}
+
 function transformTaskForExport(content: any): any {
-  if (content.entityType !== 'Task' || !content.meNexusService) {
-    const { meNexusService, ...rest } = content;
+  const classification = content.taskClassification as TaskClassification | undefined;
+  const { taskClassification, meNexusService, ...rest } = content;
+  
+  if (!classification?.l1Category) {
     return rest;
   }
-
-  const serviceData = content.meNexusService as MeNexusServiceData;
   
-  const service = servicesData.services.find(s => s.serviceId === serviceData.serviceId);
-  const omcClass = service ? getOmcFunctionalClass(service) : { identifier: "omc:Task", name: "Task" };
-
-  const { meNexusService, ...rest } = content;
+  const taskScId = uuidv4();
+  const taskFcId = uuidv4();
   
-  const existingFC = rest.taskFunctionalCharacteristics || {};
-  const existingCustomData = existingFC.customData || {};
-
+  const omcEquivalent = mapToOMC(classification.l1, classification.l2);
+  
+  const existingTaskSC = rest.TaskSC || {};
+  const existingTaskFC = rest.taskFC || {};
+  
+  const updatedTaskSC = {
+    ...existingTaskSC,
+    entityType: "TaskSC",
+    schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+    identifier: existingTaskSC.identifier || [{
+      identifierScope: "me-nexus",
+      identifierValue: taskScId,
+      combinedForm: `me-nexus:${taskScId}`
+    }],
+    structuralType: `menexus:${sanitizeForUri(classification.l1Category)}`,
+    structuralProperties: {
+      meNexusL1: classification.l1Category,
+      description: `${classification.l1Category} services category`
+    }
+  };
+  
+  let updatedTaskFC = existingTaskFC;
+  
+  if (classification.serviceId) {
+    updatedTaskFC = {
+      entityType: "TaskFC",
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      identifier: existingTaskFC.identifier || [{
+        identifierScope: "me-nexus",
+        identifierValue: taskFcId,
+        combinedForm: `me-nexus:${taskFcId}`
+      }],
+      functionalType: `menexus:${sanitizeForUri(classification.serviceName || '')}`,
+      functionalProperties: {
+        meNexusService: {
+          serviceId: classification.serviceId,
+          serviceName: classification.serviceName,
+          fullPath: classification.fullPath,
+          l1: classification.l1,
+          l2: classification.l2,
+          l3: classification.l3,
+          description: classification.description
+        },
+        omcEquivalent
+      }
+    };
+  }
+  
   return {
     ...rest,
-    taskFunctionalCharacteristics: {
-      ...existingFC,
-      identifier: existingFC.identifier || omcClass.identifier,
-      name: existingFC.name || omcClass.name,
-      customData: {
-        ...existingCustomData,
-        meNexusService: {
-          serviceId: serviceData.serviceId,
-          serviceName: serviceData.serviceName,
-          l1: serviceData.l1,
-          l2: serviceData.l2,
-          l3: serviceData.l3
-        }
-      }
-    }
+    TaskSC: updatedTaskSC,
+    taskFC: updatedTaskFC
   };
 }
 

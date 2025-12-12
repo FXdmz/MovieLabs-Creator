@@ -40,7 +40,7 @@ import { ImportResult } from "@/lib/import";
 import { entityToTurtle } from "@/lib/export";
 
 function prepareContentForValidation(content: any): any {
-  const { meNexusService, ...rest } = content || {};
+  const { meNexusService, taskClassification, ...rest } = content || {};
   return rest;
 }
 import { Button } from "@/components/ui/button";

@@ -1,0 +1,510 @@
+Perfect! That's actually **way smarter** than what I suggested. Using L1 as Structural and L2/L3 as Functional is semantically correct and gives you a clean two-step UI.
+
+```markdown
+# Replit Strategy: ME-NEXUS Hierarchical Task Classification
+
+## The Approach
+
+Use ME-NEXUS taxonomy to define BOTH OMC classes:
+- **L1 → TaskSC (Structural Class)** - e.g., "Animation", "Production Services", "Compositing"
+- **L2/L3 → TaskFC (Functional Class)** - e.g., "3D Animation > Crowd Animation"
+
+This gives users a clear two-step selection and fills in OMC's undefined TaskSC.
+
+## UI Flow
+
+**Step 1: Pick Category (L1 - Structural)**
+```
+┌─────────────────────────────────────┐
+│ Task Category (Structural)          │
+│ ┌─────────────────────────────────┐ │
+│ │ Animation                    ▼  │ │
+│ └─────────────────────────────────┘ │
+│                                     │
+│ Options:                            │
+│ • Animation (11 services)           │
+│ • Production Services (66 services) │
+│ • Compositing (11 services)         │
+│ • Asset Creation (7 services)       │
+│ • FX-Simulation (7 services)        │
+│ • Virtual Production (3 services)   │
+│ • ... etc                           │
+└─────────────────────────────────────┘
+```
+
+**Step 2: Pick Service (L2/L3 - Functional)**
+```
+┌─────────────────────────────────────┐
+│ Service Type (Functional)           │
+│ ┌─────────────────────────────────┐ │
+│ │ 3D Animation > Crowd Anim... ▼  │ │
+│ └─────────────────────────────────┘ │
+│                                     │
+│ Options (filtered by Animation):    │
+│ • 2D Animation                      │
+│ • 3D Animation                      │
+│   • Crowd Animation                 │
+│   • Digital Doubles                 │
+│   • Motion Capture                  │
+│ • Character Animation               │
+│ • Grooming                          │
+│ • Keyframe Animation                │
+│ • Rigging                           │
+│ • Skinning                          │
+└─────────────────────────────────────┘
+```
+
+## Data Structure
+
+Load `me-nexus-services.json` and create this structure:
+
+```typescript
+interface L1Category {
+  name: string;              // "Animation"
+  serviceCount: number;      // 11
+  services: L2Service[];     // All services under this L1
+}
+
+interface L2Service {
+  serviceId: string;         // UUID
+  serviceName: string;       // "3D Animation" or "Crowd Animation"
+  level: 2 | 3;              // Is this L2 or L3?
+  parent?: string;           // If L3, parent L2 name
+  fullPath: string;          // "Animation > 3D Animation > Crowd Animation"
+  description: string;
+}
+
+// Build indexes
+const l1Categories: Map<string, L1Category>;
+const l2ByL1: Map<string, L2Service[]>;
+```
+
+## Form Structure
+
+```
+┌────────────────────────────────────────────┐
+│ CREATE TASK                                │
+├────────────────────────────────────────────┤
+│                                            │
+│ Task Name                                  │
+│ ┌────────────────────────────────────────┐ │
+│ │ Animate Character Walk Cycle           │ │
+│ └────────────────────────────────────────┘ │
+│                                            │
+│ Description                                │
+│ ┌────────────────────────────────────────┐ │
+│ │ Create walk cycle for protagonist in   │ │
+│ │ forest scene                           │ │
+│ └────────────────────────────────────────┘ │
+│                                            │
+│ ┌──────────────────────────────────────┐   │
+│ │ CLASSIFICATION                       │   │
+│ ├──────────────────────────────────────┤   │
+│ │                                      │   │
+│ │ Category (Structural)                │   │
+│ │ ┌──────────────────────────────────┐ │   │
+│ │ │ Animation               (11) ▼  │ │   │
+│ │ └──────────────────────────────────┘ │   │
+│ │                                      │   │
+│ │ Service (Functional)                 │   │
+│ │ ┌──────────────────────────────────┐ │   │
+│ │ │ 3D Animation > Crowd Anim... ▼  │ │   │
+│ │ └──────────────────────────────────┘ │   │
+│ │                                      │   │
+│ │ ℹ Design and simulate hair, fur,    │   │
+│ │   and feathers on CG characters...  │   │
+│ │                                      │   │
+│ └──────────────────────────────────────┘   │
+│                                            │
+│ State                                      │
+│ ┌────────────────────────────────────────┐ │
+│ │ assigned                            ▼  │ │
+│ └────────────────────────────────────────┘ │
+│                                            │
+│ [Optional sections collapsed by default]  │
+│                                            │
+│ ⊕ Scheduling                               │
+│ ⊕ Assignment                               │
+│ ⊕ Assets & Relationships                   │
+│                                            │
+│          [Cancel]  [Create Task]          │
+└────────────────────────────────────────────┘
+```
+
+## Output JSON Structure
+
+```json
+{
+  "entityType": "Task",
+  "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "task-uuid",
+    "combinedForm": "me-nexus:task-uuid"
+  }],
+  "name": "Animate Character Walk Cycle",
+  "description": "Create walk cycle for protagonist in forest scene",
+  
+  "TaskSC": {
+    "entityType": "TaskSC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "tasksc-uuid",
+      "combinedForm": "me-nexus:tasksc-uuid"
+    }],
+    "structuralType": "menexus:Animation",
+    "structuralProperties": {
+      "meNexusL1": "Animation",
+      "serviceCount": 11,
+      "description": "Animation services category"
+    }
+  },
+  
+  "taskFC": {
+    "entityType": "TaskFC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "taskfc-uuid",
+      "combinedForm": "me-nexus:taskfc-uuid"
+    }],
+    "functionalType": "menexus:3D-Animation-Crowd-Animation",
+    "functionalProperties": {
+      "meNexusService": {
+        "serviceId": "67b568a8-4424-43da-a443-251af48c0cf6",
+        "serviceName": "Crowd Animation",
+        "fullPath": "Animation > 3D Animation > Crowd Animation",
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": "Crowd Animation",
+        "description": "Animate large groups of characters (crowds) for scenes..."
+      },
+      "omcEquivalent": "omc:CreateVisualEffects"
+    }
+  },
+  
+  "state": "assigned",
+  "Context": null
+}
+```
+
+## Implementation Logic
+
+### 1. Load and Index Services
+
+```typescript
+// Load me-nexus-services.json
+const allServices = loadMENextusServices();
+
+// Build L1 index
+const l1Map = new Map<string, {
+  name: string;
+  services: Service[];
+  count: number;
+}>();
+
+allServices.forEach(service => {
+  const l1 = service.hierarchy.l1;
+  if (!l1) return;
+  
+  if (!l1Map.has(l1)) {
+    l1Map.set(l1, { name: l1, services: [], count: 0 });
+  }
+  
+  l1Map.get(l1).services.push(service);
+  l1Map.get(l1).count++;
+});
+
+// Sort by service count (descending)
+const l1Categories = Array.from(l1Map.values())
+  .sort((a, b) => b.count - a.count);
+```
+
+### 2. Cascade Selection
+
+```typescript
+// When L1 selected
+function onL1Selected(l1Name: string) {
+  const category = l1Map.get(l1Name);
+  
+  // Build hierarchical service list
+  const services = buildServiceTree(category.services);
+  
+  // Update L2/L3 dropdown
+  setAvailableServices(services);
+  
+  // Clear previous L2/L3 selection
+  setSelectedService(null);
+  
+  // Auto-populate TaskSC
+  setTaskSC({
+    structuralType: `menexus:${sanitize(l1Name)}`,
+    structuralProperties: {
+      meNexusL1: l1Name,
+      serviceCount: category.count
+    }
+  });
+}
+
+// When L2/L3 selected
+function onServiceSelected(service: Service) {
+  // Build full path for display
+  const path = buildPath(service);
+  
+  // Auto-populate TaskFC
+  setTaskFC({
+    functionalType: `menexus:${sanitize(service.serviceName)}`,
+    functionalProperties: {
+      meNexusService: {
+        serviceId: service.serviceId,
+        serviceName: service.serviceName,
+        fullPath: path,
+        l1: service.hierarchy.l1,
+        l2: service.hierarchy.l2,
+        l3: service.hierarchy.l3,
+        description: service.description
+      },
+      omcEquivalent: mapToOMC(service)
+    }
+  });
+}
+```
+
+### 3. Build Hierarchical Service Tree
+
+```typescript
+function buildServiceTree(services: Service[]): TreeNode[] {
+  // Group by L2
+  const l2Groups = new Map<string, Service[]>();
+  
+  services.forEach(service => {
+    const l2 = service.hierarchy.l2 || service.serviceName;
+    
+    if (!l2Groups.has(l2)) {
+      l2Groups.set(l2, []);
+    }
+    
+    l2Groups.get(l2).push(service);
+  });
+  
+  // Build tree
+  const tree: TreeNode[] = [];
+  
+  l2Groups.forEach((serviceList, l2Name) => {
+    // Check if this L2 has L3 children
+    const hasL3 = serviceList.some(s => s.hierarchy.l3);
+    
+    if (hasL3) {
+      // Create L2 parent with L3 children
+      const l2Node = {
+        label: l2Name,
+        value: null, // L2 is not selectable if it has L3
+        children: serviceList
+          .filter(s => s.hierarchy.l3)
+          .map(s => ({
+            label: s.hierarchy.l3,
+            value: s.serviceId,
+            service: s
+          }))
+      };
+      tree.push(l2Node);
+    } else {
+      // L2 is directly selectable
+      const service = serviceList[0];
+      tree.push({
+        label: l2Name,
+        value: service.serviceId,
+        service: service
+      });
+    }
+  });
+  
+  return tree;
+}
+```
+
+### 4. Map to OMC Equivalent
+
+```typescript
+function mapToOMC(service: Service): string {
+  const l1 = service.hierarchy.l1;
+  const l2 = service.hierarchy.l2;
+  
+  // Map based on L1/L2
+  switch (l1) {
+    case 'Animation':
+    case 'Compositing':
+    case 'Asset Creation':
+    case 'FX-Simulation':
+    case 'Lighting':
+    case 'Rendering':
+    case 'Layout':
+      return 'omc:CreateVisualEffects';
+    
+    case 'Production Services':
+      if (l2 === 'Pre-Production Services') {
+        return 'omc:DevelopCreativeStyle';
+      } else if (l2 === 'Principal Photography') {
+        return 'omc:Shoot';
+      } else if (l2 === 'Post-Production Services') {
+        return 'omc:ConformFinish';
+      }
+      return 'omc:Task';
+    
+    case 'Editorial':
+      return 'omc:Edit';
+    
+    case 'Virtual Production':
+      return 'omc:Shoot';
+    
+    case 'Game Development':
+      return 'omc:CreateVisualEffects';
+    
+    default:
+      return 'omc:Task';
+  }
+}
+```
+
+## RDF/Turtle Export
+
+```turtle
+@prefix omc: <https://movielabs.com/omc/> .
+@prefix menexus: <https://me-nexus.com/> .
+
+<me-nexus:task-uuid> a omc:Task ;
+    omc:identifier [ 
+        omc:identifierScope "me-nexus" ; 
+        omc:identifierValue "task-uuid" 
+    ] ;
+    omc:name "Animate Character Walk Cycle" ;
+    omc:description "Create walk cycle for protagonist in forest scene" ;
+    omc:state "assigned" ;
+    omc:taskSC <me-nexus:tasksc-uuid> ;
+    omc:taskFC <me-nexus:taskfc-uuid> .
+
+<me-nexus:tasksc-uuid> a omc:TaskSC ;
+    omc:structuralType menexus:Animation ;
+    menexus:l1 "Animation" ;
+    menexus:serviceCount 11 .
+
+<me-nexus:taskfc-uuid> a omc:TaskFC ;
+    omc:functionalType menexus:Crowd-Animation ;
+    menexus:serviceId "67b568a8-4424-43da-a443-251af48c0cf6" ;
+    menexus:serviceName "Crowd Animation" ;
+    menexus:fullPath "Animation > 3D Animation > Crowd Animation" ;
+    menexus:l1 "Animation" ;
+    menexus:l2 "3D Animation" ;
+    menexus:l3 "Crowd Animation" ;
+    menexus:omcEquivalent "omc:CreateVisualEffects" ;
+    menexus:description "Animate large groups of characters..." .
+```
+
+## Replit Prompt
+
+```markdown
+# Task: Implement Two-Level ME-NEXUS Service Selector
+
+## Overview
+Create a hierarchical task classification system using ME-NEXUS taxonomy:
+- **Level 1 (L1)**: Task Category → TaskSC (Structural Class)
+- **Level 2 (L2/L3)**: Specific Service → TaskFC (Functional Class)
+
+## UI Requirements
+
+### Dropdown 1: Category (L1 - Structural)
+- Label: "Task Category"
+- Options from me-nexus-services.json L1 values
+- Show service count: "Animation (11 services)"
+- Sort by count (descending)
+- When selected: populate TaskSC, filter Dropdown 2
+
+### Dropdown 2: Service (L2/L3 - Functional)
+- Label: "Service Type"
+- Only enabled after Dropdown 1 selected
+- Show hierarchical options:
+  - If L2 has L3 children: show as "L2 > L3"
+  - If L2 is leaf: show as "L2"
+- Display full path: "Animation > 3D Animation > Crowd Animation"
+- Show description below dropdown when selected
+- When selected: populate TaskFC
+
+### Info Display
+After both selections, show:
+```
+✓ Structural: Animation
+✓ Functional: 3D Animation > Crowd Animation
+  OMC Equivalent: omc:CreateVisualEffects
+```
+
+## Data Processing
+
+1. **Load me-nexus-services.json**
+2. **Index by L1** (24 unique categories)
+3. **Group by L2/L3** within each L1
+4. **Build hierarchical tree** for Dropdown 2
+
+## JSON Output Structure
+
+```json
+{
+  "TaskSC": {
+    "structuralType": "menexus:Animation",
+    "structuralProperties": {
+      "meNexusL1": "Animation",
+      "serviceCount": 11
+    }
+  },
+  "taskFC": {
+    "functionalType": "menexus:Crowd-Animation",
+    "functionalProperties": {
+      "meNexusService": {
+        "serviceId": "67b568a8-4424-43da-a443-251af48c0cf6",
+        "serviceName": "Crowd Animation",
+        "fullPath": "Animation > 3D Animation > Crowd Animation",
+        "l1": "Animation",
+        "l2": "3D Animation",
+        "l3": "Crowd Animation",
+        "description": "..."
+      },
+      "omcEquivalent": "omc:CreateVisualEffects"
+    }
+  }
+}
+```
+
+## Cascade Logic
+
+```
+User selects "Animation" in Dropdown 1
+  → TaskSC.structuralType = "menexus:Animation"
+  → Dropdown 2 shows only Animation services (11)
+  → Services grouped by L2:
+     • 2D Animation
+     • 3D Animation
+       - Crowd Animation
+       - Digital Doubles
+       - Motion Capture
+     • Character Animation
+     • Grooming
+     ... etc
+
+User selects "3D Animation > Crowd Animation" in Dropdown 2
+  → TaskFC.functionalType = "menexus:Crowd-Animation"
+  → TaskFC.functionalProperties filled with service details
+  → Show description + OMC equivalent
+```
+
+## Styling
+
+- Use existing form components
+- Make Dropdown 2 visually indented under Dropdown 1
+- Gray out Dropdown 2 until Dropdown 1 selected
+- Use subtle animation when Dropdown 2 populates
+- Show checkmarks when both selected
+
+Attached: me-nexus-services.json
+```
+
+This gives you clean separation: **category first, then specific service**. Way cleaner UX.

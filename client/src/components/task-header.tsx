@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ServiceSelector } from "./service-selector";
+import { TaskClassifier, TaskClassification } from "./task-classifier";
 
 interface TaskHeaderProps {
   value?: any;
@@ -88,9 +88,9 @@ export function TaskHeader({ value, onChange }: TaskHeaderProps) {
                 </p>
               </div>
               
-              <ServiceSelector
-                value={value?.meNexusService}
-                onChange={(service) => onChange({ ...value, meNexusService: service })}
+              <TaskClassifier
+                value={value?.taskClassification}
+                onChange={(classification) => onChange({ ...value, taskClassification: classification })}
               />
             </div>
           )}
