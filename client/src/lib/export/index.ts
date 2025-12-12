@@ -78,7 +78,7 @@ function applySchemaComplianceTransform(content: any, entityType: string): any {
     
     if (result.Context && Array.isArray(result.Context)) {
       result.Context = result.Context.map((ctx: any) => 
-        applyContextTransform(ctx, customData)
+        applyContextTransformIndependent(ctx)
       ).filter(Boolean);
       if (result.Context.length === 0) {
         delete result.Context;
@@ -87,10 +87,7 @@ function applySchemaComplianceTransform(content: any, entityType: string): any {
   }
   
   if (entityType === "Context") {
-    const transformed = applyContextTransform(result, customData);
-    Object.assign(result, transformed);
-    customData = transformed._customData || customData;
-    delete result._customData;
+    return applyContextTransformIndependent(result);
   }
   
   if (customData.length > 0) {
@@ -102,12 +99,12 @@ function applySchemaComplianceTransform(content: any, entityType: string): any {
   return result;
 }
 
-function applyContextTransform(context: any, parentCustomData?: CustomDataEntry[]): any {
+function applyContextTransformIndependent(context: any): any {
   if (!context) return context;
   
   const { scheduling, hasInputAssets, hasOutputAssets, informs, isInformedBy, ...rest } = context;
   const result = { ...rest };
-  let customData = parentCustomData || ensureCustomDataArray(result.customData);
+  let customData = ensureCustomDataArray(result.customData);
   
   if (hasInputAssets && Array.isArray(hasInputAssets) && hasInputAssets.length > 0) {
     result.uses = result.uses || {};
@@ -118,10 +115,10 @@ function applyContextTransform(context: any, parentCustomData?: CustomDataEntry[
     customData = addOrMergeCustomData(customData, "me-nexus", "scheduling", { scheduling });
   }
   
-  if (parentCustomData) {
-    result._customData = customData;
-  } else if (customData.length > 0) {
+  if (customData.length > 0) {
     result.customData = customData;
+  } else {
+    delete result.customData;
   }
   
   return result;
