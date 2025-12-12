@@ -250,21 +250,33 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
   const elements: ElementDefinition[] = [];
   const entityIdMap = new Map<string, string>();
   
+  // First pass: register all entities by their store ID and various identifier forms
   entities.forEach(entity => {
     const content = entity.content || {};
-    const identifiers = content.identifier || [];
+    
+    // Always register entity.id directly
+    entityIdMap.set(entity.id, entity.id);
+    
+    // Register me-nexus prefixed form (common reference format)
+    entityIdMap.set(`me-nexus:${entity.id}`, entity.id);
+    
+    // Register identifiers from content if present
+    const identifiers = Array.isArray(content.identifier) ? content.identifier : [];
     identifiers.forEach((id: any) => {
-      if (id.combinedForm) {
-        entityIdMap.set(id.combinedForm, entity.id);
-        console.log(`[Graph] Registered: ${id.combinedForm} -> ${entity.id}`);
-      }
-      if (id.identifierValue) {
-        entityIdMap.set(id.identifierValue, entity.id);
+      if (id && typeof id === 'object') {
+        if (id.combinedForm) {
+          entityIdMap.set(id.combinedForm, entity.id);
+        }
+        if (id.identifierValue) {
+          entityIdMap.set(id.identifierValue, entity.id);
+          // Also register prefixed form for identifierValue
+          entityIdMap.set(`me-nexus:${id.identifierValue}`, entity.id);
+        }
       }
     });
   });
   
-  console.log(`[Graph] EntityIdMap size: ${entityIdMap.size}`);
+  console.log(`[Graph] EntityIdMap size: ${entityIdMap.size}, entities: ${entities.length}`);
   
   entities.forEach(entity => {
     elements.push({
@@ -313,7 +325,6 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
       Object.entries(obj).forEach(([key, value]) => {
         if (typeof value === 'string') {
           const targetId = entityIdMap.get(value);
-          console.log(`[Graph] Checking string ref: "${value}" (key: ${key}), found: ${targetId || 'NO'}`);
           if (targetId && targetId !== entity.id) {
             const edgeKey = `${entity.id}-${targetId}`;
             if (!addedEdges.has(edgeKey)) {
@@ -337,7 +348,7 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
     findReferences(content, entity.type);
   });
   
-  console.log(`[Graph] Total elements: ${elements.length}, edges: ${elements.filter(e => e.data.source).length}`);
+  console.log(`[Graph] Total elements: ${elements.length}, nodes: ${entities.length}, edges: ${addedEdges.size}`);
   
   return elements;
 }
