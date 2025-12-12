@@ -75,7 +75,8 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   CreativeWork: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill="#9B59B6" stroke="#5e5e5e" stroke-width="3"/>
+    <path d="M75,15 C85,15 93,23 93,33 C93,50 75,65 75,65 C75,65 57,50 57,33 C57,23 65,15 75,15 Z M75,28 C71,28 68,31 68,35 C68,39 71,42 75,42 C79,42 82,39 82,35 C82,31 79,28 75,28 Z" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
+    <path d="M35,35 C45,35 53,43 53,53 C53,70 35,85 35,85 C35,85 17,70 17,53 C17,43 25,35 35,35 Z M35,48 C31,48 28,51 28,55 C28,59 31,62 35,62 C39,62 42,59 42,55 C42,51 39,48 35,48 Z" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
   </svg>`),
   
   Location: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -718,7 +719,8 @@ export function VisualizeEntityDialog({
                   </div>
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="3"/>
+                      <path d="M75,15 C85,15 93,23 93,33 C93,50 75,65 75,65 C75,65 57,50 57,33 C57,23 65,15 75,15 Z" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
+                      <path d="M35,35 C45,35 53,43 53,53 C53,70 35,85 35,85 C35,85 17,70 17,53 C17,43 25,35 35,35 Z" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
                     </svg>
                     <span>CreativeWork</span>
                   </div>
