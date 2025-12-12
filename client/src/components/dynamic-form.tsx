@@ -465,11 +465,12 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
 function LocationEntityPicker({ value, onChange }: { value: string | undefined; onChange: (val: string | undefined) => void }) {
   const { entities } = useOntologyStore();
   
-  const locationEntities = entities.filter(e => e.entityType === 'Location');
+  const locationEntities = entities.filter(e => e.type === 'Location');
   
   const getLocationLabel = (entity: any) => {
-    const name = entity.name || 'Unnamed Location';
-    const address = entity.address;
+    const content = entity.content || {};
+    const name = content.name || 'Unnamed Location';
+    const address = content.address;
     if (address?.street || address?.locality) {
       const parts = [address.street, address.locality].filter(Boolean);
       return `${name} - ${parts.join(', ')}`;
@@ -478,7 +479,7 @@ function LocationEntityPicker({ value, onChange }: { value: string | undefined; 
   };
   
   const getEntityId = (entity: any): string => {
-    return entity.id || entity.identifier?.[0]?.identifierValue || '';
+    return entity.content?.identifier?.[0]?.combinedForm || entity.id || '';
   };
   
   const selectedLocation = value ? locationEntities.find(e => getEntityId(e) === value) : null;
