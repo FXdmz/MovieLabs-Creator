@@ -276,7 +276,6 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
     });
   });
   
-  console.log(`[Graph] EntityIdMap size: ${entityIdMap.size}, entities: ${entities.length}`);
   
   entities.forEach(entity => {
     elements.push({
@@ -328,7 +327,6 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
           if (targetId && targetId !== entity.id) {
             const edgeKey = `${entity.id}-${targetId}`;
             if (!addedEdges.has(edgeKey)) {
-              console.log(`[Graph] Adding edge: ${entity.name} -> ${targetId} (${key})`);
               elements.push({
                 data: {
                   source: entity.id,
@@ -347,8 +345,6 @@ function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
     
     findReferences(content, entity.type);
   });
-  
-  console.log(`[Graph] Total elements: ${elements.length}, nodes: ${entities.length}, edges: ${addedEdges.size}`);
   
   return elements;
 }
