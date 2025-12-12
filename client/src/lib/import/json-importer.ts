@@ -15,8 +15,8 @@ export function parseOmcJson(jsonText: string): ImportResult {
   
   try {
     parsed = JSON.parse(jsonText);
-  } catch (e) {
-    return { success: false, error: 'Invalid JSON format' };
+  } catch (e: any) {
+    return { success: false, error: `Invalid JSON format: ${e.message}` };
   }
 
   if (Array.isArray(parsed)) {

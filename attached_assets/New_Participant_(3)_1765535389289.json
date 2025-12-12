@@ -1,0 +1,41 @@
+{
+  "entityType": "Participant",
+  "name": "New Participant",
+  "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+  "identifier": [
+    {
+      "identifierScope": "me-nexus",
+      "identifierValue": "160b0d09-0658-416a-9975-39cffe767e8a",
+      "combinedForm": "me-nexus:160b0d09-0658-416a-9975-39cffe767e8a"
+    }
+  ],
+  "ParticipantSC": {
+    "structuralType": "person",
+    "personName": {
+      "fullName": "Pamela Anderson",
+      "firstGivenName": "Pamela",
+      "familyName": "Anderson"
+    },
+    "jobTitle": null,
+    "gender": null,
+    "contact": null,
+    "entityType": "Person",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "29abe3d9-1b2c-40d1-add0-6035951c8905",
+        "combinedForm": "me-nexus:29abe3d9-1b2c-40d1-add0-6035951c8905"
+      }
+    ],
+    "dateOfBirth": "1967-07-01"
+  },
+  "participantFC": null,
+  "Context": null,
+  "customData": {
+    "wikidataId": "Q83325",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q83325",
+    "wikidataDescription": "Canadian actress and model (born 1967)",
+    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Pamela_Anderson_2024_Headshot_by_Norman_Wong.jpg?width=200"
+  }
+}
