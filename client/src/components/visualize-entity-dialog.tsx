@@ -67,7 +67,7 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   Context: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="#F2C53D" stroke="#5e5e5e" stroke-width="3"/>
+    <circle cx="50" cy="50" r="45" fill="#F2C53D" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
   Infrastructure: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -706,7 +706,7 @@ export function VisualizeEntityDialog({
                   </div>
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill={ENTITY_TYPE_COLORS.Context} stroke="#5e5e5e" strokeWidth="3"/>
+                      <circle cx="50" cy="50" r="45" fill={ENTITY_TYPE_COLORS.Context} stroke="#5e5e5e" strokeWidth="3"/>
                     </svg>
                     <span>Context</span>
                   </div>
