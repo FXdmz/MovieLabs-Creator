@@ -71,7 +71,7 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   Infrastructure: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill="#CEECF2" stroke="#5e5e5e" stroke-width="3"/>
+    <rect x="5" y="20" width="90" height="60" rx="30" ry="30" fill="#CEECF2" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
   CreativeWork: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -712,7 +712,7 @@ export function VisualizeEntityDialog({
                   </div>
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill={ENTITY_TYPE_COLORS.Infrastructure} stroke="#5e5e5e" strokeWidth="3"/>
+                      <rect x="5" y="20" width="90" height="60" rx="30" ry="30" fill={ENTITY_TYPE_COLORS.Infrastructure} stroke="#5e5e5e" strokeWidth="3"/>
                     </svg>
                     <span>Infrastructure</span>
                   </div>
