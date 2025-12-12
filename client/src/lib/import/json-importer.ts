@@ -55,6 +55,10 @@ function transformTaskEntity(parsed: any): any {
         }
       }
       
+      if (ctx.uses?.Asset && Array.isArray(ctx.uses.Asset)) {
+        transformedCtx.hasInputAssets = ctx.uses.Asset;
+      }
+      
       return transformedCtx;
     });
   }
