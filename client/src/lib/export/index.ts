@@ -1,7 +1,6 @@
 import { Entity } from "../store";
 import { entitiesToTurtle, entityToTurtle } from "./rdf/serializer";
 import { v4 as uuidv4 } from "uuid";
-import servicesData from "../me-nexus-services.json";
 
 export type ExportFormat = "json" | "ttl";
 
@@ -64,7 +63,7 @@ function mapToOMC(l1: string | null, l2: string | null): string {
   }
 }
 
-function transformTaskForExport(content: any): any {
+export function transformTaskForExport(content: any): any {
   const classification = content.taskClassification as TaskClassification | undefined;
   const { taskClassification, meNexusService, ...rest } = content;
   
@@ -72,18 +71,18 @@ function transformTaskForExport(content: any): any {
     return rest;
   }
   
-  const taskScId = uuidv4();
-  const taskFcId = uuidv4();
-  
-  const omcEquivalent = mapToOMC(classification.l1, classification.l2);
-  
   const existingTaskSC = rest.TaskSC || {};
   const existingTaskFC = rest.taskFC || {};
   
+  const taskScId = existingTaskSC.identifier?.[0]?.identifierValue || uuidv4();
+  const taskFcId = existingTaskFC.identifier?.[0]?.identifierValue || uuidv4();
+  
+  const omcEquivalent = mapToOMC(classification.l1, classification.l2);
+  
   const updatedTaskSC = {
     ...existingTaskSC,
-    entityType: "TaskSC",
-    schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+    entityType: existingTaskSC.entityType || "TaskSC",
+    schemaVersion: existingTaskSC.schemaVersion || "https://movielabs.com/omc/json/schema/v2.8",
     identifier: existingTaskSC.identifier || [{
       identifierScope: "me-nexus",
       identifierValue: taskScId,
@@ -91,6 +90,7 @@ function transformTaskForExport(content: any): any {
     }],
     structuralType: `menexus:${sanitizeForUri(classification.l1Category)}`,
     structuralProperties: {
+      ...(existingTaskSC.structuralProperties || {}),
       meNexusL1: classification.l1Category,
       description: `${classification.l1Category} services category`
     }
@@ -100,8 +100,9 @@ function transformTaskForExport(content: any): any {
   
   if (classification.serviceId) {
     updatedTaskFC = {
-      entityType: "TaskFC",
-      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      ...existingTaskFC,
+      entityType: existingTaskFC.entityType || "TaskFC",
+      schemaVersion: existingTaskFC.schemaVersion || "https://movielabs.com/omc/json/schema/v2.8",
       identifier: existingTaskFC.identifier || [{
         identifierScope: "me-nexus",
         identifierValue: taskFcId,
@@ -109,6 +110,7 @@ function transformTaskForExport(content: any): any {
       }],
       functionalType: `menexus:${sanitizeForUri(classification.serviceName || '')}`,
       functionalProperties: {
+        ...(existingTaskFC.functionalProperties || {}),
         meNexusService: {
           serviceId: classification.serviceId,
           serviceName: classification.serviceName,
@@ -137,14 +139,23 @@ function transformEntityForExport(entity: Entity): any {
   return entity.content;
 }
 
+export function prepareEntitiesForExport(entities: Entity[]): Entity[] {
+  return entities.map(entity => ({
+    ...entity,
+    content: transformEntityForExport(entity)
+  }));
+}
+
 export function exportEntities(entities: Entity[], options: ExportOptions): string {
   const { format, pretty = true } = options;
   
+  const transformedEntities = prepareEntitiesForExport(entities);
+  
   if (format === "ttl") {
-    return entitiesToTurtle(entities);
+    return entitiesToTurtle(transformedEntities);
   }
   
-  const transformedContent = entities.map(e => transformEntityForExport(e));
+  const transformedContent = transformedEntities.map(e => e.content);
   const jsonContent = transformedContent.length === 1 
     ? transformedContent[0] 
     : transformedContent;

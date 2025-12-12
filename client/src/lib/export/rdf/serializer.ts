@@ -174,6 +174,10 @@ const jsonToRdfPredicate: Record<string, string> = {
   l1: "menexus:l1",
   l2: "menexus:l2",
   l3: "menexus:l3",
+  fullPath: "menexus:fullPath",
+  omcEquivalent: "menexus:omcEquivalent",
+  meNexusL1: "menexus:l1Category",
+  functionalProperties: "omc:hasFunctionalProperties",
   taskFunctionalCharacteristics: "omc:hasTaskFunctionalCharacteristic",
   
   participant: "omc:hasParticipant",
