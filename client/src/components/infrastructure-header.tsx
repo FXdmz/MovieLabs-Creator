@@ -1,4 +1,13 @@
-export function InfrastructureHeader() {
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+
+interface InfrastructureHeaderProps {
+  value?: any;
+  onChange?: (newValue: any) => void;
+}
+
+export function InfrastructureHeader({ value, onChange }: InfrastructureHeaderProps) {
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
       <div className="flex items-start gap-4">
@@ -36,13 +45,51 @@ export function InfrastructureHeader() {
             </svg>
             Infrastructure
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             <strong>Technical systems and facilities supporting production.</strong> Infrastructure 
             represents the underlying technical systems, equipment, and facilities that enable 
             production activities. This includes storage systems, networks, rendering farms, 
             and other technical resources used during the production process.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          
+          {onChange && (
+            <div className="grid grid-cols-1 gap-4 mb-4">
+              <div>
+                <Label htmlFor="infrastructure-name" className="text-sm font-medium mb-2 block">
+                  Infrastructure Name
+                </Label>
+                <Input
+                  id="infrastructure-name"
+                  value={value?.name || ''}
+                  onChange={(e) => onChange({ ...value, name: e.target.value })}
+                  placeholder="e.g., Main Render Farm, Cloud Storage"
+                  data-testid="input-infrastructure-name"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  A friendly name for this infrastructure
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="infrastructure-description" className="text-sm font-medium mb-2 block">
+                  Description
+                </Label>
+                <Textarea
+                  id="infrastructure-description"
+                  value={value?.description || ''}
+                  onChange={(e) => onChange({ ...value, description: e.target.value })}
+                  placeholder="Describe this infrastructure and its role in production..."
+                  rows={3}
+                  data-testid="input-infrastructure-description"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Additional details about this infrastructure
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2">
             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
             <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full">MovieLabs Ontology</span>
           </div>

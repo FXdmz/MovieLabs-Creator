@@ -970,9 +970,9 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       case 'Location':
         return <LocationHeader value={value} onChange={wrappedOnChange} />;
       case 'Infrastructure':
-        return <InfrastructureHeader />;
+        return <InfrastructureHeader value={value} onChange={wrappedOnChange} />;
       case 'Task':
-        return <TaskHeader />;
+        return <TaskHeader value={value} onChange={wrappedOnChange} />;
       case 'Participant':
         return <ParticipantHeader value={value} onChange={wrappedOnChange} />;
       case 'Context':

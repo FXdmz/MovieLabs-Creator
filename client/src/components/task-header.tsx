@@ -1,4 +1,13 @@
-export function TaskHeader() {
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+
+interface TaskHeaderProps {
+  value?: any;
+  onChange?: (newValue: any) => void;
+}
+
+export function TaskHeader({ value, onChange }: TaskHeaderProps) {
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
       <div className="flex items-start gap-4">
@@ -36,13 +45,51 @@ export function TaskHeader() {
             </svg>
             Task
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             <strong>A piece of work to be done and completed as a step in the production process.</strong> Tasks 
             are carried out by Participants; can take Assets as input and produce them as output; most 
             Tasks require Context to be carried out properly; and some Tasks require particular 
             pieces of Infrastructure. Tasks can be composed of other Tasks for appropriate granularity.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          
+          {onChange && (
+            <div className="grid grid-cols-1 gap-4 mb-4">
+              <div>
+                <Label htmlFor="task-name" className="text-sm font-medium mb-2 block">
+                  Task Name
+                </Label>
+                <Input
+                  id="task-name"
+                  value={value?.name || ''}
+                  onChange={(e) => onChange({ ...value, name: e.target.value })}
+                  placeholder="e.g., Color Grading, VFX Compositing"
+                  data-testid="input-task-name"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  A friendly name for this task
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="task-description" className="text-sm font-medium mb-2 block">
+                  Description
+                </Label>
+                <Textarea
+                  id="task-description"
+                  value={value?.description || ''}
+                  onChange={(e) => onChange({ ...value, description: e.target.value })}
+                  placeholder="Describe what this task involves..."
+                  rows={3}
+                  data-testid="input-task-description"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Additional details about this task
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2">
             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">OMC v2.8</span>
             <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full">MovieLabs Ontology</span>
           </div>
