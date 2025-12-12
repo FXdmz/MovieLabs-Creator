@@ -75,14 +75,14 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   CreativeWork: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="30" cy="40" rx="22" ry="28" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
-    <circle cx="22" cy="32" r="4" fill="#fff"/>
-    <circle cx="38" cy="32" r="4" fill="#fff"/>
-    <path d="M20,48 Q30,58 40,48" fill="none" stroke="#fff" stroke-width="2"/>
-    <ellipse cx="70" cy="55" rx="22" ry="28" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
-    <circle cx="62" cy="47" r="4" fill="#fff"/>
-    <circle cx="78" cy="47" r="4" fill="#fff"/>
-    <path d="M60,67 Q70,60 80,67" fill="none" stroke="#fff" stroke-width="2"/>
+    <path d="M10,20 C10,10 20,5 35,5 C50,5 55,10 55,20 L55,40 C55,50 50,60 35,65 C20,60 10,50 10,40 Z" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
+    <circle cx="22" cy="25" r="5" fill="#fff"/>
+    <circle cx="45" cy="25" r="5" fill="#fff"/>
+    <path d="M20,42 Q33,55 48,42" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M45,35 C45,25 55,20 70,20 C85,20 90,25 90,35 L90,55 C90,65 85,75 70,80 C55,75 45,65 45,55 Z" fill="#9B59B6" stroke="#5e5e5e" stroke-width="2"/>
+    <circle cx="57" cy="40" r="5" fill="#fff"/>
+    <circle cx="80" cy="40" r="5" fill="#fff"/>
+    <path d="M55,60 Q68,52 83,60" fill="none" stroke="#fff" stroke-width="3"/>
   </svg>`),
   
   Location: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -725,8 +725,8 @@ export function VisualizeEntityDialog({
                   </div>
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <ellipse cx="30" cy="40" rx="22" ry="28" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
-                      <ellipse cx="70" cy="55" rx="22" ry="28" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
+                      <path d="M10,20 C10,10 20,5 35,5 C50,5 55,10 55,20 L55,40 C55,50 50,60 35,65 C20,60 10,50 10,40 Z" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
+                      <path d="M45,35 C45,25 55,20 70,20 C85,20 90,25 90,35 L90,55 C90,65 85,75 70,80 C55,75 45,65 45,55 Z" fill={ENTITY_TYPE_COLORS.CreativeWork} stroke="#5e5e5e" strokeWidth="2"/>
                     </svg>
                     <span>CreativeWork</span>
                   </div>
