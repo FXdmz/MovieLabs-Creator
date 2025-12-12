@@ -29,7 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search } from "lucide-react";
+import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search, FileBox, ListTodo } from "lucide-react";
 import { TaskClassifier } from "./task-classifier";
 import { useOntologyStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
@@ -81,67 +81,118 @@ function SectionHeader({
   );
 }
 
-function ReferenceList({
+function EntityLookupList({
   label,
-  placeholder,
+  entityType,
+  icon: Icon,
   items,
   onAdd,
   onRemove,
-  testId
+  entities,
+  testId,
+  currentEntityId
 }: {
   label: string;
-  placeholder: string;
+  entityType: "Asset" | "Task";
+  icon: React.ElementType;
   items: string[];
-  onAdd: (item: string) => void;
+  onAdd: (combinedForm: string) => void;
   onRemove: (index: number) => void;
+  entities: any[];
   testId: string;
+  currentEntityId?: string;
 }) {
-  const [inputValue, setInputValue] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const handleAdd = () => {
-    if (inputValue.trim()) {
-      onAdd(inputValue.trim());
-      setInputValue("");
-    }
-  };
+  const availableEntities = useMemo(() => {
+    return entities
+      .filter((e) => e.type === entityType)
+      .filter((e) => {
+        const combinedForm = e.content?.identifier?.[0]?.combinedForm;
+        if (currentEntityId && e.id === currentEntityId) return false;
+        return combinedForm && !items.includes(combinedForm);
+      });
+  }, [entities, entityType, items, currentEntityId]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAdd();
-    }
+  const getEntityName = (combinedForm: string) => {
+    const entity = entities.find(
+      (e) => e.content?.identifier?.[0]?.combinedForm === combinedForm
+    );
+    return entity?.name || combinedForm.slice(0, 30) + "...";
   };
 
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{label}</Label>
-      <div className="flex gap-2">
-        <Input
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          data-testid={`${testId}-input`}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleAdd}
-          data-testid={`${testId}-add`}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between font-normal"
+            data-testid={`${testId}-trigger`}
+          >
+            <span className="text-muted-foreground flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              Search {entityType.toLowerCase()}s to add...
+            </span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[400px] p-0" align="start">
+          <Command>
+            <CommandInput placeholder={`Search ${entityType.toLowerCase()}s by name...`} />
+            <CommandList>
+              <CommandEmpty>
+                <div className="py-6 text-center text-sm">
+                  <Icon className="h-8 w-8 mx-auto mb-2 text-muted-foreground opacity-50" />
+                  <p className="text-muted-foreground">No {entityType.toLowerCase()}s available.</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {availableEntities.length === 0 && entities.filter(e => e.type === entityType).length > 0
+                      ? "All have been added already."
+                      : `Create a ${entityType} entity first.`}
+                  </p>
+                </div>
+              </CommandEmpty>
+              <CommandGroup heading={`${entityType}s`}>
+                {availableEntities.map((entity) => (
+                  <CommandItem
+                    key={entity.id}
+                    value={entity.name}
+                    onSelect={() => {
+                      const combinedForm = entity.content?.identifier?.[0]?.combinedForm;
+                      if (combinedForm) {
+                        onAdd(combinedForm);
+                      }
+                      setOpen(false);
+                    }}
+                    data-testid={`${testId}-option-${entity.id}`}
+                  >
+                    <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <div className="flex flex-col">
+                      <span className="font-medium">{entity.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {entity.content?.identifier?.[0]?.combinedForm?.slice(0, 40)}...
+                      </span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       {items.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
           {items.map((item, index) => (
             <Badge
               key={index}
               variant="secondary"
-              className="flex items-center gap-1 pr-1"
+              className="flex items-center gap-1 pr-1 py-1"
             >
-              <span className="truncate max-w-[200px]">{item}</span>
+              <Icon className="h-3 w-3 mr-1" />
+              <span className="truncate max-w-[180px]">{getEntityName(item)}</span>
               <button
                 type="button"
                 onClick={() => onRemove(index)}
@@ -552,42 +603,52 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
           }
         />
         <CollapsibleContent className="pt-4 px-4 pb-4 border border-t-0 rounded-b-lg space-y-4">
-          <ReferenceList
+          <EntityLookupList
             label="Input Assets (what this task needs)"
-            placeholder="me-nexus:asset-uuid"
+            entityType="Asset"
+            icon={FileBox}
             items={inputAssets}
             onAdd={(item) => addToContextArray('hasInputAssets', item)}
             onRemove={(index) => removeFromContextArray('hasInputAssets', index)}
+            entities={entities}
             testId="input-assets"
           />
           
-          <ReferenceList
+          <EntityLookupList
             label="Output Assets (what this task produces)"
-            placeholder="me-nexus:asset-uuid"
+            entityType="Asset"
+            icon={FileBox}
             items={outputAssets}
             onAdd={(item) => addToContextArray('hasOutputAssets', item)}
             onRemove={(index) => removeFromContextArray('hasOutputAssets', index)}
+            entities={entities}
             testId="output-assets"
           />
           
           <div className="border-t pt-4">
-            <ReferenceList
+            <EntityLookupList
               label="This task informs (sends info to)"
-              placeholder="me-nexus:task-uuid"
+              entityType="Task"
+              icon={ListTodo}
               items={informs}
               onAdd={(item) => addToContextArray('informs', item)}
               onRemove={(index) => removeFromContextArray('informs', index)}
+              entities={entities}
               testId="informs"
+              currentEntityId={value?.identifier?.[0]?.identifierValue}
             />
           </div>
           
-          <ReferenceList
+          <EntityLookupList
             label="This task is informed by (receives info from)"
-            placeholder="me-nexus:task-uuid"
+            entityType="Task"
+            icon={ListTodo}
             items={isInformedBy}
             onAdd={(item) => addToContextArray('isInformedBy', item)}
             onRemove={(index) => removeFromContextArray('isInformedBy', index)}
+            entities={entities}
             testId="is-informed-by"
+            currentEntityId={value?.identifier?.[0]?.identifierValue}
           />
         </CollapsibleContent>
       </Collapsible>
