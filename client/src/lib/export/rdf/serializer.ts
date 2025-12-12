@@ -579,7 +579,11 @@ function triplesToTurtle(triples: Triple[]): string {
       objectsArray.forEach((obj, oIndex) => {
         const isLastObject = oIndex === objectsArray.length - 1;
         const terminator = isLastPredicate && isLastObject ? " ." : (isLastObject ? " ;" : " ,");
-        lines.push(`    ${predicate} ${obj}${terminator}`);
+        if (oIndex === 0) {
+          lines.push(`    ${predicate} ${obj}${terminator}`);
+        } else {
+          lines.push(`        ${obj}${terminator}`);
+        }
       });
     });
     lines.push("");
