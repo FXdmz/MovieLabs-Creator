@@ -1,0 +1,14 @@
+[
+  {
+    "ruleId": "V1",
+    "issue": "Entity validation failed",
+    "exception": "Unevaluated properties are not allowed ('meNexusService' was unexpected)\n\nFailed validating 'unevaluatedProperties' in schema:\n    {'allOf': [{'$ref': '#/$defs/core/properties/baseEntity'}],\n     'description': 'A piece of work to be done and completed as a step in '\n                    'the production process.',\n     'properties': {'Context': {'items': {'anyOf': [{'$ref': '#/$defs/core/properties/reference'},\n                                                    {'$ref': '#/$defs/MediaCreationContext/properties/Context'}]},\n                                'type': ['array', 'null']},\n                    'TaskSC': {'oneOf': [{'$ref': '#/$defs/core/properties/reference'},\n                                         {'$ref': '#/$defs/Task/properties/TaskSC'}],\n                               'title': 'Task Structural Characteristics'},\n                    'entityType': {'const': 'Task', 'title': 'Entity Type'},\n                    'taskFC': {'$ref': '#/$defs/Task/properties/taskFC',\n                               'title': 'Task Functional Characteristics'}},\n     'required': ['entityType'],\n     'title': 'Task',\n     'type': 'object',\n     'unevaluatedProperties': False}\n\nOn instance:\n    {'Context': None,\n     'TaskSC': None,\n     'description': 'This is animating',\n     'entityType': 'Task',\n     'identifier': [{'combinedForm': 'me-nexus:6059186d-3404-466e-b5f4-ca47aa5a5e7f',\n                     'identifierScope': 'me-nexus',\n                     'identifierValue': '6059186d-3404-466e-b5f4-ca47aa5a5e7f'}],\n     'meNexusService': {'l1': 'Animation',\n                        'l2': '2D Animation',\n                        'l3': None,\n                        'serviceId': '5af24c14-2e68-4d90-bf8b-8f64d80d99c7',\n                        'serviceName': '2D Animation'},\n     'name': 'Animate',\n     'schemaVersion': 'https://movielabs.com/omc/json/schema/v2.8',\n     'taskFC': None}",
+    "context": {
+      "type": "entity",
+      "jsonPointers": [
+        ""
+      ]
+    },
+    "specifics": null
+  }
+]

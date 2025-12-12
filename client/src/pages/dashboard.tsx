@@ -38,6 +38,11 @@ import { ImportEntityDialog } from "@/components/import-entity-dialog";
 import { ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
 import { ImportResult } from "@/lib/import";
 import { entityToTurtle } from "@/lib/export";
+
+function prepareContentForValidation(content: any): any {
+  const { meNexusService, ...rest } = content || {};
+  return rest;
+}
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -346,10 +351,11 @@ export default function Dashboard() {
 
     try {
       // Try MovieLabs official validator first
+      const contentForValidation = prepareContentForValidation(selectedEntity.content);
       const response = await fetch('/api/validate/movielabs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedEntity.content)
+        body: JSON.stringify(contentForValidation)
       });
       
       const data = await response.json();
@@ -446,7 +452,8 @@ export default function Dashboard() {
       } : schema;
 
       const validate = ajv.compile(schemaToValidate);
-      const jsonValid = validate(selectedEntity.content);
+      const contentForValidation = prepareContentForValidation(selectedEntity.content);
+      const jsonValid = validate(contentForValidation);
 
       // Validate RDF generation
       let rdfValid = false;
