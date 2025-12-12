@@ -205,6 +205,9 @@ export default function Dashboard() {
   const [showAssetWizard, setShowAssetWizard] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [showExportNameDialog, setShowExportNameDialog] = useState(false);
+  const [exportFileName, setExportFileName] = useState("omc-ontology");
+  const [exportFormat, setExportFormat] = useState<"json" | "ttl">("json");
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
 
@@ -608,29 +611,45 @@ export default function Dashboard() {
   };
 
   const handleExportAllJson = () => {
-    const json = exportJson();
-    const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    const fileName = "omc-ontology.json";
-    a.download = fileName;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast({
-      title: "Exported as JSON",
-      description: `Downloaded ${fileName} (${entities.length} entities)`
-    });
+    setExportFormat("json");
+    setExportFileName("omc-ontology");
+    setShowExportNameDialog(true);
   };
 
   const handleExportAllTtl = () => {
-    const { downloadAs } = useOntologyStore.getState();
-    const fileName = "omc-ontology.ttl";
-    downloadAs("ttl", fileName);
-    toast({
-      title: "Exported as TTL (RDF)",
-      description: `Downloaded ${fileName} (${entities.length} entities)`
-    });
+    setExportFormat("ttl");
+    setExportFileName("omc-ontology");
+    setShowExportNameDialog(true);
+  };
+
+  const executeExportAll = () => {
+    const sanitizedName = exportFileName.replace(/[^a-zA-Z0-9-_]/g, '_') || "omc-ontology";
+    
+    if (exportFormat === "json") {
+      const json = exportJson();
+      const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const fileName = `${sanitizedName}.json`;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({
+        title: "Exported as JSON",
+        description: `Downloaded ${fileName} (${entities.length} entities)`
+      });
+    } else {
+      const { downloadAs } = useOntologyStore.getState();
+      const fileName = `${sanitizedName}.ttl`;
+      downloadAs("ttl", fileName);
+      toast({
+        title: "Exported as TTL (RDF)",
+        description: `Downloaded ${fileName} (${entities.length} entities)`
+      });
+    }
+    
+    setShowExportNameDialog(false);
   };
 
   return (
@@ -801,13 +820,13 @@ export default function Dashboard() {
                   className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
                   data-testid="button-import-entity"
                 >
-                  <Upload className="h-4 w-4" /> Import
+                  <Upload className="h-4 w-4" /> Import OMC
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
-                      <Download className="h-4 w-4" /> Export <ChevronDown className="h-3 w-3" />
+                      <Download className="h-4 w-4" /> Export OMC <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -1061,6 +1080,60 @@ export default function Dashboard() {
         onOpenChange={setShowImportDialog}
         onImportSuccess={handleImportSuccess}
       />
+
+      <Dialog open={showExportNameDialog} onOpenChange={(open) => {
+        if (!open) {
+          setShowExportNameDialog(false);
+          setExportFileName("omc-ontology");
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {exportFormat === "json" ? (
+                <><FileJson className="h-5 w-5 inline mr-2" />Export All as JSON</>
+              ) : (
+                <><FileText className="h-5 w-5 inline mr-2" />Export All as TTL (RDF)</>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              Enter a name for your {exportFormat.toUpperCase()} file containing {entities.length} entities.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="flex items-center gap-2">
+              <Input
+                value={exportFileName}
+                onChange={(e) => setExportFileName(e.target.value)}
+                placeholder="omc-ontology"
+                className="flex-1"
+                data-testid="input-export-filename"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && exportFileName.trim()) {
+                    executeExportAll();
+                  }
+                }}
+              />
+              <span className="text-muted-foreground font-mono">.{exportFormat}</span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowExportNameDialog(false);
+              setExportFileName("omc-ontology");
+            }}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={executeExportAll} 
+              data-testid="button-confirm-export"
+              disabled={!exportFileName.trim()}
+            >
+              <Download className="h-4 w-4 mr-2" /> Export
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
