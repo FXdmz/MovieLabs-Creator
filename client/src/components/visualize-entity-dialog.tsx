@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { Entity } from "@/lib/store";
-import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X } from "lucide-react";
+import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -368,16 +368,38 @@ export function VisualizeEntityDialog({
   const [layoutName, setLayoutName] = useState("circle");
   const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null);
   const [showLegend, setShowLegend] = useState(true);
+  const [showContext, setShowContext] = useState(true);
 
   const isMultiMode = entities && entities.length > 0;
   
-  const elements = useMemo(() => {
+  const allElements = useMemo(() => {
     if (isMultiMode) {
       return entitiesToGraphElements(entities);
     }
     if (!entity) return [];
     return entityToGraphElements(entity);
   }, [entity, entities, isMultiMode]);
+  
+  const elements = useMemo(() => {
+    if (showContext) {
+      return allElements;
+    }
+    const contextNodeIds = new Set<string>();
+    allElements.forEach((el: ElementDefinition) => {
+      if (el.data && !el.data.source && el.data.type === 'Context' && el.data.id) {
+        contextNodeIds.add(el.data.id as string);
+      }
+    });
+    return allElements.filter((el: ElementDefinition) => {
+      if (!el.data) return true;
+      if (!el.data.source) {
+        return el.data.type !== 'Context';
+      }
+      const source = el.data.source as string;
+      const target = el.data.target as string;
+      return !contextNodeIds.has(source) && !contextNodeIds.has(target);
+    });
+  }, [allElements, showContext]);
 
   const stylesheet = useMemo(
     () => [
@@ -638,6 +660,16 @@ export function VisualizeEntityDialog({
           </div>
 
           <div className="flex items-center gap-1">
+            <Button
+              variant={showContext ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowContext(!showContext)}
+              className="gap-1"
+              data-testid="button-toggle-context"
+            >
+              <Layers className="h-4 w-4" />
+              Context
+            </Button>
             <Button
               variant={showLegend ? "default" : "outline"}
               size="sm"

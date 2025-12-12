@@ -93,8 +93,34 @@ function transformTaskEntity(parsed: any): any {
         }
       }
       
-      if (ctx.uses?.Asset && Array.isArray(ctx.uses.Asset)) {
-        transformedCtx.hasInputAssets = ctx.uses.Asset;
+      // Normalize contributesTo.CreativeWork to always be an array
+      if (ctx.contributesTo && ctx.contributesTo.CreativeWork) {
+        const cwRef = ctx.contributesTo.CreativeWork;
+        transformedCtx.contributesTo = {
+          ...ctx.contributesTo,
+          CreativeWork: Array.isArray(cwRef) ? cwRef : [cwRef]
+        };
+      }
+      
+      // Normalize uses.Infrastructure and uses.Asset to arrays
+      if (ctx.uses) {
+        const normalizedUses: Record<string, any> = { ...ctx.uses };
+        if (ctx.uses.Infrastructure) {
+          normalizedUses.Infrastructure = Array.isArray(ctx.uses.Infrastructure) 
+            ? ctx.uses.Infrastructure 
+            : [ctx.uses.Infrastructure];
+        }
+        if (ctx.uses.Asset) {
+          normalizedUses.Asset = Array.isArray(ctx.uses.Asset) 
+            ? ctx.uses.Asset 
+            : [ctx.uses.Asset];
+        }
+        transformedCtx.uses = normalizedUses;
+        
+        // Also set hasInputAssets from uses.Asset for backward compatibility
+        if (normalizedUses.Asset && Array.isArray(normalizedUses.Asset)) {
+          transformedCtx.hasInputAssets = normalizedUses.Asset;
+        }
       }
       
       return transformedCtx;
@@ -328,7 +354,12 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}informs`]: "informs",
   [`${RDF_PREFIXES.omc}isInformedBy`]: "isInformedBy",
   [`${RDF_PREFIXES.omc}hasProduct`]: "hasProduct",
-  [`${RDF_PREFIXES.omcT}aWorkUnitHas.Participant`]: "participantRef"
+  [`${RDF_PREFIXES.omcT}aWorkUnitHas.Participant`]: "participantRef",
+  
+  // Nested relationship type predicates (for uses/contributesTo objects)
+  [`${RDF_PREFIXES.omc}CreativeWork`]: "CreativeWork",
+  [`${RDF_PREFIXES.omc}Infrastructure`]: "Infrastructure",
+  [`${RDF_PREFIXES.omc}Asset`]: "Asset"
 };
 
 function predicateUriToJsonKey(predicateUri: string): string | null {
