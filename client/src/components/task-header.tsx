@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { TaskClassifier, TaskClassification } from "./task-classifier";
+import { TaskClassifier } from "./task-classifier";
 
 interface TaskHeaderProps {
   value?: any;
@@ -89,8 +89,8 @@ export function TaskHeader({ value, onChange }: TaskHeaderProps) {
               </div>
               
               <TaskClassifier
-                value={value?.taskClassification}
-                onChange={(classification) => onChange({ ...value, taskClassification: classification })}
+                entityContent={value}
+                onChange={onChange}
               />
             </div>
           )}

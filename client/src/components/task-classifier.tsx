@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
-import { ChevronDown, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { v4 as uuidv4 } from "uuid";
 import servicesData from "@/lib/me-nexus-services.json";
 
 interface ServiceHierarchy {
@@ -38,30 +39,16 @@ interface ServiceTreeNode {
   isGroup?: boolean;
 }
 
-export interface TaskClassification {
-  l1Category: string | null;
-  serviceId: string | null;
-  serviceName: string | null;
-  fullPath: string | null;
-  l1: string | null;
-  l2: string | null;
-  l3: string | null;
-  description: string | null;
-}
-
 interface TaskClassifierProps {
-  value?: TaskClassification | null;
-  onChange?: (classification: TaskClassification | null) => void;
+  entityContent: any;
+  onChange: (updates: any) => void;
 }
 
 function sanitizeForUri(name: string): string {
-  return name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
+  return name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 }
 
-function mapToOMC(service: MeNexusService): string {
-  const l1 = service.hierarchy.l1;
-  const l2 = service.hierarchy.l2;
-  
+function getOMCEquivalent(l1: string | null, l2: string | null): string {
   switch (l1) {
     case 'Animation':
     case 'Compositing':
@@ -74,13 +61,13 @@ function mapToOMC(service: MeNexusService): string {
       return 'omc:CreateVisualEffects';
     
     case 'Production Services':
-      if (l2?.includes('Pre-Production')) return 'omc:DevelopCreativeStyle';
-      if (l2?.includes('Principal Photography')) return 'omc:Shoot';
-      if (l2?.includes('Post-Production')) return 'omc:ConformFinish';
-      return 'omc:Shoot';
+      if (l2 === 'Pre-Production Services') return 'omc:DevelopCreativeStyle';
+      if (l2 === 'Principal Photography') return 'omc:Shoot';
+      if (l2 === 'Post-Production Services') return 'omc:ConformFinish';
+      return 'omc:Task';
     
     case 'Editorial':
-      return 'omc:ConformFinish';
+      return 'omc:Edit';
     
     case 'Game Development':
     case 'Extended Reality':
@@ -100,7 +87,7 @@ function mapToOMC(service: MeNexusService): string {
   }
 }
 
-export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
+export function TaskClassifier({ entityContent, onChange }: TaskClassifierProps) {
   const services = servicesData.services as MeNexusService[];
   
   const l1Categories = useMemo(() => {
@@ -122,10 +109,27 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
     return Array.from(l1Map.values()).sort((a, b) => b.count - a.count);
   }, [services]);
 
+  const currentL1 = useMemo(() => {
+    const structuralType = entityContent?.TaskSC?.structuralType;
+    if (!structuralType || typeof structuralType !== 'string') return null;
+    if (structuralType.startsWith('menexus:')) {
+      const l1Name = structuralType.replace('menexus:', '').replace(/-/g, ' ');
+      const category = l1Categories.find(c => 
+        sanitizeForUri(c.name) === structuralType.replace('menexus:', '')
+      );
+      return category?.name || null;
+    }
+    return null;
+  }, [entityContent?.TaskSC?.structuralType, l1Categories]);
+
+  const currentServiceId = useMemo(() => {
+    return entityContent?.taskFC?.functionalProperties?.serviceId || null;
+  }, [entityContent?.taskFC?.functionalProperties?.serviceId]);
+
   const availableServices = useMemo(() => {
-    if (!value?.l1Category) return [];
+    if (!currentL1) return [];
     
-    const category = l1Categories.find(c => c.name === value.l1Category);
+    const category = l1Categories.find(c => c.name === currentL1);
     if (!category) return [];
     
     const l2Groups = new Map<string, MeNexusService[]>();
@@ -184,46 +188,12 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
     });
     
     return tree;
-  }, [value?.l1Category, l1Categories]);
+  }, [currentL1, l1Categories]);
 
   const selectedService = useMemo(() => {
-    if (!value?.serviceId) return null;
-    return services.find(s => s.serviceId === value.serviceId) || null;
-  }, [value?.serviceId, services]);
-
-  const handleL1Change = (l1Name: string) => {
-    onChange?.({
-      l1Category: l1Name,
-      serviceId: null,
-      serviceName: null,
-      fullPath: null,
-      l1: l1Name,
-      l2: null,
-      l3: null,
-      description: null
-    });
-  };
-
-  const handleServiceChange = (serviceId: string) => {
-    const service = services.find(s => s.serviceId === serviceId);
-    if (!service) return;
-    
-    const { l1, l2, l3 } = service.hierarchy;
-    let fullPath = l1 || '';
-    if (l2) fullPath += ` > ${l2}`;
-    if (l3) fullPath += ` > ${l3}`;
-    
-    onChange?.({
-      l1Category: value?.l1Category || l1,
-      serviceId: service.serviceId,
-      serviceName: service.serviceName,
-      fullPath,
-      l1,
-      l2,
-      l3,
-      description: service.description
-    });
-  };
+    if (!currentServiceId) return null;
+    return services.find(s => s.serviceId === currentServiceId) || null;
+  }, [currentServiceId, services]);
 
   const flattenedServices = useMemo(() => {
     const items: { value: string; label: string; indent: boolean; service: MeNexusService }[] = [];
@@ -255,6 +225,77 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
     return items;
   }, [availableServices]);
 
+  const handleL1Change = (l1Name: string) => {
+    const category = l1Categories.find(c => c.name === l1Name);
+    if (!category) return;
+    
+    const existingTaskSC = entityContent?.TaskSC || {};
+    const taskScId = existingTaskSC.identifier?.[0]?.identifierValue || uuidv4();
+    
+    const updatedTaskSC = {
+      entityType: "TaskSC",
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      identifier: existingTaskSC.identifier || [{
+        identifierScope: "me-nexus",
+        identifierValue: taskScId,
+        combinedForm: `me-nexus:${taskScId}`
+      }],
+      structuralType: `menexus:${sanitizeForUri(l1Name)}`,
+      structuralProperties: {
+        l1: l1Name,
+        serviceCount: category.count
+      }
+    };
+    
+    onChange({
+      ...entityContent,
+      TaskSC: updatedTaskSC,
+      taskFC: null
+    });
+  };
+
+  const handleServiceChange = (serviceId: string) => {
+    const service = services.find(s => s.serviceId === serviceId);
+    if (!service) return;
+    
+    const { l1, l2, l3 } = service.hierarchy;
+    let fullPath = l1 || '';
+    if (l2) fullPath += ` > ${l2}`;
+    if (l3) fullPath += ` > ${l3}`;
+    
+    const functionalTypeName = l3 || l2 || service.serviceName;
+    const omcEquivalent = getOMCEquivalent(l1, l2);
+    
+    const existingTaskFC = entityContent?.taskFC || {};
+    const taskFcId = existingTaskFC.identifier?.[0]?.identifierValue || uuidv4();
+    
+    const updatedTaskFC = {
+      entityType: "TaskFC",
+      schemaVersion: "https://movielabs.com/omc/json/schema/v2.8",
+      identifier: existingTaskFC.identifier || [{
+        identifierScope: "me-nexus",
+        identifierValue: taskFcId,
+        combinedForm: `me-nexus:${taskFcId}`
+      }],
+      functionalType: `menexus:${sanitizeForUri(functionalTypeName)}`,
+      functionalProperties: {
+        serviceId: service.serviceId,
+        serviceName: service.serviceName,
+        fullPath,
+        l1,
+        l2,
+        l3,
+        description: service.description,
+        omcEquivalent
+      }
+    };
+    
+    onChange({
+      ...entityContent,
+      taskFC: updatedTaskFC
+    });
+  };
+
   return (
     <div className="space-y-4 p-4 bg-muted/30 rounded-lg border">
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -268,7 +309,7 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
             Category (Structural)
           </Label>
           <Select
-            value={value?.l1Category || ""}
+            value={currentL1 || ""}
             onValueChange={handleL1Change}
           >
             <SelectTrigger data-testid="select-task-l1-category">
@@ -292,7 +333,7 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Task structural category
+            Task structural category → TaskSC.structuralType
           </p>
         </div>
         
@@ -301,12 +342,12 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
             Service (Functional)
           </Label>
           <Select
-            value={value?.serviceId || ""}
+            value={currentServiceId || ""}
             onValueChange={handleServiceChange}
-            disabled={!value?.l1Category}
+            disabled={!currentL1}
           >
             <SelectTrigger data-testid="select-task-service">
-              <SelectValue placeholder={value?.l1Category ? "Select service..." : "Select category first"} />
+              <SelectValue placeholder={currentL1 ? "Select service..." : "Select category first"} />
             </SelectTrigger>
             <SelectContent>
               <ScrollArea className="h-[300px]">
@@ -325,7 +366,7 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Specific service type
+            Specific service → taskFC.functionalType
           </p>
         </div>
       </div>
@@ -336,13 +377,13 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
             {selectedService.serviceName}
           </div>
           <div className="text-xs text-muted-foreground mb-2">
-            {value?.fullPath}
+            {entityContent?.taskFC?.functionalProperties?.fullPath}
           </div>
           <div className="text-xs text-muted-foreground">
             {selectedService.description}
           </div>
           <div className="text-xs text-primary/70 mt-2">
-            OMC Equivalent: {mapToOMC(selectedService)}
+            OMC Equivalent: {getOMCEquivalent(selectedService.hierarchy.l1, selectedService.hierarchy.l2)}
           </div>
         </div>
       )}
@@ -350,4 +391,4 @@ export function TaskClassifier({ value, onChange }: TaskClassifierProps) {
   );
 }
 
-export { mapToOMC };
+export { getOMCEquivalent };

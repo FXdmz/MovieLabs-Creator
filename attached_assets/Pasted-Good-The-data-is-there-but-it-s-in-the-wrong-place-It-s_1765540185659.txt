@@ -1,0 +1,232 @@
+Good! The data is there, but it's in the wrong place. It's putting everything in `taskClassification` instead of populating `TaskSC` and `taskFC`.
+
+Here's the correction prompt for Replit:
+
+```markdown
+# Fix: Move taskClassification data into TaskSC and taskFC
+
+The current output has the right data but in the wrong structure. Need to move data from `taskClassification` into the proper OMC fields.
+
+## Current Output (WRONG)
+```json
+{
+  "TaskSC": {
+    "structuralType": null,        // ❌ Should be populated
+    "structuralProperties": {}     // ❌ Should be populated
+  },
+  "taskFC": null,                  // ❌ Should be object
+  "taskClassification": {          // ❌ Should not exist
+    "l1Category": "Animation",
+    "serviceId": "bf94c80c-bea9-44df-af62-ca02280b16e8",
+    "serviceName": "3D Animation",
+    ...
+  }
+}
+```
+
+## Required Output (CORRECT)
+```json
+{
+  "TaskSC": {
+    "entityType": "TaskSC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "uuid",
+      "combinedForm": "me-nexus:uuid"
+    }],
+    "structuralType": "menexus:Animation",
+    "structuralProperties": {
+      "l1": "Animation",
+      "serviceCount": 11
+    }
+  },
+  
+  "taskFC": {
+    "entityType": "TaskFC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "uuid",
+      "combinedForm": "me-nexus:uuid"
+    }],
+    "functionalType": "menexus:3D-Animation",
+    "functionalProperties": {
+      "serviceId": "bf94c80c-bea9-44df-af62-ca02280b16e8",
+      "serviceName": "3D Animation",
+      "fullPath": "Animation > 3D Animation",
+      "l1": "Animation",
+      "l2": "3D Animation",
+      "l3": null,
+      "description": "Develop animated content with three-dimensional models...",
+      "omcEquivalent": "omc:CreateVisualEffects"
+    }
+  }
+}
+```
+
+## Changes Needed
+
+### 1. Remove taskClassification object entirely
+
+### 2. Populate TaskSC.structuralType
+- Take `taskClassification.l1Category`
+- Convert to: `"menexus:" + l1Category` (no spaces)
+- Example: "Animation" → "menexus:Animation"
+- Example: "Production Services" → "menexus:Production-Services"
+
+### 3. Populate TaskSC.structuralProperties
+```json
+{
+  "l1": "Animation",  // from taskClassification.l1
+  "serviceCount": 11  // count of services in this L1
+}
+```
+
+### 4. Create taskFC object (not null)
+```json
+{
+  "entityType": "TaskFC",
+  "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "generate-uuid",
+    "combinedForm": "me-nexus:generate-uuid"
+  }],
+  "functionalType": "menexus:SERVICE-NAME",
+  "functionalProperties": { /* service details */ }
+}
+```
+
+### 5. Populate taskFC.functionalType
+- Take full service path
+- Convert to identifier format (kebab-case)
+- Examples:
+  - "3D Animation" → "menexus:3D-Animation"
+  - "3D Animation > Crowd Animation" → "menexus:Crowd-Animation"
+  - "RPM > Keying" → "menexus:Keying"
+
+### 6. Populate taskFC.functionalProperties
+Move ALL data from taskClassification:
+```json
+{
+  "serviceId": "bf94c80c-bea9-44df-af62-ca02280b16e8",
+  "serviceName": "3D Animation",
+  "fullPath": "Animation > 3D Animation",
+  "l1": "Animation",
+  "l2": "3D Animation",
+  "l3": null,
+  "description": "...",
+  "omcEquivalent": "omc:CreateVisualEffects"  // ← ADD THIS
+}
+```
+
+### 7. Add OMC Equivalent Mapping
+
+Map L1 category to OMC functional class:
+
+```javascript
+function getOMCEquivalent(l1, l2) {
+  switch(l1) {
+    case 'Animation':
+    case 'Compositing':
+    case 'Asset Creation':
+    case 'FX-Simulation':
+    case 'Lighting':
+    case 'Rendering':
+    case 'Layout':
+      return 'omc:CreateVisualEffects';
+    
+    case 'Production Services':
+      if (l2 === 'Pre-Production Services') return 'omc:DevelopCreativeStyle';
+      if (l2 === 'Principal Photography') return 'omc:Shoot';
+      if (l2 === 'Post-Production Services') return 'omc:ConformFinish';
+      return 'omc:Task';
+    
+    case 'Editorial':
+      return 'omc:Edit';
+    
+    case 'Virtual Production':
+      return 'omc:Shoot';
+    
+    case 'Game Development':
+      return 'omc:CreateVisualEffects';
+    
+    default:
+      return 'omc:Task';
+  }
+}
+```
+
+## Complete Example
+
+Input selections:
+- L1: "Animation"  
+- Service: "3D Animation > Crowd Animation"
+
+Output:
+```json
+{
+  "entityType": "Task",
+  "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+  "identifier": [{
+    "identifierScope": "me-nexus",
+    "identifierValue": "task-uuid",
+    "combinedForm": "me-nexus:task-uuid"
+  }],
+  "name": "New Task",
+  "description": "hello",
+  
+  "TaskSC": {
+    "entityType": "TaskSC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "tasksc-uuid",
+      "combinedForm": "me-nexus:tasksc-uuid"
+    }],
+    "structuralType": "menexus:Animation",
+    "structuralProperties": {
+      "l1": "Animation",
+      "serviceCount": 11
+    }
+  },
+  
+  "taskFC": {
+    "entityType": "TaskFC",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "taskfc-uuid",
+      "combinedForm": "me-nexus:taskfc-uuid"
+    }],
+    "functionalType": "menexus:Crowd-Animation",
+    "functionalProperties": {
+      "serviceId": "67b568a8-4424-43da-a443-251af48c0cf6",
+      "serviceName": "Crowd Animation",
+      "fullPath": "Animation > 3D Animation > Crowd Animation",
+      "l1": "Animation",
+      "l2": "3D Animation",
+      "l3": "Crowd Animation",
+      "description": "Animate large groups of characters for scenes...",
+      "omcEquivalent": "omc:CreateVisualEffects"
+    }
+  },
+  
+  "state": "assigned",
+  "Context": null
+}
+```
+
+## Key Rules
+
+1. **No taskClassification object** - remove it completely
+2. **TaskSC must have structuralType** - use L1 category
+3. **taskFC must be an object** - not null
+4. **functionalType uses service name** - not full path
+5. **Always include omcEquivalent** - map from L1/L2
+
+Update the code to properly structure the output according to OMC schema.
+```
+
+This will fix the structure to be OMC-compliant.
