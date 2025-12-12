@@ -1,0 +1,301 @@
+@prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+@prefix omcT: <https://movielabs.com/omc/rdf/schema/v2.8Tentative#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix me: <https://me-nexus.com/id/> .
+@prefix menexus: <https://me-nexus.com/schema#> .
+
+me:fdf6e26e-6026-456d-b41e-1d1a8e9e8aba
+    rdf:type omc:CreativeWork ;
+    rdfs:label "Avatar" ;
+    omc:hasIdentifier me:fdf6e26e-6026-456d-b41e-1d1a8e9e8aba ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "fdf6e26e-6026-456d-b41e-1d1a8e9e8aba" ;
+    omc:hasTitle _:creativeWorkTitle0_1 ;
+    skos:definition "2009 film directed by James Cameron" ;
+    omc:creativeWorkType "creativeWork" ;
+    omc:creativeWorkCategory "movie" ;
+    omc:approximateLength "PT2H42M" .
+
+_:creativeWorkTitle0_1
+    omc:hasTitleName "Avatar" ;
+    omc:hasTitleType "release" ;
+    omc:titleLanguage "en" .
+
+me:eb005315-437b-4ce5-ab9f-b092187730de
+    rdf:type omc:Location ;
+    rdfs:label "Los Angeles" ;
+    omc:hasIdentifier me:eb005315-437b-4ce5-ab9f-b092187730de ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "eb005315-437b-4ce5-ab9f-b092187730de" ;
+    skos:definition "This is the city" ;
+    omc:hasAddress _:address_2 ;
+    omc:hasCoords _:coordinates_3 .
+
+_:address_2
+    rdf:type omc:Address ;
+    omc:hasCity "Los Angeles" ;
+    omc:hasCountry "US" .
+
+_:coordinates_3
+    rdf:type omc:LatLon ;
+    omc:hasLatitude "34.0536909"^^xsd:decimal ;
+    omc:hasLongitude "-118.242766"^^xsd:decimal .
+
+me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79
+    rdf:type omc:Asset ;
+    rdfs:label "Europa_1.27.24" ;
+    omc:hasIdentifier me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "e3e5070c-240e-4c46-9fc0-54bf44b1fa79" ;
+    omc:hasAssetFunctionalCharacteristic _:assetFC_4 ;
+    omc:hasAssetStructuralCharacteristic me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79-sc .
+
+_:assetFC_4
+    omc:hasFunctionalType "script" .
+
+me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79-sc
+    rdf:type omc:AssetAsStructure ;
+    omc:hasIdentifier me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79-sc ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "e3e5070c-240e-4c46-9fc0-54bf44b1fa79-sc" ;
+    omc:hasStructuralType "digital.document" ;
+    omc:hasStructuralProperties _:structuralProperties_5 .
+
+_:structuralProperties_5
+    omc:hasFileDetails _:fileDetails_6 .
+
+_:fileDetails_6
+    omc:hasFileName "Europa_1.27.24.pdf" ;
+    omc:hasFileExtension "pdf" .
+
+me:d45baf61-b0d1-45fb-8183-184ccdba1d89
+    rdf:type omc:Infrastructure ;
+    rdfs:label "Final Draft" ;
+    omc:hasIdentifier me:d45baf61-b0d1-45fb-8183-184ccdba1d89 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "d45baf61-b0d1-45fb-8183-184ccdba1d89" ;
+    omc:hasInfrastructureStructuralCharacteristic me:efab4c95-da93-4668-8afb-d0515dbd2b29 .
+
+me:efab4c95-da93-4668-8afb-d0515dbd2b29
+    rdf:type omc:InfrastructureSC ;
+    omc:hasIdentifier me:efab4c95-da93-4668-8afb-d0515dbd2b29 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "efab4c95-da93-4668-8afb-d0515dbd2b29" ;
+    omc:hasStructuralProperties _:structuralProperties_7 .
+
+me:3d9cf2e4-77b4-4c02-951e-a90cdd92e73c
+    rdf:type omc:Infrastructure ;
+    rdfs:label "Maya" ;
+    omc:hasIdentifier me:3d9cf2e4-77b4-4c02-951e-a90cdd92e73c ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "3d9cf2e4-77b4-4c02-951e-a90cdd92e73c" ;
+    omc:hasInfrastructureStructuralCharacteristic me:695fd137-c3a9-416c-996d-b121a31f2a07 .
+
+me:695fd137-c3a9-416c-996d-b121a31f2a07
+    rdf:type omc:InfrastructureSC ;
+    omc:hasIdentifier me:695fd137-c3a9-416c-996d-b121a31f2a07 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "695fd137-c3a9-416c-996d-b121a31f2a07" ;
+    omc:hasStructuralProperties _:structuralProperties_8 .
+
+me:4da136da-a3a7-421c-b9ce-92765c452280
+    rdf:type omc:Participant ;
+    rdfs:label "James Cameron" ;
+    omc:hasIdentifier me:4da136da-a3a7-421c-b9ce-92765c452280 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "4da136da-a3a7-421c-b9ce-92765c452280" ;
+    omc:hasParticipantStructuralCharacteristic me:f22d7510-a053-4d91-9acd-841c51ed982f ;
+    omc:hasParticipantFunctionalCharacteristic _:participantFC_10 ;
+    omc:hasWorkUnit me:b09c2f26-286c-46bd-9d49-88bb2473d2fa .
+
+me:f22d7510-a053-4d91-9acd-841c51ed982f
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_9 ;
+    omc:hasIdentifier me:f22d7510-a053-4d91-9acd-841c51ed982f ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "f22d7510-a053-4d91-9acd-841c51ed982f" ;
+    omc:hasLocation "me-nexus:eb005315-437b-4ce5-ab9f-b092187730de" .
+
+_:personName_9
+    omc:hasFullName "James Cameron" ;
+    omc:hasFirstName "James" ;
+    omc:hasLastName "Cameron" .
+
+_:participantFC_10
+    omc:hasFunctionalType "crew" ;
+    omc:hasJobTitle "Director" .
+
+me:398f8115-9064-4439-9b8d-6f0108b92404
+    rdf:type omc:Participant ;
+    rdfs:label "Rick Jaffa" ;
+    omc:hasIdentifier me:398f8115-9064-4439-9b8d-6f0108b92404 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "398f8115-9064-4439-9b8d-6f0108b92404" ;
+    omc:hasParticipantStructuralCharacteristic me:a9206a86-e7cd-48cf-9299-689c82966b03 ;
+    omc:hasParticipantFunctionalCharacteristic _:participantFC_12 ;
+    omc:hasWorkUnit me:de0e157b-ec6a-43dd-8353-000b0c1523d6 .
+
+me:a9206a86-e7cd-48cf-9299-689c82966b03
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_11 ;
+    omc:hasIdentifier me:a9206a86-e7cd-48cf-9299-689c82966b03 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "a9206a86-e7cd-48cf-9299-689c82966b03" ;
+    omc:hasLocation "me-nexus:eb005315-437b-4ce5-ab9f-b092187730de" .
+
+_:personName_11
+    omc:hasFullName "Rick Jaffa" ;
+    omc:hasFirstName "Rick" ;
+    omc:hasLastName "Jaffa" .
+
+_:participantFC_12
+    omc:hasFunctionalType "crew" ;
+    omc:hasJobTitle "Scriptwriter" .
+
+me:bf415c61-7f24-4920-84d1-f190a42fe628
+    rdf:type omc:Task ;
+    rdfs:label "Write Avatar Script" ;
+    omc:hasState _:state_13 ;
+    omc:hasScheduledStart "2025-12-12T18:13:00.000Z"^^xsd:dateTime ;
+    omc:hasScheduledEnd "2025-12-27T18:13:00.000Z"^^xsd:dateTime ;
+    omc:uses me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79 ,
+        me:d45baf61-b0d1-45fb-8183-184ccdba1d89 ;
+    omc:hasContext me:eaea031c-80d2-4d26-b0a4-6f9014de8e92 ;
+    omc:hasWorkUnit me:de0e157b-ec6a-43dd-8353-000b0c1523d6 ;
+    omc:hasIdentifier me:bf415c61-7f24-4920-84d1-f190a42fe628 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "bf415c61-7f24-4920-84d1-f190a42fe628" ;
+    omc:hasTaskStructuralCharacteristic me:eacb238e-5a00-4621-a132-7769ba102f86 ;
+    omc:hasTaskFunctionalCharacteristic me:52a9226b-163c-480d-bb14-b1ab8481a106 .
+
+_:state_13
+    rdf:type omc:State ;
+    omc:hasStateDescriptor omc:Assigned ;
+    rdfs:comment "Doing the work" .
+
+me:eaea031c-80d2-4d26-b0a4-6f9014de8e92
+    rdf:type omc:MediaCreationContextComponent ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "eaea031c-80d2-4d26-b0a4-6f9014de8e92" ;
+    omc:contextType "production" ;
+    omc:contributesTo _:contributesTo_16 ;
+    omc:uses _:uses_17 .
+
+me:de0e157b-ec6a-43dd-8353-000b0c1523d6
+    rdf:type omc:WorkUnit ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "de0e157b-ec6a-43dd-8353-000b0c1523d6" ;
+    omcT:aWorkUnitHas.Participant me:398f8115-9064-4439-9b8d-6f0108b92404 .
+
+me:eacb238e-5a00-4621-a132-7769ba102f86
+    rdf:type omc:TaskAsStructure ;
+    omc:hasIdentifier me:eacb238e-5a00-4621-a132-7769ba102f86 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "eacb238e-5a00-4621-a132-7769ba102f86" ;
+    omc:hasStructuralType "menexus:Production-Services" ;
+    omc:hasStructuralProperties _:structuralProperties_14 .
+
+_:structuralProperties_14
+    menexus:l1 "Production Services" ;
+    omc:serviceCount "66"^^xsd:integer .
+
+me:52a9226b-163c-480d-bb14-b1ab8481a106
+    rdf:type omc:TaskAsFunction ;
+    omc:hasIdentifier me:52a9226b-163c-480d-bb14-b1ab8481a106 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "52a9226b-163c-480d-bb14-b1ab8481a106" ;
+    omc:hasFunctionalType "menexus:Script-writing" ;
+    omc:hasFunctionalProperties _:functionalProperties_15 .
+
+_:functionalProperties_15
+    menexus:serviceId "e10daa51-6b5d-49e6-9a34-aaa6ed8c5f4b" ;
+    omc:hasServiceName "Script writing" ;
+    menexus:fullPath "Production Services" ;
+    menexus:l1 "Production Services" ;
+    skos:definition "Write Script represents all of the necessary activities to develop, iterate and finalize a script for pre-production." ;
+    menexus:omcEquivalent "omc:Task" .
+
+_:contributesTo_16
+    omc:CreativeWork "me-nexus:fdf6e26e-6026-456d-b41e-1d1a8e9e8aba" .
+
+_:uses_17
+    omc:Infrastructure "me-nexus:d45baf61-b0d1-45fb-8183-184ccdba1d89" ;
+    omc:Asset "me-nexus:e3e5070c-240e-4c46-9fc0-54bf44b1fa79" .
+
+me:9829b639-a774-4311-a964-e959f4671568
+    rdf:type omc:Task ;
+    rdfs:label "Previz" ;
+    omc:hasState _:state_18 ;
+    omc:hasScheduledStart "2025-12-12T18:15:00.000Z"^^xsd:dateTime ;
+    omc:hasScheduledEnd "2025-12-25T18:15:00.000Z"^^xsd:dateTime ;
+    omc:uses me:e3e5070c-240e-4c46-9fc0-54bf44b1fa79 ,
+        me:3d9cf2e4-77b4-4c02-951e-a90cdd92e73c ;
+    omc:hasContext me:b18c45c3-043c-4e6e-9b06-4c9321c1132a ;
+    omc:hasWorkUnit me:b09c2f26-286c-46bd-9d49-88bb2473d2fa ;
+    omc:hasIdentifier me:9829b639-a774-4311-a964-e959f4671568 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "9829b639-a774-4311-a964-e959f4671568" ;
+    omc:hasTaskStructuralCharacteristic me:4142be2e-fe43-4d93-abdb-8c3b562df0f2 ;
+    omc:hasTaskFunctionalCharacteristic me:100fd9a6-fba1-400e-8c8a-75a354d1ac81 .
+
+_:state_18
+    rdf:type omc:State ;
+    omc:hasStateDescriptor omc:Assigned ;
+    rdfs:comment "We have a director" .
+
+me:b18c45c3-043c-4e6e-9b06-4c9321c1132a
+    rdf:type omc:MediaCreationContextComponent ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "b18c45c3-043c-4e6e-9b06-4c9321c1132a" ;
+    omc:contextType "production" ;
+    omc:contributesTo _:contributesTo_21 ;
+    omc:uses _:uses_22 .
+
+me:b09c2f26-286c-46bd-9d49-88bb2473d2fa
+    rdf:type omc:WorkUnit ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "b09c2f26-286c-46bd-9d49-88bb2473d2fa" ;
+    omcT:aWorkUnitHas.Participant me:4da136da-a3a7-421c-b9ce-92765c452280 .
+
+me:4142be2e-fe43-4d93-abdb-8c3b562df0f2
+    rdf:type omc:TaskAsStructure ;
+    omc:hasIdentifier me:4142be2e-fe43-4d93-abdb-8c3b562df0f2 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "4142be2e-fe43-4d93-abdb-8c3b562df0f2" ;
+    omc:hasStructuralType "menexus:Production-Services" ;
+    omc:hasStructuralProperties _:structuralProperties_19 .
+
+_:structuralProperties_19
+    menexus:l1 "Production Services" ;
+    omc:serviceCount "66"^^xsd:integer .
+
+me:100fd9a6-fba1-400e-8c8a-75a354d1ac81
+    rdf:type omc:TaskAsFunction ;
+    omc:hasIdentifier me:100fd9a6-fba1-400e-8c8a-75a354d1ac81 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "100fd9a6-fba1-400e-8c8a-75a354d1ac81" ;
+    omc:hasFunctionalType "menexus:Previsualization" ;
+    omc:hasFunctionalProperties _:functionalProperties_20 .
+
+_:functionalProperties_20
+    menexus:serviceId "e1dba8dc-3c82-4b13-b01c-1f35ce897660" ;
+    omc:hasServiceName "Previsualization" ;
+    menexus:fullPath "Production Services > Pre-Production Services > Previsualization" ;
+    menexus:l1 "Production Services" ;
+    menexus:l2 "Pre-Production Services" ;
+    menexus:l3 "Previsualization" ;
+    skos:definition "Visually map out the scenes in a production before principal photography." ;
+    menexus:omcEquivalent "omc:DevelopCreativeStyle" .
+
+_:contributesTo_21
+    omc:CreativeWork "me-nexus:fdf6e26e-6026-456d-b41e-1d1a8e9e8aba" .
+
+_:uses_22
+    omc:Infrastructure "me-nexus:3d9cf2e4-77b4-4c02-951e-a90cdd92e73c" ;
+    omc:Asset "me-nexus:e3e5070c-240e-4c46-9fc0-54bf44b1fa79" .

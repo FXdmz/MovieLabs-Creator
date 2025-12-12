@@ -4,12 +4,14 @@ import { ImportResult, ImportedEntity, MultiImportResult } from './json-importer
 
 const RDF_PREFIXES: Record<string, string> = {
   omc: "https://movielabs.com/omc/rdf/schema/v2.8#",
+  omcT: "https://movielabs.com/omc/rdf/schema/v2.8Tentative#",
   rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   rdfs: "http://www.w3.org/2000/01/rdf-schema#",
   xsd: "http://www.w3.org/2001/XMLSchema#",
   skos: "http://www.w3.org/2004/02/skos/core#",
   owl: "http://www.w3.org/2002/07/owl#",
-  me: "https://me-nexus.com/id/"
+  me: "https://me-nexus.com/id/",
+  menexus: "https://me-nexus.com/schema#"
 };
 
 const rdfClassToEntityType: Record<string, string> = {
@@ -201,7 +203,16 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   
   [`${RDF_PREFIXES.omc}creativeWorkType`]: "creativeWorkType",
   [`${RDF_PREFIXES.omc}creativeWorkCategory`]: "creativeWorkCategory",
-  [`${RDF_PREFIXES.omc}approximateLength`]: "approximateLength"
+  [`${RDF_PREFIXES.omc}approximateLength`]: "approximateLength",
+  
+  // Relationship predicates
+  [`${RDF_PREFIXES.omc}uses`]: "uses",
+  [`${RDF_PREFIXES.omc}contributesTo`]: "contributesTo",
+  [`${RDF_PREFIXES.omc}hasWorkUnit`]: "workUnit",
+  [`${RDF_PREFIXES.omc}informs`]: "informs",
+  [`${RDF_PREFIXES.omc}isInformedBy`]: "isInformedBy",
+  [`${RDF_PREFIXES.omc}hasProduct`]: "hasProduct",
+  [`${RDF_PREFIXES.omcT}aWorkUnitHas.Participant`]: "participantRef"
 };
 
 function predicateUriToJsonKey(predicateUri: string): string | null {
@@ -214,6 +225,14 @@ function predicateUriToJsonKey(predicateUri: string): string | null {
       const key = localName.slice(3);
       return key.charAt(0).toLowerCase() + key.slice(1);
     }
+    return localName;
+  }
+  if (predicateUri.startsWith(RDF_PREFIXES.omcT)) {
+    const localName = predicateUri.slice(RDF_PREFIXES.omcT.length);
+    return localName;
+  }
+  if (predicateUri.startsWith(RDF_PREFIXES.menexus)) {
+    const localName = predicateUri.slice(RDF_PREFIXES.menexus.length);
     return localName;
   }
   return null;
@@ -429,7 +448,7 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           const alwaysArrayKeys = [
             'identifier', 'creativeWorkTitle', 'participant', 'participantComponent',
             'task', 'taskComponent', 'asset', 'assetComponent', 'contextComponent',
-            'depicts', 'depiction', 'tag', 'Asset'
+            'depicts', 'depiction', 'tag', 'Asset', 'uses', 'informs', 'isInformedBy', 'hasProduct'
           ];
           if (alwaysArrayKeys.includes(jsonKey)) {
             if (!arrayProps[jsonKey]) arrayProps[jsonKey] = [];
