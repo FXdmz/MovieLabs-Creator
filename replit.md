@@ -2,6 +2,20 @@
 
 ## Milestones
 
+### Task RDF/TTL Export Enhancements (December 12, 2025)
+- Enhanced Task-specific RDF serialization with proper OMC ontology patterns
+- Task State: Exports omc:hasState with omc:State objects containing omc:hasStateDescriptor
+- State descriptors map to canonical IRIs (omc:Assigned, omc:InProcess, etc.) with literal fallback
+- Scheduling: Emits omc:hasScheduledStart/End, omc:hasActualStart/End datetimes on Task subject
+- WorkUnit: Exported as omc:WorkUnit entities with proper identifier handling (blank nodes when no ID)
+- WorkUnit participant relationship uses omcT: tentative namespace (omcT:aWorkUnitHas.Participant)
+- Asset relationships: omc:uses for input assets, omc:hasProduct for output assets on Task subject
+- Task relationships: omc:informs and omc:isInformedBy on Task subject
+- Context: Typed as omc:MediaCreationContextComponent, preserves all nested fields (locations, participants, metadata)
+- combinedFormToUri helper respects all identifier scopes (me-nexus: → me:, others → urn:scope:value)
+- Added omcT: namespace prefix for tentative OMC v2.8 properties
+- Serializer files: client/src/lib/export/rdf/serializer.ts, client/src/lib/export/rdf/prefixes.ts
+
 ### ME-NEXUS Hierarchical Task Classification (December 12, 2025)
 - Implemented hierarchical classification system for Tasks using ME-NEXUS taxonomy
 - L1 category maps to TaskSC structuralType (e.g., "Animation", "Production Services", "Compositing")
