@@ -135,40 +135,79 @@ export default function Intro() {
               <div className="prose prose-lg max-w-none text-muted-foreground mb-8 text-center">
                 <p className="text-lg mb-4">
                   Create standardized metadata that speaks the language of modern media production! 
-                  The <strong className="text-[#232073] dark:text-primary">OMC Builder</strong> helps you craft OMC-compliant JSON documents 
+                  The <strong className="text-[#232073] dark:text-primary">OMC Builder</strong> helps you craft OMC-compliant documents 
                   with an intuitive form-based interface and real-time validation.
                 </p>
                 <p className="text-lg">
-                  Define creative works, catalog assets, or map production workflows—all with 
+                  Import existing projects, visualize entity relationships, and export in both JSON and RDF/TTL formats—all with 
                   industry-standard interoperability from script to screen.
                 </p>
               </div>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <AssetIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Schema Validated</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Real-time validation against OMC-JSON Schema v2.8
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Schema Validated</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Real-time validation against OMC v2.8
                   </p>
                 </div>
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <ContextIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Multiple Entity Types</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Support for Assets, Participants, Tasks, Locations, and more
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">All Entity Types</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Tasks, Assets, Participants, Locations & more
                   </p>
                 </div>
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <ArrowRight className="h-6 w-6 text-[#232073] dark:text-primary" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Easy Export</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Export valid JSON ready for integration with production systems
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Dual Export</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Export as JSON or RDF/TTL formats
+                  </p>
+                </div>
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-[#232073] dark:text-primary">
+                      <circle cx="12" cy="12" r="3"/>
+                      <circle cx="19" cy="5" r="2"/>
+                      <circle cx="5" cy="19" r="2"/>
+                      <circle cx="5" cy="5" r="2"/>
+                      <line x1="12" y1="9" x2="12" y2="5"/>
+                      <line x1="9.5" y1="13.5" x2="6" y2="17"/>
+                      <line x1="14.5" y1="10.5" x2="17.5" y2="6.5"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Graph View</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Visualize entity relationships
+                  </p>
+                </div>
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-[#232073] dark:text-primary">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Project Import</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Import JSON or TTL projects
+                  </p>
+                </div>
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <TaskIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Task Classification</h3>
+                  <p className="text-xs text-muted-foreground">
+                    ME-NEXUS service taxonomy
                   </p>
                 </div>
               </div>
@@ -215,48 +254,63 @@ export default function Intro() {
         <section className="py-16 bg-white dark:bg-card">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-12 text-center">Core Building Blocks</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-6">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-creativeworks">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreativeWorkIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Creative Works</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Films, shows, and productions with Wikidata integration
+                  </p>
+                </CardContent>
+              </Card>
               <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-participants">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#CEECF2] dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <ParticipantIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Participants</h3>
                   <p className="text-sm text-muted-foreground">
-                    People, organizations, departments, and services involved in production
+                    People, organizations, departments with location references
                   </p>
                 </CardContent>
               </Card>
               <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-tasks">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#CEECF2] dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <TaskIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#3AA608]/10 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TaskIcon className="h-8 w-8 text-[#3AA608] dark:text-green-400" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Tasks</h3>
                   <p className="text-sm text-muted-foreground">
-                    Work activities and processes that move production forward
+                    ME-NEXUS classified work activities with scheduling
                   </p>
                 </CardContent>
               </Card>
               <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-assets">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#CEECF2] dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AssetIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-[#D97218]/10 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AssetIcon className="h-8 w-8 text-[#D97218] dark:text-orange-400" />
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Assets</h3>
                   <p className="text-sm text-muted-foreground">
-                    Digital and physical media files, documents, and materials
+                    Digital and physical media with file import wizard
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-contexts">
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-locations">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#CEECF2] dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ContextIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
+                  <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg viewBox="0 0 100 100" className="h-8 w-8 text-red-500 dark:text-red-400" fill="currentColor">
+                      <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z"/>
+                    </svg>
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Contexts</h3>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Locations</h3>
                   <p className="text-sm text-muted-foreground">
-                    Narrative, production, and workflow contexts that group related entities
+                    Physical places with address autocomplete
                   </p>
                 </CardContent>
               </Card>
@@ -267,7 +321,18 @@ export default function Intro() {
                   </div>
                   <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Infrastructure</h3>
                   <p className="text-sm text-muted-foreground">
-                    Technical resources and systems that support production workflows
+                    Software, hardware, and technical resources
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-contexts">
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 bg-[#F2C53D]/20 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ContextIcon className="h-8 w-8 text-[#F2C53D] dark:text-yellow-400" />
+                  </div>
+                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Contexts</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Auto-managed workflow groupings
                   </p>
                 </CardContent>
               </Card>
@@ -285,31 +350,39 @@ export default function Intro() {
               <Link href="/builder?create=CreativeWork">
                 <Button size="lg" variant="secondary" data-testid="button-create-creativework" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <CreativeWorkIcon className="h-5 w-5" />
-                  Create Creative Work
+                  Creative Work
                 </Button>
               </Link>
               <Link href="/builder?create=Task">
                 <Button size="lg" variant="secondary" data-testid="button-create-task" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <TaskIcon className="h-5 w-5" />
-                  Create Task
+                  Task
                 </Button>
               </Link>
               <Link href="/builder?create=Participant">
                 <Button size="lg" variant="secondary" data-testid="button-create-participant" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <ParticipantIcon className="h-5 w-5" />
-                  Create Participant
+                  Participant
                 </Button>
               </Link>
               <Link href="/builder?create=Asset">
                 <Button size="lg" variant="secondary" data-testid="button-create-asset" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <AssetIcon className="h-5 w-5" />
-                  Create Asset
+                  Asset
+                </Button>
+              </Link>
+              <Link href="/builder?create=Location">
+                <Button size="lg" variant="secondary" data-testid="button-create-location" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
+                  <svg viewBox="0 0 100 100" className="h-5 w-5" fill="currentColor">
+                    <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z"/>
+                  </svg>
+                  Location
                 </Button>
               </Link>
               <Link href="/builder?create=Infrastructure">
                 <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
                   <InfrastructureIcon className="h-5 w-5" />
-                  Create Infrastructure
+                  Infrastructure
                 </Button>
               </Link>
             </div>
