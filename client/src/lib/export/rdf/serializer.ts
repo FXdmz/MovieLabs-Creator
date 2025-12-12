@@ -325,14 +325,7 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
       }
     }
     
-    // Only output hasInputAssets as direct triples if no structured uses.Asset exists
-    // This avoids conflict between legacy flat format and structured nested format
-    const hasStructuredUses = context.uses && typeof context.uses === 'object' && context.uses.Asset;
-    if (!hasStructuredUses && context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
-      context.hasInputAssets.forEach((assetRef: string) => {
-        triples.push({ subject, predicate: "omc:uses", object: combinedFormToUri(assetRef) });
-      });
-    }
+    // Note: Assets are now always output via the nested uses structure on Context, never as direct triples on Task
     
     if (context.hasOutputAssets && Array.isArray(context.hasOutputAssets)) {
       context.hasOutputAssets.forEach((assetRef: string) => {
@@ -393,27 +386,30 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
     }
     
     // Export uses nested object (with full structure)
-    if (context.uses && typeof context.uses === 'object') {
+    // Use hasInputAssets as fallback/primary source for Assets (form uses hasInputAssets, import may have uses.Asset)
+    const usesInfraRaw = context.uses?.Infrastructure;
+    const usesAssetsRaw = context.uses?.Asset || context.hasInputAssets;
+    
+    // Normalize to arrays and filter out empty values
+    const infraRefs = usesInfraRaw 
+      ? (Array.isArray(usesInfraRaw) ? usesInfraRaw : [usesInfraRaw]).filter(Boolean)
+      : [];
+    const assetRefs = usesAssetsRaw 
+      ? (Array.isArray(usesAssetsRaw) ? usesAssetsRaw : [usesAssetsRaw]).filter(Boolean)
+      : [];
+    
+    // Only create uses node if there's actual content
+    if (infraRefs.length > 0 || assetRefs.length > 0) {
       const usesNode = generateBlankNodeId("uses");
       triples.push({ subject: ctxSubject, predicate: "omc:uses", object: usesNode });
       
-      if (context.uses.Infrastructure) {
-        const infraRefs = Array.isArray(context.uses.Infrastructure) 
-          ? context.uses.Infrastructure 
-          : [context.uses.Infrastructure];
-        infraRefs.forEach((infraRef: string) => {
-          triples.push({ subject: usesNode, predicate: "omc:Infrastructure", object: combinedFormToUri(infraRef) });
-        });
-      }
+      infraRefs.forEach((infraRef: string) => {
+        triples.push({ subject: usesNode, predicate: "omc:Infrastructure", object: combinedFormToUri(infraRef) });
+      });
       
-      if (context.uses.Asset) {
-        const assetRefs = Array.isArray(context.uses.Asset) 
-          ? context.uses.Asset 
-          : [context.uses.Asset];
-        assetRefs.forEach((assetRef: string) => {
-          triples.push({ subject: usesNode, predicate: "omc:Asset", object: combinedFormToUri(assetRef) });
-        });
-      }
+      assetRefs.forEach((assetRef: string) => {
+        triples.push({ subject: usesNode, predicate: "omc:Asset", object: combinedFormToUri(assetRef) });
+      });
     }
   });
 
