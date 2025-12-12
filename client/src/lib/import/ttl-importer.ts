@@ -2,6 +2,55 @@ import * as N3 from 'n3';
 import { EntityType, ENTITY_TYPES } from '../constants';
 import { ImportResult, ImportedEntity, MultiImportResult } from './json-importer';
 
+function transformTaskEntity(parsed: any): any {
+  const transformed = { ...parsed };
+
+  if (Array.isArray(parsed.customData)) {
+    for (const cd of parsed.customData) {
+      if (cd.namespace === 'work' && cd.value?.workUnit) {
+        transformed.workUnit = cd.value.workUnit;
+      }
+      if (cd.namespace === 'workflow' && cd.value) {
+        if (cd.value.state) {
+          transformed.state = cd.value.state;
+        }
+        if (cd.value.stateDetails) {
+          transformed.stateDetails = cd.value.stateDetails;
+        }
+      }
+    }
+  }
+
+  if (Array.isArray(parsed.Context)) {
+    transformed.Context = parsed.Context.map((ctx: any) => {
+      const transformedCtx = { ...ctx };
+      
+      if (Array.isArray(ctx.customData)) {
+        for (const cd of ctx.customData) {
+          if (cd.namespace === 'scheduling' && cd.value?.scheduling) {
+            transformedCtx.scheduling = cd.value.scheduling;
+          }
+        }
+      }
+      
+      if (ctx.uses?.Asset && Array.isArray(ctx.uses.Asset)) {
+        transformedCtx.hasInputAssets = ctx.uses.Asset;
+      }
+      
+      return transformedCtx;
+    });
+  }
+
+  return transformed;
+}
+
+function transformEntity(parsed: any): any {
+  if (parsed.entityType === 'Task') {
+    return transformTaskEntity(parsed);
+  }
+  return parsed;
+}
+
 const RDF_PREFIXES: Record<string, string> = {
   omc: "https://movielabs.com/omc/rdf/schema/v2.8#",
   omcT: "https://movielabs.com/omc/rdf/schema/v2.8Tentative#",
@@ -471,7 +520,7 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         return obj;
       }
       
-      const content = buildObject(rootSubjectTerm);
+      let content = buildObject(rootSubjectTerm);
       content.entityType = entityType;
       content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
       
@@ -482,6 +531,8 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           combinedForm: `me-nexus:${entityId}`
         }];
       }
+      
+      content = transformEntity(content);
       
       const name = content.name || content.characterName || 
         (content.creativeWorkTitle?.[0]?.titleName) || 
