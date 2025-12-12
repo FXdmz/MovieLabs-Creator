@@ -342,6 +342,12 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
       });
     }
     
+    if (context.uses?.Infrastructure && Array.isArray(context.uses.Infrastructure)) {
+      context.uses.Infrastructure.forEach((infraRef: string) => {
+        triples.push({ subject, predicate: "omc:uses", object: combinedFormToUri(infraRef) });
+      });
+    }
+    
     const ctxId = context.identifier?.[0]?.identifierValue || `context_${blankNodeCounter++}`;
     const ctxScope = context.identifier?.[0]?.identifierScope || "me-nexus";
     const ctxSubject = ctxScope === "me-nexus" ? `me:${ctxId}` : `<urn:${ctxScope}:${ctxId}>`;

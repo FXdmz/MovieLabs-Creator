@@ -29,7 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search, FileBox, ListTodo, Film } from "lucide-react";
+import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search, FileBox, ListTodo, Film, Server } from "lucide-react";
 import { TaskClassifier } from "./task-classifier";
 import { useOntologyStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
@@ -93,7 +93,7 @@ function EntityLookupList({
   currentEntityId
 }: {
   label: string;
-  entityType: "Asset" | "Task";
+  entityType: "Asset" | "Task" | "Infrastructure";
   icon: React.ElementType;
   items: string[];
   onAdd: (combinedForm: string) => void;
@@ -320,14 +320,56 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
     }
   };
 
+  const addToUsesInfrastructure = (infraRef: string) => {
+    const existingUses = value.Context?.[0]?.uses || {};
+    const existingInfra = existingUses.Infrastructure || [];
+    if (!existingInfra.includes(infraRef)) {
+      updateContext({
+        uses: {
+          ...existingUses,
+          Infrastructure: [...existingInfra, infraRef]
+        }
+      });
+    }
+  };
+
+  const removeFromUsesInfrastructure = (index: number) => {
+    const existingUses = value.Context?.[0]?.uses || {};
+    const existingInfra = existingUses.Infrastructure || [];
+    const newInfra = existingInfra.filter((_: any, i: number) => i !== index);
+    
+    if (newInfra.length === 0) {
+      const { Infrastructure, ...restUses } = existingUses;
+      if (Object.keys(restUses).length === 0) {
+        const existingContext = value.Context?.[0] || {};
+        const { uses, ...restContext } = existingContext;
+        onChange({
+          ...value,
+          Context: [restContext]
+        });
+      } else {
+        updateContext({ uses: restUses });
+      }
+    } else {
+      updateContext({
+        uses: {
+          ...existingUses,
+          Infrastructure: newInfra
+        }
+      });
+    }
+  };
+
   const scheduling = value.Context?.[0]?.scheduling || {};
   const inputAssets = value.Context?.[0]?.hasInputAssets || [];
   const outputAssets = value.Context?.[0]?.hasOutputAssets || [];
   const informs = value.Context?.[0]?.informs || [];
   const isInformedBy = value.Context?.[0]?.isInformedBy || [];
+  const usesInfrastructure = value.Context?.[0]?.uses?.Infrastructure || [];
 
   const assetCount = inputAssets.length + outputAssets.length;
   const relationCount = informs.length + isInformedBy.length;
+  const infraCount = usesInfrastructure.length;
 
   return (
     <div className="space-y-6">
@@ -725,8 +767,8 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
           isOpen={assetsOpen}
           onToggle={() => setAssetsOpen(!assetsOpen)}
           badge={
-            assetCount + relationCount > 0
-              ? `${assetCount} asset${assetCount !== 1 ? 's' : ''}, ${relationCount} link${relationCount !== 1 ? 's' : ''}`
+            assetCount + relationCount + infraCount > 0
+              ? `${assetCount} asset${assetCount !== 1 ? 's' : ''}, ${relationCount} link${relationCount !== 1 ? 's' : ''}${infraCount > 0 ? `, ${infraCount} infra` : ''}`
               : undefined
           }
         />
@@ -752,6 +794,19 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
             entities={entities}
             testId="output-assets"
           />
+
+          <div className="border-t pt-4">
+            <EntityLookupList
+              label="Infrastructure (systems/services this task uses)"
+              entityType="Infrastructure"
+              icon={Server}
+              items={usesInfrastructure}
+              onAdd={addToUsesInfrastructure}
+              onRemove={removeFromUsesInfrastructure}
+              entities={entities}
+              testId="uses-infrastructure"
+            />
+          </div>
           
           <div className="border-t pt-4">
             <EntityLookupList
