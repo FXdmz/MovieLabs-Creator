@@ -1,0 +1,45 @@
+@prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix me: <https://me-nexus.com/id/> .
+
+me:97eeead8-264b-454d-94cc-7845a680bad1
+    rdf:type omc:Location ;
+    rdfs:label "Chris" ;
+    omc:hasIdentifier me:97eeead8-264b-454d-94cc-7845a680bad1 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "97eeead8-264b-454d-94cc-7845a680bad1" ;
+    omc:hasAddress _:address_1 ;
+    omc:hasCoords _:coordinates_2 .
+
+_:address_1
+    rdf:type omc:Address ;
+    omc:hasStreetNumberAndName "2231 Rue Quesnel" ;
+    omc:hasCity "Montreal" ;
+    omc:hasPostalCode "H3J 1G3" ;
+    omc:hasCountry "CA" .
+
+_:coordinates_2
+    rdf:type omc:LatLon ;
+    omc:hasLatitude "45.4873433"^^xsd:decimal ;
+    omc:hasLongitude "-73.5754635"^^xsd:decimal .
+
+me:a679b191-af22-4de9-9411-b1ca966670f9
+    rdf:type omc:CreativeWork ;
+    rdfs:label "Avatar" ;
+    omc:hasIdentifier me:a679b191-af22-4de9-9411-b1ca966670f9 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "a679b191-af22-4de9-9411-b1ca966670f9" ;
+    omc:hasTitle _:creativeWorkTitle0_3 ;
+    skos:definition "2009 film directed by James Cameron" ;
+    omc:creativeWorkType "creativeWork" ;
+    omc:creativeWorkCategory "movie" ;
+    omc:approximateLength "PT2H42M" .
+
+_:creativeWorkTitle0_3
+    omc:hasTitleName "Avatar" ;
+    omc:hasTitleType "release" ;
+    omc:titleLanguage "en" .

@@ -47,6 +47,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -533,15 +535,16 @@ export default function Dashboard() {
     }
   };
 
-  const handleExportJson = () => {
-    const json = exportJson();
-    const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
+  const handleExportCurrentJson = () => {
+    if (!selectedEntity) {
+      toast({ title: "No entity selected", variant: "destructive" });
+      return;
+    }
+    const blob = new Blob([JSON.stringify(selectedEntity.content, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const fileName = selectedEntity 
-      ? `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.json`
-      : "omc-ontology.json";
+    const fileName = `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.json`;
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
@@ -551,15 +554,43 @@ export default function Dashboard() {
     });
   };
 
-  const handleExportTtl = () => {
-    const { downloadAs } = useOntologyStore.getState();
-    const fileName = selectedEntity 
-      ? `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.ttl`
-      : "omc-ontology.ttl";
-    downloadAs("ttl", fileName);
+  const handleExportCurrentTtl = () => {
+    const { downloadCurrentAs } = useOntologyStore.getState();
+    if (!selectedEntity) {
+      toast({ title: "No entity selected", variant: "destructive" });
+      return;
+    }
+    const fileName = `${selectedEntity.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.ttl`;
+    downloadCurrentAs("ttl", fileName);
     toast({
       title: "Exported as TTL (RDF)",
       description: `Downloaded ${fileName}`
+    });
+  };
+
+  const handleExportAllJson = () => {
+    const json = exportJson();
+    const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const fileName = "omc-ontology.json";
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({
+      title: "Exported as JSON",
+      description: `Downloaded ${fileName} (${entities.length} entities)`
+    });
+  };
+
+  const handleExportAllTtl = () => {
+    const { downloadAs } = useOntologyStore.getState();
+    const fileName = "omc-ontology.ttl";
+    downloadAs("ttl", fileName);
+    toast({
+      title: "Exported as TTL (RDF)",
+      description: `Downloaded ${fileName} (${entities.length} entities)`
     });
   };
 
@@ -741,11 +772,20 @@ export default function Dashboard() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleExportJson} className="gap-2">
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">Current Entity</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={handleExportCurrentJson} className="gap-2" disabled={!selectedEntity}>
                       <FileJson className="h-4 w-4" /> Export as JSON
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleExportTtl} className="gap-2">
+                    <DropdownMenuItem onClick={handleExportCurrentTtl} className="gap-2" disabled={!selectedEntity}>
                       <FileText className="h-4 w-4" /> Export as TTL (RDF)
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">All Entities ({entities.length})</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={handleExportAllJson} className="gap-2" disabled={entities.length === 0}>
+                      <FileJson className="h-4 w-4" /> Export All as JSON
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportAllTtl} className="gap-2" disabled={entities.length === 0}>
+                      <FileText className="h-4 w-4" /> Export All as TTL (RDF)
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -21,6 +21,8 @@ interface OntologyStore {
   exportJson: () => any;
   exportAs: (format: ExportFormat) => string;
   downloadAs: (format: ExportFormat, filename?: string) => void;
+  downloadCurrentAs: (format: ExportFormat, filename?: string) => boolean;
+  getSelectedEntity: () => Entity | null;
 }
 
 export const useOntologyStore = create<OntologyStore>((set, get) => ({
@@ -175,5 +177,16 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   downloadAs: (format: ExportFormat, filename?: string) => {
     const { entities } = get();
     downloadExport(entities, { format, pretty: true }, filename);
+  },
+  downloadCurrentAs: (format: ExportFormat, filename?: string) => {
+    const { entities, selectedEntityId } = get();
+    const selectedEntity = entities.find(e => e.id === selectedEntityId);
+    if (!selectedEntity) return false;
+    downloadExport([selectedEntity], { format, pretty: true }, filename);
+    return true;
+  },
+  getSelectedEntity: () => {
+    const { entities, selectedEntityId } = get();
+    return entities.find(e => e.id === selectedEntityId) || null;
   }
 }));
