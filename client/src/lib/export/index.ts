@@ -22,13 +22,18 @@ function transformTaskForExport(content: any): any {
   const omcClass = service ? getOmcFunctionalClass(service) : { identifier: "omc:Task", name: "Task" };
 
   const { meNexusService, ...rest } = content;
+  
+  const existingFC = rest.taskFunctionalCharacteristics || {};
+  const existingCustomData = existingFC.customData || {};
 
   return {
     ...rest,
     taskFunctionalCharacteristics: {
-      identifier: omcClass.identifier,
-      name: omcClass.name,
+      ...existingFC,
+      identifier: existingFC.identifier || omcClass.identifier,
+      name: existingFC.name || omcClass.name,
       customData: {
+        ...existingCustomData,
         meNexusService: {
           serviceId: serviceData.serviceId,
           serviceName: serviceData.serviceName,
