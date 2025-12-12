@@ -207,6 +207,7 @@ export default function Dashboard() {
   const [showAssetWizard, setShowAssetWizard] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showVisualizeDialog, setShowVisualizeDialog] = useState(false);
+  const [showVisualizeAllDialog, setShowVisualizeAllDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [showExportNameDialog, setShowExportNameDialog] = useState(false);
   const [exportFileName, setExportFileName] = useState("omc-ontology");
@@ -699,6 +700,16 @@ export default function Dashboard() {
         </ScrollArea>
 
         <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10 space-y-2">
+          {entities.length > 0 && (
+            <Button 
+              variant="outline" 
+              className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
+              onClick={() => setShowVisualizeAllDialog(true)}
+              data-testid="button-visualize-all"
+            >
+              <Network className="h-4 w-4" /> Visualize All
+            </Button>
+          )}
           <Link href="/">
             <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
               <Home className="h-4 w-4" /> Home
@@ -1073,6 +1084,13 @@ export default function Dashboard() {
         open={showVisualizeDialog} 
         onOpenChange={setShowVisualizeDialog} 
         entity={selectedEntity ?? null} 
+      />
+
+      <VisualizeEntityDialog
+        open={showVisualizeAllDialog}
+        onOpenChange={setShowVisualizeAllDialog}
+        entities={entities}
+        title="Project Entity Graph"
       />
 
       <ImportEntityDialog
