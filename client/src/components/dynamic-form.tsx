@@ -581,6 +581,18 @@ export function DynamicForm({ schema, value, onChange }: { schema: any, value: a
       return rootSchema;
     }
 
+    // For Task, hide fields that are handled by TaskHeader/TaskForm
+    if (value.entityType === 'Task') {
+      const hiddenTaskFields = ['entityType', 'TaskSC', 'taskFC', 'Context'];
+      const filteredProperties: any = {};
+      Object.entries(rootSchema.properties).forEach(([key, propSchema]) => {
+        if (!hiddenTaskFields.includes(key)) {
+          filteredProperties[key] = propSchema;
+        }
+      });
+      return { ...rootSchema, properties: filteredProperties };
+    }
+
     // For CreativeWork, filter fields based on creativeWorkType
     if (value.entityType === 'CreativeWork') {
       const creativeWorkType = value.creativeWorkType || 'creativeWork';
