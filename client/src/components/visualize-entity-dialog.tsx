@@ -438,14 +438,15 @@ export function VisualizeEntityDialog({
         </div>
 
         <div
-          className="flex-1 min-h-[500px] rounded-lg border bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800"
+          className="rounded-lg border bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800"
+          style={{ height: "500px", width: "100%" }}
           data-testid="graph-container"
         >
           <CytoscapeComponent
             elements={elements}
             stylesheet={stylesheet}
-            layout={{ name: layoutName } as any}
-            style={{ width: "100%", height: "100%" }}
+            layout={{ name: "preset" } as any}
+            style={{ width: "100%", height: "500px" }}
             cy={handleCy}
             boxSelectionEnabled={true}
             autounselectify={false}
