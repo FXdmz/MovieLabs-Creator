@@ -418,6 +418,7 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
     
     try {
       const quads = parser.parse(ttlText);
+      console.log('[TTL Import] Parsed quads count:', quads.length);
       store.addQuads(quads);
     } catch (e: any) {
       resolve({ success: false, entities: [], error: `Invalid TTL format: ${e.message}` });
@@ -456,6 +457,8 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         entityRoots.push({ term, entityType, entityId });
       }
     });
+    
+    console.log('[TTL Import] Found entity roots:', entityRoots.map(r => ({ type: r.entityType, id: r.entityId })));
     
     if (entityRoots.length === 0) {
       resolve({ success: false, entities: [], error: 'No valid OMC entities found in TTL file' });
@@ -599,7 +602,15 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         }];
       }
       
+      if (entityType === 'Task') {
+        console.log('[TTL Import] Task BEFORE transform:', JSON.stringify(content, null, 2));
+      }
+      
       content = transformEntity(content);
+      
+      if (entityType === 'Task') {
+        console.log('[TTL Import] Task AFTER transform:', JSON.stringify(content, null, 2));
+      }
       
       const name = content.name || content.characterName || 
         (content.creativeWorkTitle?.[0]?.titleName) || 
