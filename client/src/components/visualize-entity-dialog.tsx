@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { Entity } from "@/lib/store";
-import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw } from "lucide-react";
+import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,8 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import CytoscapeComponent from "react-cytoscapejs";
 import type { Core, ElementDefinition } from "cytoscape";
+
+interface NodeData {
+  id: string;
+  label: string;
+  type: string;
+  isRoot?: boolean;
+  rawData?: any;
+}
 
 interface VisualizeEntityDialogProps {
   open: boolean;
@@ -70,6 +79,7 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
       label: entity.name || entity.type,
       type: entity.type,
       isRoot: true,
+      rawData: content,
     },
   });
 
@@ -134,6 +144,7 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
                   id: itemId,
                   label: itemLabel,
                   type: itemType,
+                  rawData: item,
                 },
               });
               elements.push({
@@ -163,6 +174,7 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
             id: nestedId,
             label: nestedLabel,
             type: nestedType,
+            rawData: value,
           },
         });
         elements.push({
@@ -197,7 +209,9 @@ export function VisualizeEntityDialog({
   entity,
 }: VisualizeEntityDialogProps) {
   const cyRef = useRef<Core | null>(null);
-  const [layoutName, setLayoutName] = useState("cose");
+  const [layoutName, setLayoutName] = useState("circle");
+  const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+  const [showLegend, setShowLegend] = useState(true);
 
   const elements = useMemo(() => {
     if (!entity) return [];
@@ -291,6 +305,29 @@ export function VisualizeEntityDialog({
   const handleCy = useCallback((cy: Core) => {
     cyRef.current = cy;
     setCyReady(true);
+    
+    // Remove any existing listeners first to prevent duplicates
+    cy.removeAllListeners();
+    
+    // Add click handler for node selection
+    cy.on('tap', 'node', (evt) => {
+      const node = evt.target;
+      const nodeData = node.data();
+      setSelectedNode({
+        id: nodeData.id,
+        label: nodeData.label,
+        type: nodeData.type,
+        isRoot: nodeData.isRoot,
+        rawData: nodeData.rawData,
+      });
+    });
+    
+    // Clear selection when clicking background
+    cy.on('tap', (evt) => {
+      if (evt.target === cy) {
+        setSelectedNode(null);
+      }
+    });
   }, []);
 
   const runLayoutWithName = useCallback((name: string) => {
@@ -335,10 +372,11 @@ export function VisualizeEntityDialog({
     }
   }, [layoutName, open, cyReady, runLayoutWithName]);
 
-  // Reset cyReady when dialog closes
+  // Reset state when dialog closes
   useEffect(() => {
     if (!open) {
       setCyReady(false);
+      setSelectedNode(null);
     }
   }, [open]);
 
@@ -411,6 +449,16 @@ export function VisualizeEntityDialog({
 
           <div className="flex items-center gap-1">
             <Button
+              variant={showLegend ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowLegend(!showLegend)}
+              className="gap-1"
+              data-testid="button-toggle-legend"
+            >
+              <Info className="h-4 w-4" />
+              Legend
+            </Button>
+            <Button
               variant="outline"
               size="icon"
               onClick={handleZoomIn}
@@ -437,22 +485,143 @@ export function VisualizeEntityDialog({
           </div>
         </div>
 
-        <div
-          className="rounded-lg border bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800"
-          style={{ height: "500px", width: "100%" }}
-          data-testid="graph-container"
-        >
-          <CytoscapeComponent
-            elements={elements}
-            stylesheet={stylesheet}
-            layout={{ name: "preset" } as any}
-            style={{ width: "100%", height: "500px" }}
-            cy={handleCy}
-            boxSelectionEnabled={true}
-            autounselectify={false}
-            userZoomingEnabled={true}
-            userPanningEnabled={true}
-          />
+        <div className="flex gap-3" style={{ height: "500px" }}>
+          {/* Graph Container */}
+          <div
+            className="flex-1 rounded-lg border bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 relative"
+            data-testid="graph-container"
+          >
+            <CytoscapeComponent
+              elements={elements}
+              stylesheet={stylesheet}
+              layout={{ name: "preset" } as any}
+              style={{ width: "100%", height: "100%" }}
+              cy={handleCy}
+              boxSelectionEnabled={true}
+              autounselectify={false}
+              userZoomingEnabled={true}
+              userPanningEnabled={true}
+            />
+            
+            {/* Legend Overlay */}
+            {showLegend && (
+              <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-slate-900/95 border rounded-lg p-3 shadow-lg max-w-[200px]" data-testid="legend-panel">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Legend</span>
+                  <button 
+                    onClick={() => setShowLegend(false)}
+                    className="text-muted-foreground hover:text-foreground"
+                    data-testid="button-close-legend"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Task }} />
+                    <span>Task</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Asset }} />
+                    <span>Asset</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Participant }} />
+                    <span>Participant</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Context }} />
+                    <span>Context</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.Infrastructure }} />
+                    <span>Infrastructure</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ENTITY_TYPE_COLORS.CreativeWork }} />
+                    <span>CreativeWork</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rotate-45" style={{ backgroundColor: "#BDC3C7" }} />
+                    <span>Array/Collection</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Node Details Panel */}
+          {selectedNode && (
+            <div className="w-72 border rounded-lg bg-white dark:bg-slate-900 overflow-hidden flex flex-col" data-testid="node-details-panel">
+              <div className="flex items-center justify-between p-3 border-b bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-4 h-4 rounded-full border-2 border-white shadow-sm" 
+                    style={{ backgroundColor: getNodeColor(selectedNode.type) }}
+                  />
+                  <span className="font-medium text-sm truncate">{selectedNode.label}</span>
+                </div>
+                <button 
+                  onClick={() => setSelectedNode(null)}
+                  className="text-muted-foreground hover:text-foreground"
+                  data-testid="button-close-details"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <ScrollArea className="flex-1 p-3">
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="text-xs text-muted-foreground block mb-1">Type</span>
+                    <span className="font-medium">{selectedNode.type}</span>
+                    {selectedNode.isRoot && (
+                      <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">Root</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground block mb-1">ID</span>
+                    <span className="font-mono text-xs break-all">{selectedNode.id}</span>
+                  </div>
+                  {selectedNode.rawData && (
+                    <div>
+                      <span className="text-xs text-muted-foreground block mb-1">Attributes</span>
+                      <div className="bg-muted/30 rounded p-2 text-xs space-y-1">
+                        {Object.entries(selectedNode.rawData)
+                          .filter(([key, value]) => 
+                            key !== 'entityType' && 
+                            key !== 'schemaVersion' && 
+                            value !== null && 
+                            value !== undefined &&
+                            value !== '' &&
+                            typeof value !== 'object'
+                          )
+                          .slice(0, 10)
+                          .map(([key, value]) => (
+                            <div key={key} className="flex justify-between gap-2">
+                              <span className="text-muted-foreground truncate">{key}:</span>
+                              <span className="font-mono text-right truncate max-w-[120px]">
+                                {String(value).substring(0, 30)}
+                                {String(value).length > 30 && '...'}
+                              </span>
+                            </div>
+                          ))
+                        }
+                        {Object.entries(selectedNode.rawData)
+                          .filter(([key, value]) => typeof value === 'object' && value !== null)
+                          .slice(0, 5)
+                          .map(([key]) => (
+                            <div key={key} className="text-muted-foreground italic">
+                              {key}: [nested object]
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
