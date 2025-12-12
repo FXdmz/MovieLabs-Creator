@@ -29,7 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search, FileBox, ListTodo } from "lucide-react";
+import { ChevronRight, ChevronDown, Calendar, Users, Package, Settings, Info, X, Plus, Check, ChevronsUpDown, Search, FileBox, ListTodo, Film } from "lucide-react";
 import { TaskClassifier } from "./task-classifier";
 import { useOntologyStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
@@ -211,16 +211,31 @@ function EntityLookupList({
 
 export function TaskForm({ value, onChange }: TaskFormProps) {
   const [assignmentOpen, setAssignmentOpen] = useState(false);
+  const [creativeWorkOpen, setCreativeWorkOpen] = useState(false);
   const [schedulingOpen, setSchedulingOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [participantSearchOpen, setParticipantSearchOpen] = useState(false);
+  const [creativeWorkSearchOpen, setCreativeWorkSearchOpen] = useState(false);
 
   const entities = useOntologyStore((state) => state.entities);
   
   const participants = useMemo(() => {
     return entities.filter((e) => e.type === "Participant");
   }, [entities]);
+
+  const creativeWorks = useMemo(() => {
+    return entities.filter((e) => e.type === "CreativeWork");
+  }, [entities]);
+
+  const selectedCreativeWork = useMemo(() => {
+    const cwRefs = value?.Context?.[0]?.contributesTo?.CreativeWork;
+    if (!cwRefs || cwRefs.length === 0) return null;
+    const cwRef = cwRefs[0];
+    return creativeWorks.find(
+      (cw) => cw.content?.identifier?.[0]?.combinedForm === cwRef
+    );
+  }, [creativeWorks, value?.Context?.[0]?.contributesTo?.CreativeWork]);
 
   const selectedParticipant = useMemo(() => {
     const participantRef = value?.workUnit?.participantRef;
@@ -286,6 +301,23 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
     const existingArray = value.Context?.[0]?.[arrayName] || [];
     const newArray = existingArray.filter((_: any, i: number) => i !== index);
     updateContext({ [arrayName]: newArray.length ? newArray : undefined });
+  };
+
+  const updateContributesTo = (creativeWorkRef: string | null) => {
+    if (creativeWorkRef) {
+      updateContext({
+        contributesTo: {
+          CreativeWork: [creativeWorkRef]
+        }
+      });
+    } else {
+      const existingContext = value.Context?.[0] || {};
+      const { contributesTo, ...restContext } = existingContext;
+      onChange({
+        ...value,
+        Context: [restContext]
+      });
+    }
   };
 
   const scheduling = value.Context?.[0]?.scheduling || {};
@@ -499,6 +531,102 @@ export function TaskForm({ value, onChange }: TaskFormProps) {
             {!selectedParticipant && participants.length === 0 && (
               <p className="text-xs text-muted-foreground mt-2">
                 No Participant entities exist yet. Create one first to assign to this task.
+              </p>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+
+      <Collapsible open={creativeWorkOpen} onOpenChange={setCreativeWorkOpen}>
+        <SectionHeader
+          title="Creative Work"
+          icon={Film}
+          isOpen={creativeWorkOpen}
+          onToggle={() => setCreativeWorkOpen(!creativeWorkOpen)}
+          badge={selectedCreativeWork ? "Linked" : undefined}
+        />
+        <CollapsibleContent className="pt-4 px-4 pb-4 border border-t-0 rounded-b-lg space-y-4">
+          <div>
+            <Label className="text-sm font-medium mb-2 block">
+              Project / Production
+            </Label>
+            <p className="text-xs text-muted-foreground mb-3">
+              The film or project this task contributes to.
+            </p>
+            <Popover open={creativeWorkSearchOpen} onOpenChange={setCreativeWorkSearchOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={creativeWorkSearchOpen}
+                  className="w-full justify-between"
+                  data-testid="select-creative-work"
+                >
+                  {selectedCreativeWork ? selectedCreativeWork.name : "Select a Creative Work..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[400px] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Search creative works..." />
+                  <CommandList>
+                    <CommandEmpty>No creative works found.</CommandEmpty>
+                    <CommandGroup>
+                      {creativeWorks.map((cw) => (
+                        <CommandItem
+                          key={cw.id}
+                          value={cw.name}
+                          onSelect={() => {
+                            const combinedForm = cw.content?.identifier?.[0]?.combinedForm;
+                            if (combinedForm) {
+                              updateContributesTo(combinedForm);
+                            }
+                            setCreativeWorkSearchOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value?.Context?.[0]?.contributesTo?.CreativeWork?.[0] === cw.content?.identifier?.[0]?.combinedForm
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{cw.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {cw.content?.creativeWorkCategory || 'CreativeWork'} • {cw.content?.identifier?.[0]?.combinedForm?.slice(0, 30)}...
+                            </span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {selectedCreativeWork && (
+              <div className="mt-2 flex items-center justify-between p-2 bg-muted/50 rounded-md">
+                <div className="flex items-center gap-2">
+                  <Film className="h-4 w-4 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium">{selectedCreativeWork.name}</p>
+                    <p className="text-xs text-muted-foreground">{value?.Context?.[0]?.contributesTo?.CreativeWork?.[0]}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => updateContributesTo(null)}
+                  data-testid="clear-creative-work"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            {!selectedCreativeWork && creativeWorks.length === 0 && (
+              <p className="text-xs text-muted-foreground mt-2">
+                No Creative Work entities exist yet. Create one first to link to this task.
               </p>
             )}
           </div>

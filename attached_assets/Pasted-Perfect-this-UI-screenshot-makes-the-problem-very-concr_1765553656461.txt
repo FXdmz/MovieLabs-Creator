@@ -1,0 +1,187 @@
+Perfect, this UI screenshot makes the problem very concrete.
+I’ll answer **only** what you asked: **what do you add to this Task UI so the user can hook a Task to a CreativeWork via a Context**, without breaking the ontology or overcomplicating the UX.
+
+No ontology lecture, just product + wiring.
+
+---
+
+## The key idea (before UI)
+
+**The user should never be asked to “create a Context.”**
+That is an **internal construct**.
+
+From the user’s point of view, they are doing this:
+
+> “This task is for *Avatar: The Way of Water*.”
+
+Your system does this:
+
+> Create / reuse a Context and connect it correctly.
+
+---
+
+## What to add to the Task UI (minimum)
+
+### ✅ Add ONE field to the Task form
+
+### **“Creative Work” (or “Project”)**
+
+* Type: **Single-select**
+* Entity type: `CreativeWork`
+* Label examples:
+
+  * “Creative Work”
+  * “Project”
+  * “Production”
+* Help text (optional):
+
+  > “The film or project this task contributes to.”
+
+That’s it.
+**Do not expose Context in the UI.**
+
+---
+
+## Where it goes in your existing UI
+
+Looking at your layout, the cleanest place is:
+
+### 📍 Right after **Assignment** and before **Scheduling**
+
+Why:
+
+* Assignment = *who*
+* Creative Work = *what*
+* Scheduling = *when*
+
+This matches how producers think.
+
+---
+
+## What happens when the user selects a CreativeWork
+
+### UI action
+
+User selects:
+
+```
+Creative Work: Avatar: The Way of Water
+```
+
+### Backend behavior (automatic)
+
+#### Step 1: Does this Task already have a Context?
+
+* ❌ No → create one
+* ✅ Yes → reuse it
+
+#### Step 2: Populate Context
+
+```json
+{
+  "entityType": "Context",
+  "contextType": "production",
+  "contributesTo": {
+    "CreativeWork": ["me-nexus:avatar-id"]
+  }
+}
+```
+
+#### Step 3: Attach Context to Task
+
+```json
+"Task": {
+  "Context": [ { ... } ]
+}
+```
+
+That’s the hook.
+
+---
+
+## How this fits your existing Task UI fields
+
+Let’s map what you already have:
+
+### Assignment
+
+➡️ stays on **Task** (`workUnit`, participantRef)
+
+### Scheduling
+
+➡️ already goes into **Context**
+(you’re doing this correctly)
+
+### Assets (input / output)
+
+➡️ belong in **Context**
+(again, you’re already doing this)
+
+### Creative Work (new field)
+
+➡️ sets **Context → contributesTo → CreativeWork**
+
+Everything converges on Context **without the user knowing Context exists**.
+
+---
+
+## What the user experiences (important)
+
+From the user’s perspective:
+
+* They never see the word “Context”
+* They never manage Context objects
+* They just:
+
+  * assign people
+  * pick a project
+  * add assets
+  * set dates
+
+From the ontology’s perspective:
+
+* Everything is perfectly valid
+* RDF and JSON stay aligned
+* Your graph becomes correct
+
+---
+
+## Resulting graph (what you want to see)
+
+After adding that one field, your graph becomes:
+
+```
+Task
+  ├─ assignedTo → Participant
+  └─ hasContext → Context
+        ├─ contributesTo → CreativeWork
+        ├─ uses → Asset(s)
+        └─ scheduling → dates
+```
+
+This is **canonical OMC**.
+
+---
+
+## TL;DR (what to implement)
+
+**Add one field to Task UI:**
+
+* **Creative Work (single-select CreativeWork)**
+
+**When set:**
+
+* auto-create or reuse a Context
+* attach Context to Task
+* set `Context.contributesTo.CreativeWork`
+
+**Do NOT:**
+
+* expose Context as a user-facing object
+* require the user to understand ontology concepts
+
+If you want, next I can:
+
+* give you the exact JSON patch when the user selects a CreativeWork
+* help you decide when to reuse vs create a new Context
+* suggest a label that won’t confuse producers (“Project” vs “Creative Work”)
