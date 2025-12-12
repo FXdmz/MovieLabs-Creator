@@ -177,6 +177,7 @@ const rdfClassToEntityType: Record<string, string> = {
   [`${RDF_PREFIXES.omc}NarrativeContext`]: "NarrativeContext",
   [`${RDF_PREFIXES.omc}ProductionContext`]: "ProductionContext",
   [`${RDF_PREFIXES.omc}MediaCreationContext`]: "MediaCreationContext",
+  [`${RDF_PREFIXES.omc}MediaCreationContextComponent`]: "Context",
   [`${RDF_PREFIXES.omc}Address`]: "Address",
   [`${RDF_PREFIXES.omc}LatLon`]: "LatLon"
 };
