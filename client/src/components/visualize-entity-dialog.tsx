@@ -79,7 +79,7 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   </svg>`),
   
   Location: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="50,5 95,95 5,95" fill="#E74C3C" stroke="#5e5e5e" stroke-width="3"/>
+    <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z" fill="#E74C3C" stroke="#5e5e5e" stroke-width="3"/>
   </svg>`),
   
   array: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -724,7 +724,7 @@ export function VisualizeEntityDialog({
                   </div>
                   <div className="flex items-center gap-2">
                     <svg viewBox="0 0 100 100" className="w-4 h-4">
-                      <polygon points="50,5 95,95 5,95" fill={ENTITY_TYPE_COLORS.Location} stroke="#5e5e5e" strokeWidth="3"/>
+                      <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z" fill={ENTITY_TYPE_COLORS.Location} stroke="#5e5e5e" strokeWidth="3"/>
                     </svg>
                     <span>Location</span>
                   </div>
