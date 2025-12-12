@@ -300,7 +300,8 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
     }
   }
 
-  const contexts = content.Context || [];
+  const contextValue = content.Context;
+  const contexts = Array.isArray(contextValue) ? contextValue : (contextValue ? [contextValue] : []);
   contexts.forEach((context: any, index: number) => {
     if (context?.scheduling) {
       const sched = context.scheduling;
