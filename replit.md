@@ -59,15 +59,19 @@
 - Validation strips taskClassification field to prevent schema errors
 - Component located in: client/src/components/task-classifier.tsx
 
-### OMC File Import Feature (December 12, 2025)
-- Import single-entity OMC files in JSON or RDF/TTL format
-- Import dialog with drag-and-drop file upload
-- JSON importer validates entityType, schemaVersion, and extracts entity data
-- TTL importer uses N3 library to parse RDF triples and reconstruct entity structure
+### Multi-Entity Project Import (December 12, 2025)
+- Import entire OMC projects with multiple entities from JSON or RDF/TTL files
+- ImportMultiDialog component with drag-and-drop file upload
+- Preview step shows all entities with type badges and counts before import
+- Supports both single-entity and multi-entity files
+- Duplicate ID handling: updates existing entities rather than creating duplicates
+- JSON importer handles arrays and {entities: [...]} wrapper formats
+- TTL importer extracts all root-level OMC entities and their nested structures
 - Reverse mapping from RDF predicates to JSON keys for complete round-trip support
-- Handles blank nodes and nested structures properly
+- Handles blank nodes and cross-entity references properly
 - Import button in toolbar and on welcome screen
-- Import files located in: client/src/lib/import/
+- Dialog component: client/src/components/import-multi-dialog.tsx
+- Parser files: client/src/lib/import/
 
 ### Asset Import Wizard (December 11, 2025)
 - Multi-step wizard for importing assets from files (Upload → Classify → Group → Review)

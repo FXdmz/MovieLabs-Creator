@@ -36,6 +36,8 @@ import {
 import { FileDropZone } from "@/components/file-drop-zone";
 import { AssetWizard, StagedAsset, AssetGroup } from "@/components/asset-wizard";
 import { ImportEntityDialog } from "@/components/import-entity-dialog";
+import { ImportMultiDialog } from "@/components/import-multi-dialog";
+import { ImportedEntity } from "@/lib/import";
 import { ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
 import { ImportResult } from "@/lib/import";
 import { entityToTurtle } from "@/lib/export";
@@ -209,6 +211,7 @@ export default function Dashboard() {
   const [showVisualizeDialog, setShowVisualizeDialog] = useState(false);
   const [showVisualizeAllDialog, setShowVisualizeAllDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [showImportMultiDialog, setShowImportMultiDialog] = useState(false);
   const [showExportNameDialog, setShowExportNameDialog] = useState(false);
   const [exportFileName, setExportFileName] = useState("omc-ontology");
   const [exportFormat, setExportFormat] = useState<"json" | "ttl">("json");
@@ -223,6 +226,31 @@ export default function Dashboard() {
         description: `Successfully imported ${result.entityType}: ${result.content.name || result.entityId}`,
       });
     }
+  };
+
+  const handleImportMultiSuccess = (importedEntities: ImportedEntity[]) => {
+    let addedCount = 0;
+    let updatedCount = 0;
+    const existingIds = new Set(entities.map(e => e.id));
+    
+    for (const entity of importedEntities) {
+      if (existingIds.has(entity.entityId)) {
+        updateEntity(entity.entityId, entity.content);
+        updatedCount++;
+      } else {
+        addEntityFromContent(entity.entityType, entity.entityId, entity.content);
+        addedCount++;
+      }
+    }
+    
+    const parts = [];
+    if (addedCount > 0) parts.push(`${addedCount} added`);
+    if (updatedCount > 0) parts.push(`${updatedCount} updated`);
+    
+    toast({
+      title: "Project Imported",
+      description: `Successfully imported: ${parts.join(', ')}`,
+    });
   };
 
   const handleFileAssetCreated = (asset: any, metadata: ExtractedMetadata) => {
@@ -821,7 +849,7 @@ export default function Dashboard() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => setShowImportDialog(true)}
+                  onClick={() => setShowImportMultiDialog(true)}
                   className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
                   data-testid="button-import-entity"
                 >
@@ -936,7 +964,7 @@ export default function Dashboard() {
             </div>
             <div className="mt-6">
               <Button 
-                onClick={() => setShowImportDialog(true)} 
+                onClick={() => setShowImportMultiDialog(true)} 
                 variant="outline" 
                 size="lg" 
                 className="gap-2 border-[#D97218] text-[#D97218] hover:bg-[#D97218]/10 hover:border-[#D97218] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -1097,6 +1125,12 @@ export default function Dashboard() {
         open={showImportDialog}
         onOpenChange={setShowImportDialog}
         onImportSuccess={handleImportSuccess}
+      />
+
+      <ImportMultiDialog
+        open={showImportMultiDialog}
+        onOpenChange={setShowImportMultiDialog}
+        onImportSuccess={handleImportMultiSuccess}
       />
 
       <Dialog open={showExportNameDialog} onOpenChange={(open) => {
