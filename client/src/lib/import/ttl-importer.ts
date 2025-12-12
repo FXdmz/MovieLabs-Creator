@@ -297,25 +297,11 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       }
     }, null, null, null, null);
     
-    // Find root subjects (not referenced by other subjects)
-    const rootSubjectTerms: N3.Term[] = [];
-    allSubjects.forEach((term, subject) => {
-      let isReferenced = false;
-      store.forEach((quad) => {
-        if ((quad.object.termType === 'NamedNode' || quad.object.termType === 'BlankNode') 
-            && quad.object.value === subject && quad.subject.value !== subject) {
-          isReferenced = true;
-        }
-      }, null, null, null, null);
-      if (!isReferenced) {
-        rootSubjectTerms.push(term);
-      }
-    });
-    
-    // Filter to only named nodes that are valid OMC entity types
+    // Find ALL subjects that have a valid OMC entity type (not just unreferenced ones)
+    // This ensures Participants, Infrastructure, etc. are included even when referenced by Tasks
     const entityRoots: { term: N3.Term; entityType: string; entityId: string }[] = [];
     
-    for (const term of rootSubjectTerms) {
+    allSubjects.forEach((term, subject) => {
       let entityType: string | null = null;
       
       store.forEach((quad) => {
@@ -334,7 +320,7 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         const entityId = extractIdFromUri(term.value) || crypto.randomUUID();
         entityRoots.push({ term, entityType, entityId });
       }
-    }
+    });
     
     if (entityRoots.length === 0) {
       resolve({ success: false, entities: [], error: 'No valid OMC entities found in TTL file' });
