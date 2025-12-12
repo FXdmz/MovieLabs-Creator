@@ -591,13 +591,18 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       content.entityType = entityType;
       content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
       
-      if (!content.identifier || content.identifier.length === 0) {
+      // Fix identifier - ensure it's always a proper array of identifier objects
+      if (!content.identifier || content.identifier.length === 0 || 
+          (Array.isArray(content.identifier) && typeof content.identifier[0] === 'string')) {
         content.identifier = [{
-          identifierScope: 'me-nexus',
-          identifierValue: entityId,
-          combinedForm: `me-nexus:${entityId}`
+          identifierScope: content.identifierScope || 'me-nexus',
+          identifierValue: content.identifierValue || entityId,
+          combinedForm: `${content.identifierScope || 'me-nexus'}:${content.identifierValue || entityId}`
         }];
       }
+      // Clean up loose identifier properties
+      delete content.identifierScope;
+      delete content.identifierValue;
       
       content = transformEntity(content);
       
