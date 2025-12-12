@@ -1,5 +1,6 @@
 export const RDF_PREFIXES = {
   omc: "https://movielabs.com/omc/rdf/schema/v2.8#",
+  omcT: "https://movielabs.com/omc/rdf/schema/v2.8Tentative#",
   rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   rdfs: "http://www.w3.org/2000/01/rdf-schema#",
   xsd: "http://www.w3.org/2001/XMLSchema#",
@@ -51,6 +52,9 @@ export function entityTypeToRdfClass(entityType: string): string {
     NarrativeContext: "omc:NarrativeContext",
     ProductionContext: "omc:ProductionContext",
     MediaCreationContext: "omc:MediaCreationContext",
+    Context: "omc:MediaCreationContextComponent",
+    WorkUnit: "omc:WorkUnit",
+    State: "omc:State",
     
     Sequence: "omc:Sequence",
     Shot: "omc:Shot",

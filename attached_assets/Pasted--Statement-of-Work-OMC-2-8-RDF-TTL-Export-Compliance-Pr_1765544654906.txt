@@ -1,0 +1,348 @@
+# Statement of Work: OMC 2.8 RDF/TTL Export Compliance
+
+**Project:** ME-NEXUS OMC Generator - TTL Export Enhancement  
+**Version:** 1.0  
+**Date:** December 12, 2025  
+**Prepared For:** Replit AI Coding Agent
+
+---
+
+## 1. Executive Summary
+
+The current ME-NEXUS OMC generator produces TTL/RDF exports that are incomplete compared to the OMC 2.8 RDF ontology specification. Critical properties for Task state management, scheduling, WorkUnit relationships, and Context structure are defined in the RDF schema but not implemented in the export. This SOW defines the work required to achieve full OMC 2.8 RDF compliance.
+
+---
+
+## 2. Current State Analysis
+
+### 2.1 What Works
+- ✅ Basic entity structure (Task, Participant, Asset, CreativeWork)
+- ✅ Characteristic patterns (TaskSC, TaskFC, ParticipantSC, etc.)
+- ✅ Identifier management
+- ✅ Custom ME-NEXUS namespace properties
+- ✅ Blank node usage for embedded objects
+
+### 2.2 What's Missing
+The following properties exist in OMC 2.8 RDF (`/mnt/user-data/uploads/omc.ttl`) but are NOT implemented in TTL exports:
+
+1. **Task State Management**
+   - `omc:hasState` property (domain: omc:Task, range: omc:State)
+   - `omc:State` class with `omc:hasStateDescriptor` property
+   - State details as free-form text
+
+2. **Task Scheduling**
+   - `omc:hasScheduledStart` property (domain: omc:Task, range: xsd:dateTime)
+   - `omc:hasScheduledEnd` property (domain: omc:Task, range: xsd:dateTime)
+   - `omc:hasActualStart` property (domain: omc:Task, range: xsd:dateTime)
+   - `omc:hasActualEnd` property (domain: omc:Task, range: xsd:dateTime)
+   - `omc:hasScheduling` property (domain: omc:Task, range: omc:Scheduling)
+
+3. **WorkUnit Entity and Relationships**
+   - `omc:WorkUnit` class
+   - `omc:hasWorkUnit` property (domain: omc:Task OR omc:Participant, range: omc:WorkUnit)
+   - Tentative properties in `omcT:` namespace:
+     - `omcT:aWorkUnitHas.Participant`
+     - `omcT:aWorkUnitHas.Task`
+
+4. **Context Improvements**
+   - Incorrect type: Currently uses `rdf:type "Context"` (string literal)
+   - Should use: `rdf:type omc:MediaCreationContextComponent`
+   - Missing relationships to Assets and other entities
+
+---
+
+## 3. Scope of Work
+
+### 3.1 In Scope
+1. Implement Task state export with proper State objects
+2. Implement Task scheduling properties (direct datetime properties)
+3. Implement WorkUnit entity export with relationships
+4. Fix Context entity type declarations
+5. Add asset relationship properties to Context
+6. Update TTL generator to handle all new property mappings
+7. Ensure backward compatibility with existing exports
+
+### 3.2 Out of Scope
+- JSON schema modifications (JSON remains as-is with custom properties)
+- Changes to ME-NEXUS internal data models
+- UI/UX modifications
+- Performance optimization (unless critical)
+
+---
+
+## 4. Technical Requirements
+
+### 4.1 Reference Schema
+**Primary Reference:** `/mnt/user-data/uploads/omc.ttl`  
+**Schema Version:** OMC 2.8 RDF  
+**Base URI:** `https://movielabs.com/omc/rdf/schema/v2.8#`  
+**Tentative URI:** `https://movielabs.com/omc/rdf/schema/v2.8Tentative#`
+
+### 4.2 Required Property Implementations
+
+#### 4.2.1 Task State Export
+When JSON contains `task.state` and `task.stateDetails`:
+
+```turtle
+# Current JSON structure:
+{
+  "entityType": "Task",
+  "state": "assigned",
+  "stateDetails": "Doing the work"
+}
+
+# Required TTL output:
+me:task-uuid
+    rdf:type omc:Task ;
+    omc:hasState me:state-uuid .
+
+me:state-uuid
+    rdf:type omc:State ;
+    omc:hasStateDescriptor omc:Assigned ;  # Use controlled vocabulary
+    rdfs:comment "Doing the work" .
+```
+
+**State Descriptor Vocabulary Mapping:**
+- `"assigned"` → `omc:Assigned`
+- `"in_process"` → `omc:InProcess`
+- `"completed"` → `omc:Completed`
+- `"blocked"` → `omc:Blocked`
+- _(Add other states as needed from OMC StateDescriptor vocabulary)_
+
+#### 4.2.2 Task Scheduling Export
+When JSON Context contains `scheduling.scheduledStart` and `scheduling.scheduledEnd`:
+
+```turtle
+# Current JSON structure:
+{
+  "Context": [{
+    "scheduling": {
+      "scheduledStart": "2025-12-12T12:57:00.000Z",
+      "scheduledEnd": "2025-12-26T12:57:00.000Z"
+    }
+  }]
+}
+
+# Required TTL output (Option 1 - Direct properties):
+me:task-uuid
+    rdf:type omc:Task ;
+    omc:hasScheduledStart "2025-12-12T12:57:00.000Z"^^xsd:dateTime ;
+    omc:hasScheduledEnd "2025-12-26T12:57:00.000Z"^^xsd:dateTime .
+```
+
+**Note:** Use direct datetime properties (Option 1) rather than Scheduling object for simplicity.
+
+#### 4.2.3 WorkUnit Export
+When JSON contains `task.workUnit`:
+
+```turtle
+# Current JSON structure:
+{
+  "workUnit": {
+    "entityType": "WorkUnit",
+    "identifier": [{
+      "identifierScope": "me-nexus",
+      "identifierValue": "workunit-uuid"
+    }],
+    "participantRef": "me-nexus:participant-uuid"
+  }
+}
+
+# Required TTL output:
+me:task-uuid
+    rdf:type omc:Task ;
+    omc:hasWorkUnit me:workunit-uuid .
+
+me:workunit-uuid
+    rdf:type omc:WorkUnit ;
+    omc:hasIdentifier me:workunit-uuid ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "workunit-uuid" ;
+    <https://movielabs.com/omc/rdf/schema/v2.8Tentative#aWorkUnitHas.Participant> 
+        me:participant-uuid .
+
+# Also add inverse relationship:
+me:participant-uuid
+    omc:hasWorkUnit me:workunit-uuid .
+```
+
+#### 4.2.4 Context Type Fix
+Current (WRONG):
+```turtle
+_:Context0_6
+    rdf:type "Context" ;  # String literal - INVALID!
+```
+
+Required (CORRECT):
+```turtle
+_:Context0_6
+    rdf:type omc:MediaCreationContextComponent ;
+    omc:hasIdentifier me:context-uuid ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "context-uuid" ;
+    omc:contextType "production" .
+```
+
+#### 4.2.5 Asset Relationships in Context
+When JSON Context contains `hasInputAssets`:
+
+```turtle
+# Current JSON structure:
+{
+  "Context": [{
+    "hasInputAssets": ["me-nexus:asset-uuid"]
+  }]
+}
+
+# Required TTL output:
+_:Context0_6
+    rdf:type omc:MediaCreationContextComponent ;
+    omc:uses me:asset-uuid .
+```
+
+**Property Selection Guide:**
+- Input assets used by task: `omc:uses`
+- Assets produced by task: `omc:hasProduct`
+- See OMC Context relationship properties in reference schema for full list
+
+---
+
+## 5. Implementation Steps
+
+### Phase 1: Schema Analysis
+1. Load and parse `/mnt/user-data/uploads/omc.ttl`
+2. Extract all property definitions with domain `omc:Task`
+3. Extract all properties with domain `omc:WorkUnit`
+4. Document State and Scheduling class structures
+5. Create property mapping table from JSON to RDF
+
+### Phase 2: Code Modifications
+1. Update TTL generator function to handle new property types
+2. Add State object generation logic
+3. Add WorkUnit entity generation logic
+4. Add scheduling datetime property extraction
+5. Fix Context type declaration
+6. Add asset relationship property mapping
+
+### Phase 3: Testing
+1. Test with sample data from `/mnt/user-data/uploads/omc-ontology__17_.json`
+2. Validate output TTL syntax
+3. Validate against OMC 2.8 RDF schema constraints
+4. Verify all identifiers and references resolve correctly
+5. Test blank node handling for State objects
+
+### Phase 4: Documentation
+1. Update code comments
+2. Document property mapping decisions
+3. Add examples of generated TTL for each new property type
+
+---
+
+## 6. Validation Criteria
+
+### 6.1 TTL Output Must:
+- ✅ Parse without syntax errors in standard RDF parsers
+- ✅ Include `omc:hasState` for all Tasks with state information
+- ✅ Include `omc:hasScheduledStart`/`End` for all Tasks with scheduling
+- ✅ Include `omc:hasWorkUnit` for all Tasks with workUnit information
+- ✅ Use `omc:MediaCreationContextComponent` not string "Context"
+- ✅ Properly namespace all OMC properties with `omc:` prefix
+- ✅ Use Tentative namespace `omcT:` for WorkUnit participant relationships
+- ✅ Generate valid URIs for all entities
+- ✅ Maintain all existing functionality (no regressions)
+
+### 6.2 Test Cases
+**Test Input:** `/mnt/user-data/uploads/omc-ontology__17_.json`
+
+**Expected Output Includes:**
+```turtle
+me:5c887848-af8e-4ed5-ac6b-680479aeb223
+    rdf:type omc:Task ;
+    omc:hasState _:state-node ;
+    omc:hasScheduledStart "2025-12-12T12:57:00.000Z"^^xsd:dateTime ;
+    omc:hasScheduledEnd "2025-12-26T12:57:00.000Z"^^xsd:dateTime ;
+    omc:hasWorkUnit me:6d285b4c-5217-45d1-be85-5713c54784e5 ;
+    omc:hasContext _:context-node .
+
+_:state-node
+    rdf:type omc:State ;
+    omc:hasStateDescriptor omc:Assigned ;
+    rdfs:comment "Doing the work" .
+
+me:6d285b4c-5217-45d1-be85-5713c54784e5
+    rdf:type omc:WorkUnit ;
+    <https://movielabs.com/omc/rdf/schema/v2.8Tentative#aWorkUnitHas.Participant>
+        me:db8be305-9b50-4764-ab66-c0c202426d65 .
+
+_:context-node
+    rdf:type omc:MediaCreationContextComponent ;
+    omc:contextType "production" ;
+    omc:uses me:092486d7-1e95-470e-84ad-e6035eab7cc8 .
+```
+
+---
+
+## 7. Deliverables
+
+1. **Updated TTL Generator Code**
+   - Modified function(s) implementing all required properties
+   - Inline code comments explaining property mappings
+   - Error handling for missing/invalid data
+
+2. **Test Output File**
+   - Generated TTL from test JSON showing all new properties
+   - Validated against RDF syntax rules
+
+3. **Mapping Documentation**
+   - Table showing JSON property → RDF property conversions
+   - Notes on any implementation decisions or edge cases
+
+---
+
+## 8. Technical Constraints
+
+- **Language:** TypeScript/JavaScript (existing ME-NEXUS codebase)
+- **Turtle Version:** Turtle 1.1 (W3C Recommendation)
+- **Date Format:** ISO 8601 with `xsd:dateTime` datatype
+- **URI Patterns:** Use existing ME-NEXUS URI generation patterns
+- **Namespace Prefixes:** Use standard prefixes (omc:, me:, menexus:, xsd:, rdf:, rdfs:)
+
+---
+
+## 9. Success Metrics
+
+- [ ] 100% of Tasks with state info export `omc:hasState` 
+- [ ] 100% of Tasks with scheduling export datetime properties
+- [ ] 100% of WorkUnits properly exported as `omc:WorkUnit` entities
+- [ ] 0 Context entities with string literal type (all use proper class)
+- [ ] All asset relationships in Context export proper relationship properties
+- [ ] Generated TTL validates against OMC 2.8 RDF schema
+- [ ] Zero regressions in existing TTL export functionality
+
+---
+
+## 10. Reference Files
+
+**Provided in Context:**
+- `/mnt/user-data/uploads/omc.ttl` - OMC 2.8 RDF schema (authoritative reference)
+- `/mnt/user-data/uploads/omc-ontology__17_.json` - Test input data
+- `/mnt/user-data/uploads/omc-ontology.ttl` - Current (incomplete) TTL output
+
+**Expected Output Location:**
+- Generate corrected TTL output for comparison and validation
+
+---
+
+## 11. Questions for Implementation
+
+Before starting, confirm:
+1. Where is the TTL generator function located in the codebase?
+2. Are there any existing RDF/Turtle libraries in use?
+3. Should State identifiers be blank nodes or named URIs?
+4. Should we validate against the full OMC ontology or just ensure syntax correctness?
+5. Are there other JSON properties that should map to RDF but aren't mentioned here?
+
+---
+
+**Authorization to Proceed:**  
+This SOW defines the complete scope for achieving OMC 2.8 RDF compliance in TTL exports. Once confirmed, Replit should begin with Phase 1 (Schema Analysis) and proceed systematically through all phases.

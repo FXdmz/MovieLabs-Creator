@@ -237,8 +237,26 @@ const jsonToRdfPredicate: Record<string, string> = {
 const skipProperties = new Set([
   "combinedForm",
   "region",
-  "schemaVersion"
+  "schemaVersion",
+  "state",
+  "stateDetails",
+  "workUnit",
+  "taskClassification",
+  "meNexusService"
 ]);
+
+const STATE_DESCRIPTOR_MAP: Record<string, string> = {
+  "assigned": "omc:Assigned",
+  "in_process": "omc:InProcess",
+  "in-process": "omc:InProcess",
+  "inprocess": "omc:InProcess",
+  "complete": "omc:Completed",
+  "completed": "omc:Completed",
+  "waiting": "omc:Waiting",
+  "blocked": "omc:Blocked",
+  "pending": "omc:Pending",
+  "cancelled": "omc:Cancelled"
+};
 
 function jsonKeyToRdfPredicate(key: string): string | null {
   if (skipProperties.has(key)) {
@@ -252,6 +270,131 @@ let blankNodeCounter = 0;
 function generateBlankNodeId(prefix: string): string {
   blankNodeCounter++;
   return `_:${prefix}_${blankNodeCounter}`;
+}
+
+function processTaskSpecificProperties(subject: string, content: any, triples: Triple[]): void {
+  if (content.state) {
+    const stateNodeId = generateBlankNodeId("state");
+    triples.push({ subject, predicate: "omc:hasState", object: stateNodeId });
+    triples.push({ subject: stateNodeId, predicate: "rdf:type", object: "omc:State" });
+    
+    const stateDescriptor = STATE_DESCRIPTOR_MAP[content.state.toLowerCase()] || `omc:${content.state}`;
+    triples.push({ subject: stateNodeId, predicate: "omc:hasStateDescriptor", object: stateDescriptor });
+    
+    if (content.stateDetails) {
+      triples.push({ subject: stateNodeId, predicate: "rdfs:comment", object: formatLiteral(content.stateDetails) });
+    }
+  }
+
+  const context = content.Context?.[0];
+  if (context?.scheduling) {
+    const sched = context.scheduling;
+    if (sched.scheduledStart) {
+      triples.push({ subject, predicate: "omc:hasScheduledStart", object: `"${sched.scheduledStart}"^^xsd:dateTime` });
+    }
+    if (sched.scheduledEnd) {
+      triples.push({ subject, predicate: "omc:hasScheduledEnd", object: `"${sched.scheduledEnd}"^^xsd:dateTime` });
+    }
+    if (sched.actualStart) {
+      triples.push({ subject, predicate: "omc:hasActualStart", object: `"${sched.actualStart}"^^xsd:dateTime` });
+    }
+    if (sched.actualEnd) {
+      triples.push({ subject, predicate: "omc:hasActualEnd", object: `"${sched.actualEnd}"^^xsd:dateTime` });
+    }
+  }
+
+  if (content.workUnit) {
+    const wu = content.workUnit;
+    const wuId = wu.identifier?.[0]?.identifierValue || `workunit_${blankNodeCounter++}`;
+    const wuSubject = `me:${wuId}`;
+    
+    triples.push({ subject, predicate: "omc:hasWorkUnit", object: wuSubject });
+    triples.push({ subject: wuSubject, predicate: "rdf:type", object: "omc:WorkUnit" });
+    
+    if (wu.identifier?.[0]) {
+      const id = wu.identifier[0];
+      if (id.identifierScope) {
+        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierScope", object: formatLiteral(id.identifierScope) });
+      }
+      if (id.identifierValue) {
+        triples.push({ subject: wuSubject, predicate: "omc:hasIdentifierValue", object: formatLiteral(id.identifierValue) });
+      }
+    }
+    
+    if (wu.participantRef) {
+      const participantUri = wu.participantRef.startsWith("me-nexus:")
+        ? `me:${wu.participantRef.replace("me-nexus:", "")}`
+        : formatLiteral(wu.participantRef);
+      
+      triples.push({
+        subject: wuSubject,
+        predicate: "<https://movielabs.com/omc/rdf/schema/v2.8Tentative#aWorkUnitHas.Participant>",
+        object: participantUri
+      });
+      
+      if (participantUri.startsWith("me:")) {
+        triples.push({ subject: participantUri, predicate: "omc:hasWorkUnit", object: wuSubject });
+      }
+    }
+  }
+
+  if (context) {
+    const ctxId = context.identifier?.[0]?.identifierValue || `context_${blankNodeCounter++}`;
+    const ctxSubject = `me:${ctxId}`;
+    
+    triples.push({ subject, predicate: "omc:hasContext", object: ctxSubject });
+    triples.push({ subject: ctxSubject, predicate: "rdf:type", object: "omc:MediaCreationContextComponent" });
+    
+    if (context.identifier?.[0]) {
+      const id = context.identifier[0];
+      if (id.identifierScope) {
+        triples.push({ subject: ctxSubject, predicate: "omc:hasIdentifierScope", object: formatLiteral(id.identifierScope) });
+      }
+      if (id.identifierValue) {
+        triples.push({ subject: ctxSubject, predicate: "omc:hasIdentifierValue", object: formatLiteral(id.identifierValue) });
+      }
+    }
+    
+    if (context.contextType) {
+      triples.push({ subject: ctxSubject, predicate: "omc:contextType", object: formatLiteral(context.contextType) });
+    }
+    
+    if (context.hasInputAssets && Array.isArray(context.hasInputAssets)) {
+      context.hasInputAssets.forEach((assetRef: string) => {
+        const assetUri = assetRef.startsWith("me-nexus:")
+          ? `me:${assetRef.replace("me-nexus:", "")}`
+          : formatLiteral(assetRef);
+        triples.push({ subject: ctxSubject, predicate: "omc:uses", object: assetUri });
+      });
+    }
+    
+    if (context.hasOutputAssets && Array.isArray(context.hasOutputAssets)) {
+      context.hasOutputAssets.forEach((assetRef: string) => {
+        const assetUri = assetRef.startsWith("me-nexus:")
+          ? `me:${assetRef.replace("me-nexus:", "")}`
+          : formatLiteral(assetRef);
+        triples.push({ subject: ctxSubject, predicate: "omc:hasProduct", object: assetUri });
+      });
+    }
+    
+    if (context.informs && Array.isArray(context.informs)) {
+      context.informs.forEach((taskRef: string) => {
+        const taskUri = taskRef.startsWith("me-nexus:")
+          ? `me:${taskRef.replace("me-nexus:", "")}`
+          : formatLiteral(taskRef);
+        triples.push({ subject, predicate: "omc:informs", object: taskUri });
+      });
+    }
+    
+    if (context.isInformedBy && Array.isArray(context.isInformedBy)) {
+      context.isInformedBy.forEach((taskRef: string) => {
+        const taskUri = taskRef.startsWith("me-nexus:")
+          ? `me:${taskRef.replace("me-nexus:", "")}`
+          : formatLiteral(taskRef);
+        triples.push({ subject, predicate: "omc:isInformedBy", object: taskUri });
+      });
+    }
+  }
 }
 
 function entityToTriples(entity: Entity): Triple[] {
@@ -270,6 +413,10 @@ function entityToTriples(entity: Entity): Triple[] {
     predicate: "rdfs:label",
     object: formatLiteral(entity.name)
   });
+
+  if (entity.type === "Task" && content) {
+    processTaskSpecificProperties(subject, content, triples);
+  }
   
   function processValue(subj: string, key: string, value: unknown, depth: number = 0): void {
     if (value === null || value === undefined || value === "") return;
@@ -360,8 +507,9 @@ function entityToTriples(entity: Entity): Triple[] {
   }
   
   if (content) {
+    const taskSkipKeys = entity.type === "Task" ? ["Context"] : [];
     Object.entries(content).forEach(([key, value]) => {
-      if (key !== "entityType" && key !== "schemaVersion") {
+      if (key !== "entityType" && key !== "schemaVersion" && !taskSkipKeys.includes(key)) {
         processValue(subject, key, value, 0);
       }
     });
