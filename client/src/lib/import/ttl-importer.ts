@@ -392,20 +392,37 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           } else if (quad.object.termType === 'NamedNode' || quad.object.termType === 'BlankNode') {
             const nestedQuads = store.getQuads(quad.object, null, null, null);
             if (nestedQuads.length > 0) {
-              value = buildObject(quad.object, depth + 1);
+              // Check if this is a reference to another root entity
+              if (rootUris.has(quad.object.value)) {
+                // Return as a reference string for relationships
+                const refId = extractIdFromUri(quad.object.value);
+                if (refId) {
+                  value = `me-nexus:${refId}`;
+                } else {
+                  value = buildObject(quad.object, depth + 1);
+                }
+              } else {
+                value = buildObject(quad.object, depth + 1);
               
-              if (quad.object.termType === 'NamedNode') {
-                const nestedId = extractIdFromUri(quad.object.value);
-                if (nestedId && !value.identifier) {
-                  value.identifier = [{
-                    identifierScope: 'me-nexus',
-                    identifierValue: nestedId,
-                    combinedForm: `me-nexus:${nestedId}`
-                  }];
+                if (quad.object.termType === 'NamedNode') {
+                  const nestedId = extractIdFromUri(quad.object.value);
+                  if (nestedId && !value.identifier) {
+                    value.identifier = [{
+                      identifierScope: 'me-nexus',
+                      identifierValue: nestedId,
+                      combinedForm: `me-nexus:${nestedId}`
+                    }];
+                  }
                 }
               }
             } else {
-              value = quad.object.value;
+              // No nested quads - check if it's a me: URI reference
+              const refId = extractIdFromUri(quad.object.value);
+              if (refId && quad.object.value.startsWith(RDF_PREFIXES.me)) {
+                value = `me-nexus:${refId}`;
+              } else {
+                value = quad.object.value;
+              }
             }
           }
           
