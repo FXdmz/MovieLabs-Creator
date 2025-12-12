@@ -1,6 +1,6 @@
 import * as N3 from 'n3';
 import { EntityType, ENTITY_TYPES } from '../constants';
-import { ImportResult } from './json-importer';
+import { ImportResult, ImportedEntity, MultiImportResult } from './json-importer';
 
 const RDF_PREFIXES: Record<string, string> = {
   omc: "https://movielabs.com/omc/rdf/schema/v2.8#",
@@ -131,6 +131,7 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasTitle`]: "creativeWorkTitle",
   [`${RDF_PREFIXES.omc}hasTitleName`]: "titleName",
   [`${RDF_PREFIXES.omc}hasTitleType`]: "titleType",
+  [`${RDF_PREFIXES.omc}titleLanguage`]: "titleLanguage",
   
   [`${RDF_PREFIXES.omc}depicts`]: "depicts",
   [`${RDF_PREFIXES.omc}hasDepiction`]: "depiction",
@@ -196,7 +197,11 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasAPIVersion`]: "apiVersion",
   
   [`${RDF_PREFIXES.omc}functionalProperties`]: "functionalProperties",
-  [`${RDF_PREFIXES.omc}isOrdered`]: "isOrdered"
+  [`${RDF_PREFIXES.omc}isOrdered`]: "isOrdered",
+  
+  [`${RDF_PREFIXES.omc}creativeWorkType`]: "creativeWorkType",
+  [`${RDF_PREFIXES.omc}creativeWorkCategory`]: "creativeWorkCategory",
+  [`${RDF_PREFIXES.omc}approximateLength`]: "approximateLength"
 };
 
 function predicateUriToJsonKey(predicateUri: string): string | null {
@@ -249,7 +254,29 @@ function parseLiteral(term: N3.Term): unknown {
   return literal.value;
 }
 
+// Backwards compatible single-entity import
 export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
+  const result = await parseOmcTtlMulti(ttlText);
+  
+  if (!result.success) {
+    return { success: false, error: result.error };
+  }
+  
+  if (result.entities.length === 0) {
+    return { success: false, error: 'No valid entities found' };
+  }
+  
+  const entity = result.entities[0];
+  return {
+    success: true,
+    entityType: entity.entityType,
+    entityId: entity.entityId,
+    content: entity.content
+  };
+}
+
+// Multi-entity import
+export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResult> {
   return new Promise((resolve) => {
     const parser = new N3.Parser();
     const store = new N3.Store();
@@ -258,10 +285,11 @@ export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
       const quads = parser.parse(ttlText);
       store.addQuads(quads);
     } catch (e: any) {
-      resolve({ success: false, error: `Invalid TTL format: ${e.message}` });
+      resolve({ success: false, entities: [], error: `Invalid TTL format: ${e.message}` });
       return;
     }
     
+    // Find all subjects in the graph
     const allSubjects = new Map<string, N3.Term>();
     store.forEach((quad) => {
       if (quad.subject.termType === 'NamedNode' || quad.subject.termType === 'BlankNode') {
@@ -269,6 +297,7 @@ export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
       }
     }, null, null, null, null);
     
+    // Find root subjects (not referenced by other subjects)
     const rootSubjectTerms: N3.Term[] = [];
     allSubjects.forEach((term, subject) => {
       let isReferenced = false;
@@ -283,147 +312,170 @@ export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
       }
     });
     
-    const namedRoots = rootSubjectTerms.filter(t => t.termType === 'NamedNode');
-    let rootSubjectTerm: N3.Term;
+    // Filter to only named nodes that are valid OMC entity types
+    const entityRoots: { term: N3.Term; entityType: string; entityId: string }[] = [];
     
-    if (namedRoots.length === 1) {
-      rootSubjectTerm = namedRoots[0];
-    } else if (namedRoots.length > 1) {
-      resolve({ success: false, error: 'File contains multiple root entities. Please import single-entity files.' });
-      return;
-    } else if (rootSubjectTerms.length === 1) {
-      rootSubjectTerm = rootSubjectTerms[0];
-    } else if (rootSubjectTerms.length > 1) {
-      resolve({ success: false, error: 'File contains multiple root entities. Please import single-entity files.' });
-      return;
-    } else {
-      resolve({ success: false, error: 'No root entity found in TTL file' });
-      return;
-    }
-    
-    const rootSubject = rootSubjectTerm.value;
-    
-    let entityType: string | null = null;
-    store.forEach((quad) => {
-      if (quad.predicate.value === `${RDF_PREFIXES.rdf}type`) {
-        const typeUri = quad.object.value;
-        if (rdfClassToEntityType[typeUri]) {
-          const mapped = rdfClassToEntityType[typeUri];
-          if (ENTITY_TYPES.includes(mapped as any)) {
-            entityType = mapped;
-          }
-        }
-      }
-    }, rootSubjectTerm, null, null, null);
-    
-    if (!entityType) {
-      resolve({ success: false, error: 'Could not determine entity type from TTL file' });
-      return;
-    }
-    
-    const entityId = extractIdFromUri(rootSubject) || crypto.randomUUID();
-    
-    const visited = new Set<string>();
-    
-    function buildObject(subjectTerm: N3.Term, depth: number = 0): Record<string, any> {
-      if (depth > 10) return {};
+    for (const term of rootSubjectTerms) {
+      let entityType: string | null = null;
       
-      const subjectKey = subjectTerm.value;
-      if (visited.has(subjectKey)) return {};
-      visited.add(subjectKey);
-      
-      const obj: Record<string, any> = {};
-      const arrayProps: Record<string, any[]> = {};
-      
-      let nestedEntityType: string | null = null;
       store.forEach((quad) => {
         if (quad.predicate.value === `${RDF_PREFIXES.rdf}type`) {
           const typeUri = quad.object.value;
           if (rdfClassToEntityType[typeUri]) {
-            nestedEntityType = rdfClassToEntityType[typeUri];
-          }
-        }
-      }, subjectTerm, null, null, null);
-      
-      if (nestedEntityType && depth > 0) {
-        obj.entityType = nestedEntityType;
-        obj.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
-      }
-      
-      store.forEach((quad) => {
-        const predicateUri = quad.predicate.value;
-        
-        if (predicateUri === `${RDF_PREFIXES.rdf}type`) return;
-        
-        const jsonKey = predicateUriToJsonKey(predicateUri);
-        if (!jsonKey) return;
-        
-        let value: any;
-        
-        if (quad.object.termType === 'Literal') {
-          value = parseLiteral(quad.object);
-        } else if (quad.object.termType === 'NamedNode' || quad.object.termType === 'BlankNode') {
-          const nestedQuads = store.getQuads(quad.object, null, null, null);
-          if (nestedQuads.length > 0) {
-            value = buildObject(quad.object, depth + 1);
-            
-            if (quad.object.termType === 'NamedNode') {
-              const nestedId = extractIdFromUri(quad.object.value);
-              if (nestedId) {
-                value.identifier = [{
-                  identifierScope: 'me-nexus',
-                  identifierValue: nestedId,
-                  combinedForm: `me-nexus:${nestedId}`
-                }];
-              }
+            const mapped = rdfClassToEntityType[typeUri];
+            if (ENTITY_TYPES.includes(mapped as any)) {
+              entityType = mapped;
             }
-          } else {
-            value = quad.object.value;
           }
         }
-        
-        const alwaysArrayKeys = [
-          'identifier', 'creativeWorkTitle', 'participant', 'participantComponent',
-          'task', 'taskComponent', 'asset', 'assetComponent', 'contextComponent',
-          'depicts', 'depiction', 'tag', 'Asset'
-        ];
-        if (alwaysArrayKeys.includes(jsonKey)) {
-          if (!arrayProps[jsonKey]) arrayProps[jsonKey] = [];
-          arrayProps[jsonKey].push(value);
-        } else if (obj[jsonKey] !== undefined) {
-          if (!Array.isArray(obj[jsonKey])) {
-            obj[jsonKey] = [obj[jsonKey]];
-          }
-          obj[jsonKey].push(value);
-        } else {
-          obj[jsonKey] = value;
-        }
-      }, subjectTerm, null, null, null);
+      }, term, null, null, null);
       
-      for (const [key, values] of Object.entries(arrayProps)) {
-        obj[key] = values;
+      if (entityType) {
+        const entityId = extractIdFromUri(term.value) || crypto.randomUUID();
+        entityRoots.push({ term, entityType, entityId });
       }
-      
-      return obj;
     }
     
-    const content = buildObject(rootSubjectTerm);
-    content.entityType = entityType;
-    content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
+    if (entityRoots.length === 0) {
+      resolve({ success: false, entities: [], error: 'No valid OMC entities found in TTL file' });
+      return;
+    }
     
-    if (!content.identifier || content.identifier.length === 0) {
-      content.identifier = [{
-        identifierScope: 'me-nexus',
-        identifierValue: entityId,
-        combinedForm: `me-nexus:${entityId}`
-      }];
+    // Set of all root entity URIs for reference detection
+    const rootUris = new Set(entityRoots.map(r => r.term.value));
+    
+    // Build entity objects
+    const entities: ImportedEntity[] = [];
+    const warnings: string[] = [];
+    
+    for (const { term: rootSubjectTerm, entityType, entityId } of entityRoots) {
+      const visited = new Set<string>();
+      
+      const buildObject = (subjectTerm: N3.Term, depth: number = 0): Record<string, any> => {
+        if (depth > 10) return {};
+        
+        const subjectKey = subjectTerm.value;
+        
+        // If this is another root entity, return just a reference
+        if (depth > 0 && rootUris.has(subjectKey)) {
+          const refId = extractIdFromUri(subjectKey);
+          if (refId) {
+            return {
+              identifier: [{
+                identifierScope: 'me-nexus',
+                identifierValue: refId,
+                combinedForm: `me-nexus:${refId}`
+              }]
+            };
+          }
+        }
+        
+        if (visited.has(subjectKey)) return {};
+        visited.add(subjectKey);
+        
+        const obj: Record<string, any> = {};
+        const arrayProps: Record<string, any[]> = {};
+        
+        let nestedEntityType: string | null = null;
+        store.forEach((quad) => {
+          if (quad.predicate.value === `${RDF_PREFIXES.rdf}type`) {
+            const typeUri = quad.object.value;
+            if (rdfClassToEntityType[typeUri]) {
+              nestedEntityType = rdfClassToEntityType[typeUri];
+            }
+          }
+        }, subjectTerm, null, null, null);
+        
+        if (nestedEntityType && depth > 0) {
+          obj.entityType = nestedEntityType;
+          obj.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
+        }
+        
+        store.forEach((quad) => {
+          const predicateUri = quad.predicate.value;
+          
+          if (predicateUri === `${RDF_PREFIXES.rdf}type`) return;
+          
+          const jsonKey = predicateUriToJsonKey(predicateUri);
+          if (!jsonKey) return;
+          
+          let value: any;
+          
+          if (quad.object.termType === 'Literal') {
+            value = parseLiteral(quad.object);
+          } else if (quad.object.termType === 'NamedNode' || quad.object.termType === 'BlankNode') {
+            const nestedQuads = store.getQuads(quad.object, null, null, null);
+            if (nestedQuads.length > 0) {
+              value = buildObject(quad.object, depth + 1);
+              
+              if (quad.object.termType === 'NamedNode') {
+                const nestedId = extractIdFromUri(quad.object.value);
+                if (nestedId && !value.identifier) {
+                  value.identifier = [{
+                    identifierScope: 'me-nexus',
+                    identifierValue: nestedId,
+                    combinedForm: `me-nexus:${nestedId}`
+                  }];
+                }
+              }
+            } else {
+              value = quad.object.value;
+            }
+          }
+          
+          const alwaysArrayKeys = [
+            'identifier', 'creativeWorkTitle', 'participant', 'participantComponent',
+            'task', 'taskComponent', 'asset', 'assetComponent', 'contextComponent',
+            'depicts', 'depiction', 'tag', 'Asset'
+          ];
+          if (alwaysArrayKeys.includes(jsonKey)) {
+            if (!arrayProps[jsonKey]) arrayProps[jsonKey] = [];
+            arrayProps[jsonKey].push(value);
+          } else if (obj[jsonKey] !== undefined) {
+            if (!Array.isArray(obj[jsonKey])) {
+              obj[jsonKey] = [obj[jsonKey]];
+            }
+            obj[jsonKey].push(value);
+          } else {
+            obj[jsonKey] = value;
+          }
+        }, subjectTerm, null, null, null);
+        
+        for (const [key, values] of Object.entries(arrayProps)) {
+          obj[key] = values;
+        }
+        
+        return obj;
+      }
+      
+      const content = buildObject(rootSubjectTerm);
+      content.entityType = entityType;
+      content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
+      
+      if (!content.identifier || content.identifier.length === 0) {
+        content.identifier = [{
+          identifierScope: 'me-nexus',
+          identifierValue: entityId,
+          combinedForm: `me-nexus:${entityId}`
+        }];
+      }
+      
+      const name = content.name || content.characterName || 
+        (content.creativeWorkTitle?.[0]?.titleName) || 
+        `${entityType} ${entityId.slice(0, 8)}`;
+      
+      entities.push({
+        entityType: entityType as EntityType,
+        entityId,
+        content,
+        name
+      });
     }
     
     resolve({
       success: true,
-      entityType: entityType as EntityType,
-      entityId,
-      content
+      entities,
+      warnings: warnings.length > 0 ? warnings : undefined
     });
   });
 }

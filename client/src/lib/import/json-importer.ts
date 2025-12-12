@@ -1,5 +1,12 @@
 import { EntityType, ENTITY_TYPES } from '../constants';
 
+export interface ImportedEntity {
+  entityType: EntityType;
+  entityId: string;
+  content: any;
+  name: string;
+}
+
 export interface ImportResult {
   success: boolean;
   entityType?: EntityType;
@@ -8,50 +15,43 @@ export interface ImportResult {
   error?: string;
 }
 
+export interface MultiImportResult {
+  success: boolean;
+  entities: ImportedEntity[];
+  error?: string;
+  warnings?: string[];
+}
+
 const VALID_ENTITY_TYPES: readonly string[] = ENTITY_TYPES;
 
-export function parseOmcJson(jsonText: string): ImportResult {
-  let parsed: any;
-  
-  try {
-    parsed = JSON.parse(jsonText);
-  } catch (e: any) {
-    return { success: false, error: `Invalid JSON format: ${e.message}` };
-  }
-
-  if (Array.isArray(parsed)) {
-    return { success: false, error: 'File contains multiple entities. Please import single-entity files.' };
-  }
-
+function validateAndExtractEntity(parsed: any): { valid: boolean; entity?: ImportedEntity; error?: string } {
   if (typeof parsed !== 'object' || parsed === null) {
-    return { success: false, error: 'JSON must be an object representing an OMC entity' };
+    return { valid: false, error: 'Entity must be an object' };
   }
 
   const entityType = parsed.entityType;
   if (!entityType) {
-    return { success: false, error: 'Missing entityType field. This does not appear to be a valid OMC entity.' };
+    return { valid: false, error: 'Missing entityType field' };
   }
 
   if (!VALID_ENTITY_TYPES.includes(entityType)) {
-    return { success: false, error: `Unknown entity type: "${entityType}". Supported types: ${VALID_ENTITY_TYPES.join(', ')}` };
+    return { valid: false, error: `Unknown entity type: "${entityType}"` };
   }
 
   const schemaVersion = parsed.schemaVersion;
   if (!schemaVersion) {
-    return { success: false, error: 'Missing schemaVersion field. OMC entities require a schema version.' };
+    return { valid: false, error: 'Missing schemaVersion field' };
   }
 
   if (!schemaVersion.includes('movielabs.com/omc')) {
-    return { success: false, error: `Invalid schema version: "${schemaVersion}". Expected MovieLabs OMC schema.` };
+    return { valid: false, error: `Invalid schema version: "${schemaVersion}"` };
   }
 
-  let entityId: string | undefined;
+  let entityId: string;
   if (parsed.identifier && Array.isArray(parsed.identifier) && parsed.identifier.length > 0) {
     const primaryId = parsed.identifier[0];
-    entityId = primaryId.identifierValue || primaryId.combinedForm;
-  }
-
-  if (!entityId) {
+    entityId = primaryId.identifierValue || primaryId.combinedForm?.split(':')[1] || crypto.randomUUID();
+  } else {
     entityId = crypto.randomUUID();
     parsed.identifier = [{
       identifierScope: 'me-nexus',
@@ -60,10 +60,121 @@ export function parseOmcJson(jsonText: string): ImportResult {
     }];
   }
 
+  const name = parsed.name || parsed.characterName || 
+    (parsed.creativeWorkTitle?.[0]?.titleName) || 
+    `${entityType} ${entityId.slice(0, 8)}`;
+
+  return {
+    valid: true,
+    entity: {
+      entityType: entityType as EntityType,
+      entityId,
+      content: parsed,
+      name
+    }
+  };
+}
+
+export function parseOmcJson(jsonText: string): ImportResult {
+  const result = parseOmcJsonMulti(jsonText);
+  
+  if (!result.success) {
+    return { success: false, error: result.error };
+  }
+  
+  if (result.entities.length === 0) {
+    return { success: false, error: 'No valid entities found' };
+  }
+  
+  if (result.entities.length === 1) {
+    const entity = result.entities[0];
+    return {
+      success: true,
+      entityType: entity.entityType,
+      entityId: entity.entityId,
+      content: entity.content
+    };
+  }
+  
+  // For backwards compatibility, return first entity but this shouldn't be used
+  const entity = result.entities[0];
   return {
     success: true,
-    entityType: entityType as EntityType,
-    entityId,
-    content: parsed
+    entityType: entity.entityType,
+    entityId: entity.entityId,
+    content: entity.content
+  };
+}
+
+export function parseOmcJsonMulti(jsonText: string): MultiImportResult {
+  let parsed: any;
+  
+  try {
+    parsed = JSON.parse(jsonText);
+  } catch (e: any) {
+    return { success: false, entities: [], error: `Invalid JSON format: ${e.message}` };
+  }
+
+  const entities: ImportedEntity[] = [];
+  const warnings: string[] = [];
+  const seenIds = new Set<string>();
+
+  // Handle array of entities
+  if (Array.isArray(parsed)) {
+    for (let i = 0; i < parsed.length; i++) {
+      const result = validateAndExtractEntity(parsed[i]);
+      if (result.valid && result.entity) {
+        if (seenIds.has(result.entity.entityId)) {
+          warnings.push(`Duplicate identifier at index ${i}: ${result.entity.entityId}`);
+        } else {
+          seenIds.add(result.entity.entityId);
+          entities.push(result.entity);
+        }
+      } else {
+        warnings.push(`Entity at index ${i}: ${result.error}`);
+      }
+    }
+  }
+  // Handle object with "entities" array
+  else if (parsed.entities && Array.isArray(parsed.entities)) {
+    for (let i = 0; i < parsed.entities.length; i++) {
+      const result = validateAndExtractEntity(parsed.entities[i]);
+      if (result.valid && result.entity) {
+        if (seenIds.has(result.entity.entityId)) {
+          warnings.push(`Duplicate identifier at index ${i}: ${result.entity.entityId}`);
+        } else {
+          seenIds.add(result.entity.entityId);
+          entities.push(result.entity);
+        }
+      } else {
+        warnings.push(`Entity at index ${i}: ${result.error}`);
+      }
+    }
+  }
+  // Handle single entity object
+  else if (typeof parsed === 'object' && parsed !== null) {
+    const result = validateAndExtractEntity(parsed);
+    if (result.valid && result.entity) {
+      entities.push(result.entity);
+    } else {
+      return { success: false, entities: [], error: result.error };
+    }
+  } else {
+    return { success: false, entities: [], error: 'JSON must be an object or array of OMC entities' };
+  }
+
+  if (entities.length === 0) {
+    return { 
+      success: false, 
+      entities: [], 
+      error: 'No valid entities found in file',
+      warnings: warnings.length > 0 ? warnings : undefined
+    };
+  }
+
+  return {
+    success: true,
+    entities,
+    warnings: warnings.length > 0 ? warnings : undefined
   };
 }
