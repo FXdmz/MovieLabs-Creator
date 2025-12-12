@@ -29,7 +29,8 @@ import {
   Home,
   ChevronDown,
   Eye,
-  Loader2
+  Loader2,
+  Network
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -104,6 +105,7 @@ import {
 } from "@/components/ui/dialog";
 import { Copy } from "lucide-react";
 import { ViewEntityDialog } from "@/components/view-entity-dialog";
+import { VisualizeEntityDialog } from "@/components/visualize-entity-dialog";
 
 const LocationIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 46" className={className} fill="currentColor">
@@ -204,6 +206,7 @@ export default function Dashboard() {
   const [showFileDropZone, setShowFileDropZone] = useState(false);
   const [showAssetWizard, setShowAssetWizard] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
+  const [showVisualizeDialog, setShowVisualizeDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [showExportNameDialog, setShowExportNameDialog] = useState(false);
   const [exportFileName, setExportFileName] = useState("omc-ontology");
@@ -816,6 +819,17 @@ export default function Dashboard() {
                 <Button 
                   variant="outline" 
                   size="sm" 
+                  onClick={() => setShowVisualizeDialog(true)}
+                  disabled={!selectedEntity}
+                  className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
+                  data-testid="button-visualize-entity"
+                >
+                  <Network className="h-4 w-4" /> Visualize
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  size="sm" 
                   onClick={() => setShowImportDialog(true)}
                   className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
                   data-testid="button-import-entity"
@@ -1072,6 +1086,12 @@ export default function Dashboard() {
       <ViewEntityDialog 
         open={showViewDialog} 
         onOpenChange={setShowViewDialog} 
+        entity={selectedEntity ?? null} 
+      />
+
+      <VisualizeEntityDialog 
+        open={showVisualizeDialog} 
+        onOpenChange={setShowVisualizeDialog} 
         entity={selectedEntity ?? null} 
       />
 
