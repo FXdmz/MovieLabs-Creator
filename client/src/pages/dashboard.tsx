@@ -204,6 +204,7 @@ export default function Dashboard() {
   const [validationSource, setValidationSource] = useState<'movielabs' | 'local' | null>(null);
   const [validationResult, setValidationResult] = useState<any>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const [isValidatingAll, setIsValidatingAll] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [showFileDropZone, setShowFileDropZone] = useState(false);
   const [showAssetWizard, setShowAssetWizard] = useState(false);
@@ -566,6 +567,106 @@ export default function Dashboard() {
     }
   };
 
+  const handleValidateAll = async () => {
+    if (entities.length === 0) {
+      toast({
+        title: "No entities to validate",
+        description: "Add some entities first before validating.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsValidatingAll(true);
+    setValidationErrors(null);
+    setValidationResult(null);
+    setValidationSource(null);
+
+    try {
+      // Prepare all entities for validation
+      const allEntitiesForValidation = entities.map(e => prepareContentForValidation(e.content));
+      
+      const response = await fetch('/api/validate/movielabs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(allEntitiesForValidation)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.source === 'movielabs') {
+        setValidationSource('movielabs');
+        setValidationResult(data.result);
+        
+        const mlResult = data.result;
+        const summary = mlResult?.summary || {};
+        const details = mlResult?.details || {};
+        
+        const failedRules = Object.entries(summary).filter(([_, status]) => status === 'failed');
+        const isValid = failedRules.length === 0;
+        
+        if (isValid) {
+          toast({
+            title: "All Entities Valid",
+            description: `All ${entities.length} entities passed MovieLabs validation!`,
+            variant: "default",
+            className: "bg-green-600 text-white border-none",
+            action: (
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                onClick={() => {
+                  setValidationErrors([]);
+                  setShowValidationDialog(true);
+                }}
+                className="bg-white/20 hover:bg-white/30 text-white border-none"
+              >
+                View Details
+              </Button>
+            )
+          });
+          setValidationErrors([]);
+        } else {
+          const issues = details?.issues || {};
+          const allErrors: any[] = [];
+          
+          for (const [ruleId, ruleIssues] of Object.entries(issues)) {
+            if (Array.isArray(ruleIssues)) {
+              ruleIssues.forEach((issue: any) => {
+                allErrors.push({
+                  ruleId,
+                  issue: issue.issue,
+                  exception: issue.exception,
+                  context: issue.context,
+                  specifics: issue.specifics
+                });
+              });
+            }
+          }
+          
+          setValidationErrors(allErrors.length > 0 ? allErrors : [{ summary, details }]);
+          setShowValidationDialog(true);
+        }
+      } else {
+        // Fallback message for local validation not supporting multi-entity
+        toast({
+          title: "Validation Unavailable",
+          description: "MovieLabs API is unavailable. Please validate entities individually.",
+          variant: "destructive"
+        });
+      }
+    } catch (e: any) {
+      console.error("Validate all error:", e);
+      toast({
+        title: "Validation Error",
+        description: "Could not reach MovieLabs validator. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsValidatingAll(false);
+    }
+  };
+
   const copyErrorsToClipboard = () => {
     if (!validationErrors) return;
     const text = JSON.stringify(validationErrors, null, 2);
@@ -729,14 +830,29 @@ export default function Dashboard() {
 
         <div className="p-4 border-t border-sidebar-border bg-sidebar-accent/10 space-y-2">
           {entities.length > 0 && (
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
-              onClick={() => setShowVisualizeAllDialog(true)}
-              data-testid="button-visualize-all"
-            >
-              <Network className="h-4 w-4" /> Visualize All
-            </Button>
+            <>
+              <Button 
+                variant="outline" 
+                className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
+                onClick={() => setShowVisualizeAllDialog(true)}
+                data-testid="button-visualize-all"
+              >
+                <Network className="h-4 w-4" /> Visualize All
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
+                onClick={handleValidateAll}
+                disabled={isValidatingAll}
+                data-testid="button-validate-all"
+              >
+                {isValidatingAll ? (
+                  <><Loader2 className="h-4 w-4 animate-spin" /> Validating...</>
+                ) : (
+                  <><CheckCircle className="h-4 w-4" /> Validate All</>
+                )}
+              </Button>
+            </>
           )}
           <Link href="/">
             <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
