@@ -2,6 +2,16 @@
 
 ## Milestones
 
+### OMC File Import Feature (December 12, 2025)
+- Import single-entity OMC files in JSON or RDF/TTL format
+- Import dialog with drag-and-drop file upload
+- JSON importer validates entityType, schemaVersion, and extracts entity data
+- TTL importer uses N3 library to parse RDF triples and reconstruct entity structure
+- Reverse mapping from RDF predicates to JSON keys for complete round-trip support
+- Handles blank nodes and nested structures properly
+- Import button in toolbar and on welcome screen
+- Import files located in: client/src/lib/import/
+
 ### Asset Import Wizard (December 11, 2025)
 - Multi-step wizard for importing assets from files (Upload → Classify → Group → Review)
 - Step 1: Drag-and-drop multi-file upload with auto-detection of structural types from MIME types

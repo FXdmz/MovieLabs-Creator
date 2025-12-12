@@ -34,7 +34,9 @@ import {
 
 import { FileDropZone } from "@/components/file-drop-zone";
 import { AssetWizard, StagedAsset, AssetGroup } from "@/components/asset-wizard";
+import { ImportEntityDialog } from "@/components/import-entity-dialog";
 import { ExtractedMetadata, formatDuration } from "@/lib/file-metadata";
+import { ImportResult } from "@/lib/import";
 import { entityToTurtle } from "@/lib/export";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -163,8 +165,19 @@ export default function Dashboard() {
   const [showFileDropZone, setShowFileDropZone] = useState(false);
   const [showAssetWizard, setShowAssetWizard] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
+
+  const handleImportSuccess = (result: ImportResult) => {
+    if (result.success && result.entityType && result.entityId && result.content) {
+      addEntityFromContent(result.entityType, result.entityId, result.content);
+      toast({
+        title: "Entity Imported",
+        description: `Successfully imported ${result.entityType}: ${result.content.name || result.entityId}`,
+      });
+    }
+  };
 
   const handleFileAssetCreated = (asset: any, metadata: ExtractedMetadata) => {
     const id = asset.identifier[0].identifierValue;
@@ -711,6 +724,16 @@ export default function Dashboard() {
                   <Eye className="h-4 w-4" /> View
                 </Button>
 
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowImportDialog(true)}
+                  className="gap-2 border-primary/20 text-primary hover:bg-primary/5"
+                  data-testid="button-import-entity"
+                >
+                  <Upload className="h-4 w-4" /> Import
+                </Button>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2 border-primary/20 text-primary hover:bg-primary/5">
@@ -806,6 +829,17 @@ export default function Dashboard() {
               </Button>
               <Button onClick={() => addEntity("Location")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                 <LocationIcon className="h-4 w-4" /> Create Location
+              </Button>
+            </div>
+            <div className="mt-6">
+              <Button 
+                onClick={() => setShowImportDialog(true)} 
+                variant="outline" 
+                size="lg" 
+                className="gap-2 border-[#D97218] text-[#D97218] hover:bg-[#D97218]/10 hover:border-[#D97218] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
+                data-testid="button-import-entity-welcome"
+              >
+                <Upload className="h-4 w-4" /> Import OMC File
               </Button>
             </div>
           </div>
@@ -941,6 +975,12 @@ export default function Dashboard() {
         open={showViewDialog} 
         onOpenChange={setShowViewDialog} 
         entity={selectedEntity ?? null} 
+      />
+
+      <ImportEntityDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        onImportSuccess={handleImportSuccess}
       />
     </div>
   );
