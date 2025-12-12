@@ -286,8 +286,11 @@ export function VisualizeEntityDialog({
     []
   );
 
+  const [cyReady, setCyReady] = useState(false);
+
   const handleCy = useCallback((cy: Core) => {
     cyRef.current = cy;
+    setCyReady(true);
   }, []);
 
   const runLayoutWithName = useCallback((name: string) => {
@@ -320,12 +323,24 @@ export function VisualizeEntityDialog({
     runLayoutWithName(layoutName);
   }, [layoutName, runLayoutWithName]);
 
+  // Run layout when dialog opens, cy is ready, or layout changes
   useEffect(() => {
-    if (open && cyRef.current) {
-      const timer = setTimeout(() => runLayoutWithName(layoutName), 100);
+    if (open && cyReady && cyRef.current) {
+      const timer = setTimeout(() => {
+        runLayoutWithName(layoutName);
+        // Also fit to ensure nodes are visible
+        cyRef.current?.fit(undefined, 30);
+      }, 150);
       return () => clearTimeout(timer);
     }
-  }, [layoutName, open, runLayoutWithName]);
+  }, [layoutName, open, cyReady, runLayoutWithName]);
+
+  // Reset cyReady when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setCyReady(false);
+    }
+  }, [open]);
 
   const handleZoomIn = () => {
     if (cyRef.current) {
