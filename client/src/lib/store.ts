@@ -10,14 +10,27 @@ export interface Entity {
   content: any;
 }
 
+interface HistoryState {
+  entities: Entity[];
+  selectedEntityId: string | null;
+}
+
+const MAX_HISTORY = 50;
+
 interface OntologyStore {
   entities: Entity[];
   selectedEntityId: string | null;
+  past: HistoryState[];
+  future: HistoryState[];
   addEntity: (type: EntityType) => void;
   addEntityFromContent: (type: EntityType, id: string, content: any) => void;
   updateEntity: (id: string, content: any) => void;
   removeEntity: (id: string) => void;
   selectEntity: (id: string | null) => void;
+  undo: () => void;
+  redo: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
   exportJson: () => any;
   exportAs: (format: ExportFormat) => string;
   downloadAs: (format: ExportFormat, filename?: string) => void;
@@ -25,9 +38,16 @@ interface OntologyStore {
   getSelectedEntity: () => Entity | null;
 }
 
+const saveToHistory = (state: OntologyStore): HistoryState[] => {
+  const newPast = [...state.past, { entities: state.entities, selectedEntityId: state.selectedEntityId }];
+  return newPast.slice(-MAX_HISTORY);
+};
+
 export const useOntologyStore = create<OntologyStore>((set, get) => ({
   entities: [],
   selectedEntityId: null,
+  past: [],
+  future: [],
   addEntity: (type) => {
     const id = uuidv4();
     
@@ -136,6 +156,8 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       content: defaultContent
     };
     set((state) => ({
+      past: saveToHistory(state),
+      future: [],
       entities: [...state.entities, newEntity],
       selectedEntityId: id
     }));
@@ -148,12 +170,16 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       content
     };
     set((state) => ({
+      past: saveToHistory(state),
+      future: [],
       entities: [...state.entities, newEntity],
       selectedEntityId: id
     }));
   },
   updateEntity: (id, content) => {
     set((state) => ({
+      past: saveToHistory(state),
+      future: [],
       entities: state.entities.map((e) => 
         e.id === id ? { ...e, content, name: content.name ?? e.name } : e
       )
@@ -161,11 +187,43 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
   },
   removeEntity: (id) => {
     set((state) => ({
+      past: saveToHistory(state),
+      future: [],
       entities: state.entities.filter((e) => e.id !== id),
       selectedEntityId: state.selectedEntityId === id ? null : state.selectedEntityId
     }));
   },
   selectEntity: (id) => set({ selectedEntityId: id }),
+  undo: () => {
+    const { past, entities, selectedEntityId, future } = get();
+    if (past.length === 0) return;
+    
+    const previous = past[past.length - 1];
+    const newPast = past.slice(0, -1);
+    
+    set({
+      past: newPast,
+      entities: previous.entities,
+      selectedEntityId: previous.selectedEntityId,
+      future: [{ entities, selectedEntityId }, ...future].slice(0, MAX_HISTORY)
+    });
+  },
+  redo: () => {
+    const { past, entities, selectedEntityId, future } = get();
+    if (future.length === 0) return;
+    
+    const next = future[0];
+    const newFuture = future.slice(1);
+    
+    set({
+      past: [...past, { entities, selectedEntityId }].slice(-MAX_HISTORY),
+      entities: next.entities,
+      selectedEntityId: next.selectedEntityId,
+      future: newFuture
+    });
+  },
+  canUndo: () => get().past.length > 0,
+  canRedo: () => get().future.length > 0,
   exportJson: () => {
     const { entities } = get();
     const transformed = prepareEntitiesForJsonExport(entities);

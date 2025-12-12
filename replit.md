@@ -91,6 +91,12 @@ The tool is designed for media production professionals who need to create stand
 - **Clear Controls**: Clear search or all filters with single click
 - **Result Count**: Shows filtered count when filters are active
 
+### Undo/Redo
+- **History Management**: Up to 50 undo/redo states
+- **Keyboard Shortcuts**: Ctrl+Z (undo), Ctrl+Shift+Z or Ctrl+Y (redo)
+- **Toolbar Buttons**: Undo/redo buttons in entity toolbar
+- **Tracks All Changes**: Entity creation, updates, and deletion
+
 ### UI/UX Features
 - **Dark Mode**: Full dark mode support with system preference detection
 - **ME-DMZ Branding**: Custom color palette and icons
@@ -163,6 +169,7 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 12, 2025
+- Undo/redo with keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
 - Enhanced search & filter with type dropdown and clear controls
 - Graph relationship edge visualization fix for imported entities
 - MovieLabs visual language SVG icons in graph

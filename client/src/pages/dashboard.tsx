@@ -32,7 +32,9 @@ import {
   Loader2,
   Network,
   X,
-  Filter
+  Filter,
+  Undo2,
+  Redo2
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -198,7 +200,7 @@ const getEntityIcon = (entityType: string) => {
 };
 
 export default function Dashboard() {
-  const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson } = useOntologyStore();
+  const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson, undo, redo, canUndo, canRedo } = useOntologyStore();
   const [location, setLocation] = useLocation();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -404,6 +406,34 @@ export default function Dashboard() {
       setLocation('/builder', { replace: true });
     }
   }, [addEntity, setLocation]);
+
+  // Keyboard shortcuts for undo/redo (skip when in editable fields)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isEditable = target.tagName === 'INPUT' || 
+                         target.tagName === 'TEXTAREA' || 
+                         target.isContentEditable ||
+                         target.closest('.monaco-editor');
+      
+      if (isEditable) return;
+      
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo]);
 
   const selectedEntity = entities.find((e) => e.id === selectedEntityId);
 
@@ -1000,6 +1030,40 @@ export default function Dashboard() {
               </div>
               
               <div className="flex items-center gap-3">
+                <TooltipProvider>
+                  <div className="flex items-center border rounded-md">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={undo} 
+                          disabled={!canUndo()}
+                          className="h-8 w-8 rounded-r-none"
+                          data-testid="button-undo"
+                        >
+                          <Undo2 className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Undo (Ctrl+Z)</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={redo} 
+                          disabled={!canRedo()}
+                          className="h-8 w-8 rounded-l-none border-l"
+                          data-testid="button-redo"
+                        >
+                          <Redo2 className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Redo (Ctrl+Shift+Z)</TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
                  
                 <TooltipProvider>
                   <Tooltip>
