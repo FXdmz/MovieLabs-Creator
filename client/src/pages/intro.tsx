@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, HelpCircle } from "lucide-react";
+import { ArrowRight, HelpCircle, Network } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { HelpDialog } from "@/components/help-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { VisualizeEntityDialog } from "@/components/visualize-entity-dialog";
+import { useOntologyStore } from "@/lib/store";
 
 // Hero image served from public folder for reliable production builds
 const heroImage = "/hero-background.jpg";
@@ -77,6 +80,9 @@ const CreativeWorkIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Intro() {
+  const [showVisualizer, setShowVisualizer] = useState(false);
+  const { entities } = useOntologyStore();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-background dark:to-background">
       <header className="border-b bg-white/80 dark:bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -88,6 +94,16 @@ export default function Intro() {
             </a>
           </div>
           <div className="flex items-center gap-2">
+            {entities.length > 0 && (
+              <Button 
+                variant="outline" 
+                className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] transition-all duration-200" 
+                onClick={() => setShowVisualizer(true)}
+                data-testid="button-visualize-all-intro"
+              >
+                <Network className="h-4 w-4" /> Visualize All
+              </Button>
+            )}
             <ThemeToggle />
             <HelpDialog 
               trigger={
@@ -105,6 +121,13 @@ export default function Intro() {
           </div>
         </div>
       </header>
+      
+      <VisualizeEntityDialog
+        open={showVisualizer}
+        onOpenChange={setShowVisualizer}
+        entities={entities}
+        title="Project Entity Graph"
+      />
 
       <main>
         <section className="relative">

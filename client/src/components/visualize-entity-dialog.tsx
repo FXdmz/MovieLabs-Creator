@@ -33,7 +33,9 @@ interface SelectedElement {
 interface VisualizeEntityDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  entity: Entity | null;
+  entity?: Entity | null;
+  entities?: Entity[];
+  title?: string;
 }
 
 const ME_DMZ_COLORS = {
@@ -198,6 +200,95 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
   return elements;
 }
 
+function entitiesToGraphElements(entities: Entity[]): ElementDefinition[] {
+  const elements: ElementDefinition[] = [];
+  const entityIdMap = new Map<string, string>();
+  
+  entities.forEach(entity => {
+    const content = entity.content || {};
+    const identifiers = content.identifier || [];
+    identifiers.forEach((id: any) => {
+      if (id.combinedForm) {
+        entityIdMap.set(id.combinedForm, entity.id);
+      }
+      if (id.identifierValue) {
+        entityIdMap.set(id.identifierValue, entity.id);
+      }
+    });
+  });
+  
+  entities.forEach(entity => {
+    elements.push({
+      data: {
+        id: entity.id,
+        label: entity.name || entity.type,
+        type: entity.type,
+        isRoot: true,
+        rawData: entity.content,
+      },
+    });
+  });
+  
+  const addedEdges = new Set<string>();
+  
+  entities.forEach(entity => {
+    const content = entity.content || {};
+    
+    const findReferences = (obj: any, parentType: string) => {
+      if (!obj || typeof obj !== 'object') return;
+      
+      if (Array.isArray(obj)) {
+        obj.forEach(item => {
+          if (typeof item === 'string') {
+            const targetId = entityIdMap.get(item);
+            if (targetId && targetId !== entity.id) {
+              const edgeKey = `${entity.id}-${targetId}`;
+              if (!addedEdges.has(edgeKey)) {
+                elements.push({
+                  data: {
+                    source: entity.id,
+                    target: targetId,
+                    label: parentType,
+                  },
+                });
+                addedEdges.add(edgeKey);
+              }
+            }
+          } else if (typeof item === 'object') {
+            findReferences(item, parentType);
+          }
+        });
+        return;
+      }
+      
+      Object.entries(obj).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          const targetId = entityIdMap.get(value);
+          if (targetId && targetId !== entity.id) {
+            const edgeKey = `${entity.id}-${targetId}`;
+            if (!addedEdges.has(edgeKey)) {
+              elements.push({
+                data: {
+                  source: entity.id,
+                  target: targetId,
+                  label: key,
+                },
+              });
+              addedEdges.add(edgeKey);
+            }
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          findReferences(value, key);
+        }
+      });
+    };
+    
+    findReferences(content, entity.type);
+  });
+  
+  return elements;
+}
+
 const LAYOUTS = [
   { value: "cose", label: "Force-Directed (COSE)" },
   { value: "breadthfirst", label: "Hierarchical" },
@@ -210,16 +301,23 @@ export function VisualizeEntityDialog({
   open,
   onOpenChange,
   entity,
+  entities,
+  title,
 }: VisualizeEntityDialogProps) {
   const cyRef = useRef<Core | null>(null);
   const [layoutName, setLayoutName] = useState("circle");
   const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null);
   const [showLegend, setShowLegend] = useState(true);
 
+  const isMultiMode = entities && entities.length > 0;
+  
   const elements = useMemo(() => {
+    if (isMultiMode) {
+      return entitiesToGraphElements(entities);
+    }
     if (!entity) return [];
     return entityToGraphElements(entity);
-  }, [entity]);
+  }, [entity, entities, isMultiMode]);
 
   const stylesheet = useMemo(
     () => [
@@ -424,7 +522,15 @@ export function VisualizeEntityDialog({
     }
   };
 
-  if (!entity) return null;
+  if (!entity && !isMultiMode) return null;
+
+  const dialogTitle = title 
+    ? title 
+    : isMultiMode 
+      ? `All Entities (${entities.length})`
+      : entity 
+        ? `${entity.type} — ${entity.name}`
+        : "Visualize";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -435,9 +541,7 @@ export function VisualizeEntityDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Network className="h-5 w-5 text-primary" />
-            <span className="text-primary">{entity.type}</span>
-            <span className="text-muted-foreground">—</span>
-            <span>{entity.name}</span>
+            <span>{dialogTitle}</span>
           </DialogTitle>
         </DialogHeader>
 
