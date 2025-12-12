@@ -30,7 +30,9 @@ import {
   ChevronDown,
   Eye,
   Loader2,
-  Network
+  Network,
+  X,
+  Filter
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -200,6 +202,7 @@ export default function Dashboard() {
   const [location, setLocation] = useLocation();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [validationErrors, setValidationErrors] = useState<any[] | null>(null);
   const [validationSource, setValidationSource] = useState<'movielabs' | 'local' | null>(null);
   const [validationResult, setValidationResult] = useState<any>(null);
@@ -404,10 +407,28 @@ export default function Dashboard() {
 
   const selectedEntity = entities.find((e) => e.id === selectedEntityId);
 
-  const filteredEntities = entities.filter(e => 
-    e.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    e.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEntities = entities.filter(e => {
+    const matchesSearch = searchTerm === "" || 
+      e.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      e.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = typeFilter === "all" || e.type === typeFilter;
+    return matchesSearch && matchesType;
+  });
+
+  const entityTypeCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: entities.length };
+    for (const entity of entities) {
+      counts[entity.type] = (counts[entity.type] || 0) + 1;
+    }
+    return counts;
+  }, [entities]);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setTypeFilter("all");
+  };
+
+  const hasActiveFilters = searchTerm !== "" || typeFilter !== "all";
 
   const handleValidate = async () => {
     if (!schema || !selectedEntity) return;
@@ -770,20 +791,85 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="p-4 border-b border-sidebar-border">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
               <Logo />
             </a>
             <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-accent" />
           </div>
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-primary/50" />
-            <Input
-              placeholder="Search entities..."
-              className="pl-9 bg-sidebar-accent/50 border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/40 focus-visible:ring-sidebar-ring"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-primary/50" />
+              <Input
+                placeholder="Search by name..."
+                className="pl-9 pr-8 bg-sidebar-accent/50 border-sidebar-border text-sidebar-foreground placeholder:text-sidebar-foreground/40 focus-visible:ring-sidebar-ring"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="input-search-entities"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2.5 top-2.5 text-sidebar-foreground/50 hover:text-sidebar-foreground"
+                  data-testid="button-clear-search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 justify-between bg-sidebar-accent/50 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
+                    data-testid="button-type-filter"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Filter className="h-3 w-3" />
+                      {typeFilter === "all" ? "All Types" : typeFilter}
+                    </span>
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem onClick={() => setTypeFilter("all")}>
+                    <span className="flex-1">All Types</span>
+                    <Badge variant="secondary" className="ml-2 text-xs">{entityTypeCounts.all || 0}</Badge>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {Object.entries(entityTypeCounts)
+                    .filter(([type]) => type !== 'all')
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([type, count]) => (
+                      <DropdownMenuItem key={type} onClick={() => setTypeFilter(type)}>
+                        <span className="flex items-center gap-2 flex-1">
+                          {getEntityIcon(type)}
+                          {type === 'CreativeWork' ? 'Creative Work' : type}
+                        </span>
+                        <Badge variant="secondary" className="ml-2 text-xs">{count}</Badge>
+                      </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent px-2"
+                  data-testid="button-clear-filters"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <div className="text-xs text-sidebar-foreground/60 px-1">
+                Showing {filteredEntities.length} of {entities.length} entities
+              </div>
+            )}
           </div>
         </div>
 

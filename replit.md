@@ -85,6 +85,12 @@ The tool is designed for media production professionals who need to create stand
 - **JSON Editor Mode**: Switch between form and raw JSON editing
 - **Monaco Editor**: Syntax highlighting and code completion
 
+### Search & Filter
+- **Text Search**: Search entities by name in the sidebar
+- **Type Filter**: Filter entities by type with dropdown showing counts
+- **Clear Controls**: Clear search or all filters with single click
+- **Result Count**: Shows filtered count when filters are active
+
 ### UI/UX Features
 - **Dark Mode**: Full dark mode support with system preference detection
 - **ME-DMZ Branding**: Custom color palette and icons
@@ -157,6 +163,7 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 12, 2025
+- Enhanced search & filter with type dropdown and clear controls
 - Graph relationship edge visualization fix for imported entities
 - MovieLabs visual language SVG icons in graph
 - Creative Work field in Task form with automatic Context
