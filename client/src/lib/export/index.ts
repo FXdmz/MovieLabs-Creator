@@ -1,11 +1,13 @@
 import { Entity } from "../store";
 import { entitiesToTurtle, entityToTurtle } from "./rdf/serializer";
+import { entitiesToTurtleViaRdf, entitiesToJsonViaRdf } from "../rdf/serializer";
 
 export type ExportFormat = "json" | "ttl";
 
 export interface ExportOptions {
   format: ExportFormat;
   pretty?: boolean;
+  useRdfStore?: boolean;
 }
 
 interface CustomDataEntry {
@@ -147,11 +149,18 @@ export function prepareEntitiesForRdfExport(entities: Entity[]): Entity[] {
 }
 
 export function exportEntities(entities: Entity[], options: ExportOptions): string {
-  const { format, pretty = true } = options;
+  const { format, pretty = true, useRdfStore = false } = options;
   
   if (format === "ttl") {
+    if (useRdfStore) {
+      return entitiesToTurtleViaRdf(entities, { pretty });
+    }
     const rdfEntities = prepareEntitiesForRdfExport(entities);
     return entitiesToTurtle(rdfEntities);
+  }
+  
+  if (useRdfStore) {
+    return entitiesToJsonViaRdf(entities, { pretty });
   }
   
   const jsonEntities = prepareEntitiesForJsonExport(entities);

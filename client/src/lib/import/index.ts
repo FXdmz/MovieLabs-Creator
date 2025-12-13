@@ -1,8 +1,9 @@
 export { parseOmcJson, parseOmcJsonMulti, type ImportResult, type ImportedEntity, type MultiImportResult } from './json-importer';
 export { parseOmcTtl, parseOmcTtlMulti } from './ttl-importer';
 
-import { parseOmcJson, parseOmcJsonMulti, ImportResult, MultiImportResult } from './json-importer';
+import { parseOmcJson, parseOmcJsonMulti, ImportResult, MultiImportResult, ImportedEntity } from './json-importer';
 import { parseOmcTtl, parseOmcTtlMulti } from './ttl-importer';
+import { OmcRdfStore, entitiesToRdf, extractEntityId } from '../rdf';
 
 // Single entity import (backwards compatible)
 export async function parseOmcFile(fileContent: string, fileName: string): Promise<ImportResult> {
@@ -39,4 +40,40 @@ export async function parseOmcFileMulti(fileContent: string, fileName: string): 
     entities: [],
     error: `Unsupported file type: .${extension}. Please use .json or .ttl files.` 
   };
+}
+
+export interface ImportToRdfOptions {
+  store?: OmcRdfStore;
+}
+
+export function importEntitiesToRdfStore(
+  entities: ImportedEntity[], 
+  options: ImportToRdfOptions = {}
+): OmcRdfStore {
+  const store = options.store || new OmcRdfStore();
+  
+  const entityData = entities.map(e => ({
+    id: extractEntityId(e.content) || e.entityId,
+    content: e.content
+  }));
+  
+  entitiesToRdf(store, entityData);
+  
+  return store;
+}
+
+export async function parseOmcFileToRdf(
+  fileContent: string, 
+  fileName: string,
+  options: ImportToRdfOptions = {}
+): Promise<{ result: MultiImportResult; store: OmcRdfStore | null }> {
+  const result = await parseOmcFileMulti(fileContent, fileName);
+  
+  if (!result.success || result.entities.length === 0) {
+    return { result, store: null };
+  }
+  
+  const store = importEntitiesToRdfStore(result.entities, options);
+  
+  return { result, store };
 }
