@@ -125,7 +125,7 @@ export default function Intro() {
               </h1>
               
               <p className="text-2xl md:text-3xl text-muted-foreground font-light">
-                Where production builds knowledge
+                Where productions build knowledge
               </p>
             </div>
           </div>
@@ -387,7 +387,7 @@ export default function Intro() {
                 <Logo className="h-6 w-auto hidden dark:block" variant="dark" />
               </a>
               <span className="text-sm text-muted-foreground">
-                project_<span className="italic">aescher</span> — Where production builds knowledge
+                project_<span className="italic">aescher</span> — Where productions build knowledge
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
