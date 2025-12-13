@@ -114,30 +114,19 @@ export default function Intro() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-white/80 to-white dark:from-slate-950/50 dark:via-slate-900/80 dark:to-slate-950" />
           <div className="relative container mx-auto px-6 py-24">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="text-center md:text-left">
-                  <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
-                    <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                    <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
-                  </div>
-                  
-                  <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground mb-4 tracking-tight">
-                    project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
-                  </h1>
-                  
-                  <p className="text-2xl md:text-3xl text-muted-foreground font-light">
-                    Where productions build knowledge
-                  </p>
-                </div>
-                <div className="flex justify-center md:justify-end">
-                  <img 
-                    src="/project-aescher-diagram.svg" 
-                    alt="Knowledge Graph Diagram" 
-                    className="w-full max-w-md rounded-xl shadow-2xl shadow-violet-500/20"
-                  />
-                </div>
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
+                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
               </div>
+              
+              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-4 tracking-tight">
+                project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
+              </h1>
+              
+              <p className="text-2xl md:text-3xl text-muted-foreground font-light">
+                Where productions build knowledge
+              </p>
             </div>
           </div>
         </section>
