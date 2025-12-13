@@ -11,7 +11,7 @@
  * - OMC Foundation: Technical foundation using OMC standard
  * 
  * @navigation
- * - Header: Logo, theme toggle, beta access button
+ * - Header: ME-DMZ Logo, theme toggle, beta access button
  * - Footer: Attribution and partnership logos
  */
 
@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Brain, Sparkles, Zap, Network, Shield, Clock, Check } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 
@@ -81,7 +82,6 @@ export default function Intro() {
     if (!email.trim()) return;
     
     setIsSubmitting(true);
-    // Simulate signup
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSubmitting(false);
     setIsSubmitted(true);
@@ -92,12 +92,17 @@ export default function Intro() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-light text-white tracking-wide">
-              project_<span className="italic font-medium">aescher</span>
+          <div className="flex items-center gap-4">
+            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="block">
+              <Logo className="h-8 w-auto dark:hidden" variant="light" />
+              <Logo className="h-8 w-auto hidden dark:block" variant="dark" />
+            </a>
+            <span className="text-muted-foreground">|</span>
+            <h1 className="text-lg font-light text-foreground tracking-wide">
+              project_<span className="italic font-medium text-violet-600 dark:text-violet-400">aescher</span>
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -118,25 +123,25 @@ export default function Intro() {
           <img 
             src={heroImage} 
             alt="" 
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
+            className="absolute inset-0 w-full h-full object-cover opacity-20 dark:opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-900/80 to-slate-950" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-white/80 to-white dark:from-slate-950/50 dark:via-slate-900/80 dark:to-slate-950" />
           <div className="relative container mx-auto px-6 py-24">
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
-                <Sparkles className="h-4 w-4 text-violet-400" />
-                <span className="text-sm text-violet-300 font-medium">Private Beta</span>
+                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl font-light text-white mb-6 tracking-tight">
-                project_<span className="italic font-medium bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">aescher</span>
+              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-6 tracking-tight">
+                project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
               </h1>
               
-              <p className="text-2xl md:text-3xl text-slate-300 font-light mb-4">
+              <p className="text-2xl md:text-3xl text-muted-foreground font-light mb-4">
                 The brain for production.
               </p>
               
-              <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
                 An intelligent orchestration layer that connects every aspect of your production workflow—from creative vision to final delivery.
               </p>
 
@@ -147,7 +152,7 @@ export default function Intro() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-violet-500"
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-violet-500"
                     data-testid="input-beta-email"
                   />
                   <Button 
@@ -160,7 +165,7 @@ export default function Intro() {
                   </Button>
                 </form>
               ) : (
-                <div className="flex items-center justify-center gap-2 text-green-400">
+                <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400">
                   <Check className="h-5 w-5" />
                   <span>You're on the waitlist!</span>
                 </div>
@@ -170,85 +175,85 @@ export default function Intro() {
         </section>
 
         {/* Features Section */}
-        <section className="py-24 bg-slate-900/50">
+        <section className="py-24 bg-muted/50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
                 Intelligence at every step
               </h2>
-              <p className="text-lg text-slate-400">
+              <p className="text-lg text-muted-foreground">
                 A unified system that understands the full context of your production.
               </p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-violet-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Brain className="h-6 w-6 text-violet-400" />
+                    <Brain className="h-6 w-6 text-violet-600 dark:text-violet-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">Contextual Intelligence</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">Contextual Intelligence</h3>
+                  <p className="text-sm text-muted-foreground">
                     Understands relationships between people, tasks, assets, and timelines to surface what matters.
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Network className="h-6 w-6 text-indigo-400" />
+                    <Network className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">Connected Workflows</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">Connected Workflows</h3>
+                  <p className="text-sm text-muted-foreground">
                     Seamlessly integrates across departments, tools, and stages of production.
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Zap className="h-6 w-6 text-blue-400" />
+                    <Zap className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">Real-time Coordination</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">Real-time Coordination</h3>
+                  <p className="text-sm text-muted-foreground">
                     Instantly propagates changes and keeps everyone aligned without manual updates.
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Shield className="h-6 w-6 text-emerald-400" />
+                    <Shield className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">Industry Standards</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">Industry Standards</h3>
+                  <p className="text-sm text-muted-foreground">
                     Built on MovieLabs OMC for true interoperability across the production ecosystem.
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Clock className="h-6 w-6 text-amber-400" />
+                    <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">Predictive Planning</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">Predictive Planning</h3>
+                  <p className="text-sm text-muted-foreground">
                     Anticipates bottlenecks and resource conflicts before they impact your schedule.
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Sparkles className="h-6 w-6 text-rose-400" />
+                    <Sparkles className="h-6 w-6 text-rose-600 dark:text-rose-400" />
                   </div>
-                  <h3 className="font-semibold text-white mb-2">AI-Powered Insights</h3>
-                  <p className="text-sm text-slate-400">
+                  <h3 className="font-semibold text-foreground mb-2">AI-Powered Insights</h3>
+                  <p className="text-sm text-muted-foreground">
                     Surfaces actionable recommendations based on production patterns and best practices.
                   </p>
                 </CardContent>
@@ -258,74 +263,74 @@ export default function Intro() {
         </section>
 
         {/* 2030 Vision Section */}
-        <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
+        <section className="py-24 bg-background">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center">
               <img 
                 src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
                 alt="MovieLabs 2030 Vision" 
-                className="h-32 md:h-40 mx-auto mb-8 opacity-90"
+                className="h-32 md:h-40 mx-auto mb-8"
                 data-testid="img-movielabs-logo"
               />
-              <h2 className="text-3xl md:text-4xl font-light text-white mb-6">
+              <h2 className="text-3xl md:text-4xl font-light text-foreground mb-6">
                 Aligned with the 2030 Vision
               </h2>
-              <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
                 Project Aescher is built on the principles of MovieLabs' 2030 Vision for the future of media production—enabling software-defined workflows, interoperability, and intelligent automation.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-500">
-                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Software-Defined Workflows</span>
-                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Cloud-Native Production</span>
-                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Semantic Interoperability</span>
+              <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+                <span className="px-4 py-2 bg-muted rounded-full border border-border">Software-Defined Workflows</span>
+                <span className="px-4 py-2 bg-muted rounded-full border border-border">Cloud-Native Production</span>
+                <span className="px-4 py-2 bg-muted rounded-full border border-border">Semantic Interoperability</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* OMC Foundation Section */}
-        <section className="py-24 bg-slate-950 border-t border-white/5">
+        <section className="py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
                   Powered by OMC
                 </h2>
-                <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   The Ontology for Media Creation provides the semantic foundation for understanding production workflows.
                 </p>
               </div>
               
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-[#232073]/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <ParticipantIcon className="h-6 w-6 text-violet-400" />
+                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-[#232073]/10 dark:bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <ParticipantIcon className="h-6 w-6 text-[#232073] dark:text-violet-400" />
                   </div>
-                  <h3 className="font-medium text-white text-sm">Participants</h3>
-                  <p className="text-xs text-slate-500 mt-1">People & Organizations</p>
+                  <h3 className="font-medium text-foreground text-sm">Participants</h3>
+                  <p className="text-xs text-muted-foreground mt-1">People & Organizations</p>
                 </div>
                 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <TaskIcon className="h-6 w-6 text-green-400" />
+                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <TaskIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="font-medium text-white text-sm">Tasks</h3>
-                  <p className="text-xs text-slate-500 mt-1">Work Activities</p>
+                  <h3 className="font-medium text-foreground text-sm">Tasks</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Work Activities</p>
                 </div>
                 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-orange-400" />
+                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-orange-500/10 dark:bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <AssetIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                   </div>
-                  <h3 className="font-medium text-white text-sm">Assets</h3>
-                  <p className="text-xs text-slate-500 mt-1">Digital & Physical Media</p>
+                  <h3 className="font-medium text-foreground text-sm">Assets</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Digital & Physical Media</p>
                 </div>
                 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-yellow-400" />
+                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-yellow-500/10 dark:bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <ContextIcon className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
                   </div>
-                  <h3 className="font-medium text-white text-sm">Contexts</h3>
-                  <p className="text-xs text-slate-500 mt-1">Workflow Groupings</p>
+                  <h3 className="font-medium text-foreground text-sm">Contexts</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Workflow Groupings</p>
                 </div>
               </div>
               
@@ -334,7 +339,7 @@ export default function Intro() {
                   <Button 
                     variant="outline" 
                     size="lg" 
-                    className="border-white/20 text-white hover:bg-white/10 hover:border-white/30"
+                    className="border-border text-foreground hover:bg-muted"
                     data-testid="button-explore-omc"
                   >
                     Explore OMC Builder
@@ -347,12 +352,12 @@ export default function Intro() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-violet-900/20 to-indigo-900/20 border-t border-white/5">
+        <section className="py-24 bg-gradient-to-r from-violet-600/10 to-indigo-600/10 dark:from-violet-900/20 dark:to-indigo-900/20 border-t border-border">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
               Ready to transform your production?
             </h2>
-            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Join the private beta and be among the first to experience the future of production management.
             </p>
             <Link href="/builder">
@@ -369,13 +374,19 @@ export default function Intro() {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 bg-slate-950 py-8">
+      <footer className="border-t border-border bg-muted/30 py-8">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-slate-500">
-              project_<span className="italic">aescher</span> — The brain for production
+            <div className="flex items-center gap-4">
+              <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
+                <Logo className="h-6 w-auto dark:hidden" variant="light" />
+                <Logo className="h-6 w-auto hidden dark:block" variant="dark" />
+              </a>
+              <span className="text-sm text-muted-foreground">
+                project_<span className="italic">aescher</span> — The brain for production
+              </span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-slate-500">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <span>Built on MovieLabs OMC v2.8</span>
               <span className="hidden md:inline">•</span>
               <span>Private Beta</span>
