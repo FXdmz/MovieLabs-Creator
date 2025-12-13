@@ -124,24 +124,9 @@ export default function Intro() {
                 project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
               </h1>
               
-              <p className="text-2xl md:text-3xl text-muted-foreground font-light mb-4">
+              <p className="text-2xl md:text-3xl text-muted-foreground font-light">
                 Where knowledge builds production
               </p>
-              
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-                Start with industry intelligence. Export to production tools. Built on MovieLabs OMC.
-              </p>
-              
-              <Link href="/builder">
-                <Button 
-                  size="lg"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 text-lg px-8"
-                  data-testid="button-get-started-hero"
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
             </div>
           </div>
         </section>
