@@ -169,6 +169,7 @@ Preferred communication style: Simple, everyday language.
 - `client/src/components/asset-wizard/` - Asset import wizard
 - `client/src/components/visualize-entity-dialog.tsx` - Graph visualization
 - `client/src/components/import-multi-dialog.tsx` - Project import dialog
+- `client/src/components/view-all-omc-dialog.tsx` - Combined OMC output viewer
 
 ### Pages
 - `client/src/pages/intro.tsx` - Landing/home page
@@ -177,6 +178,11 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 13, 2025
+- "View All OMC" button in sidebar
+  - Opens popup dialog showing combined output of all entities
+  - JSON tab with copy button
+  - RDF/TTL tab with copy button
+  - Entity count badge display
 - Hybrid RDF architecture implementation
   - RDF domain layer with N3.js Store and OmcRdfStore wrapper
   - JSON-to-RDF and RDF-to-JSON bidirectional adapters

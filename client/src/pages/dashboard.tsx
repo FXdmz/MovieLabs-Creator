@@ -111,6 +111,7 @@ import {
 } from "@/components/ui/dialog";
 import { Copy } from "lucide-react";
 import { ViewEntityDialog } from "@/components/view-entity-dialog";
+import { ViewAllOmcDialog } from "@/components/view-all-omc-dialog";
 import { VisualizeEntityDialog } from "@/components/visualize-entity-dialog";
 
 const LocationIcon = ({ className }: { className?: string }) => (
@@ -216,6 +217,7 @@ export default function Dashboard() {
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showVisualizeDialog, setShowVisualizeDialog] = useState(false);
   const [showVisualizeAllDialog, setShowVisualizeAllDialog] = useState(false);
+  const [showViewAllOmcDialog, setShowViewAllOmcDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [showImportMultiDialog, setShowImportMultiDialog] = useState(false);
   const [showExportNameDialog, setShowExportNameDialog] = useState(false);
@@ -950,6 +952,14 @@ export default function Dashboard() {
               <Button 
                 variant="outline" 
                 className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
+                onClick={() => setShowViewAllOmcDialog(true)}
+                data-testid="button-view-all-omc"
+              >
+                <Eye className="h-4 w-4" /> View All OMC
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
                 onClick={() => setShowVisualizeAllDialog(true)}
                 data-testid="button-visualize-all"
               >
@@ -1397,6 +1407,12 @@ export default function Dashboard() {
         open={showImportMultiDialog}
         onOpenChange={setShowImportMultiDialog}
         onImportSuccess={handleImportMultiSuccess}
+      />
+
+      <ViewAllOmcDialog
+        open={showViewAllOmcDialog}
+        onOpenChange={setShowViewAllOmcDialog}
+        entities={entities}
       />
 
       <Dialog open={showExportNameDialog} onOpenChange={(open) => {

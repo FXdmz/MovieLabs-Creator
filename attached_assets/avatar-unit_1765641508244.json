@@ -1,0 +1,226 @@
+[
+  {
+    "name": "Avatar",
+    "description": "2009 film directed by James Cameron",
+    "creativeWorkType": "creativeWork",
+    "creativeWorkCategory": "movie",
+    "approximateLength": "PT2H42M",
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "8b63933a-c11f-4c14-940b-842c566dd82e",
+        "combinedForm": "me-nexus:8b63933a-c11f-4c14-940b-842c566dd82e"
+      }
+    ],
+    "creativeWorkTitle": [
+      {
+        "titleName": "Avatar",
+        "titleType": "release",
+        "titleLanguage": "en"
+      }
+    ],
+    "entityType": "CreativeWork",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "minessotta",
+    "address": {
+      "entityType": "Address",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "streetNumberAndName": "2231 Rue Que Frenchman",
+      "city": "Carlos",
+      "postalCode": "56308",
+      "country": "US"
+    },
+    "geo": {
+      "entityType": "LatLon",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "latitude": 45.93623278,
+      "longitude": -95.329697362
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "d1864144-8dd0-4be5-917e-7831e7f1b18a",
+        "combinedForm": "me-nexus:d1864144-8dd0-4be5-917e-7831e7f1b18a"
+      }
+    ],
+    "entityType": "Location",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "James Cameron",
+    "ParticipantSC": {
+      "entityType": "Person",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifierScope": "me-nexus",
+      "identifierValue": "60fc8713-2e05-48ef-9b97-e409c5ace862",
+      "structuralType": "person",
+      "personName": {
+        "fullName": "James Cameron",
+        "firstName": "James",
+        "lastName": "Cameron"
+      },
+      "Location": "me-nexus:d1864144-8dd0-4be5-917e-7831e7f1b18a",
+      "identifier": [
+        {
+          "identifier": [
+            {
+              "identifierScope": "me-nexus",
+              "identifierValue": "60fc8713-2e05-48ef-9b97-e409c5ace862",
+              "combinedForm": "me-nexus:60fc8713-2e05-48ef-9b97-e409c5ace862"
+            }
+          ]
+        }
+      ]
+    },
+    "participantFC": {
+      "functionalType": "crew",
+      "jobTitle": "director"
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "66e00c2e-ca9f-4be7-8249-cfbb1fb37933",
+        "combinedForm": "me-nexus:66e00c2e-ca9f-4be7-8249-cfbb1fb37933"
+      }
+    ],
+    "entityType": "Participant",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "Steven Spielberg",
+    "ParticipantSC": {
+      "entityType": "Person",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifierScope": "me-nexus",
+      "identifierValue": "aeffb71b-1ae4-47a4-96ff-3c83979764f9",
+      "structuralType": "person",
+      "personName": {
+        "fullName": "Steven Spielberg",
+        "firstName": "Steven",
+        "lastName": "Spielberg"
+      },
+      "Location": "me-nexus:d1864144-8dd0-4be5-917e-7831e7f1b18a",
+      "identifier": [
+        {
+          "identifier": [
+            {
+              "identifierScope": "me-nexus",
+              "identifierValue": "aeffb71b-1ae4-47a4-96ff-3c83979764f9",
+              "combinedForm": "me-nexus:aeffb71b-1ae4-47a4-96ff-3c83979764f9"
+            }
+          ]
+        }
+      ]
+    },
+    "participantFC": {
+      "functionalType": "crew",
+      "jobTitle": "producer"
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "21217cf0-ec16-4939-8f46-a9dc4cdfdbd4",
+        "combinedForm": "me-nexus:21217cf0-ec16-4939-8f46-a9dc4cdfdbd4"
+      }
+    ],
+    "entityType": "Participant",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "Maya",
+    "InfrastructureSC": {
+      "identifierScope": "me-nexus",
+      "identifierValue": "04472ef4-279f-4dd6-aaa3-e4326d8de23d",
+      "structuralProperties": "b0_structuralProperties_8",
+      "identifier": [
+        {
+          "identifier": [
+            {
+              "identifierScope": "me-nexus",
+              "identifierValue": "04472ef4-279f-4dd6-aaa3-e4326d8de23d",
+              "combinedForm": "me-nexus:04472ef4-279f-4dd6-aaa3-e4326d8de23d"
+            }
+          ]
+        }
+      ]
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "d57bafc7-98d8-4d55-90b7-8f3c18268833",
+        "combinedForm": "me-nexus:d57bafc7-98d8-4d55-90b7-8f3c18268833"
+      }
+    ],
+    "entityType": "Infrastructure",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "Final Draft",
+    "InfrastructureSC": {
+      "identifierScope": "me-nexus",
+      "identifierValue": "f4644e28-0c7d-4911-ae92-67e27cb94908",
+      "structuralProperties": "b0_structuralProperties_9",
+      "identifier": [
+        {
+          "identifier": [
+            {
+              "identifierScope": "me-nexus",
+              "identifierValue": "f4644e28-0c7d-4911-ae92-67e27cb94908",
+              "combinedForm": "me-nexus:f4644e28-0c7d-4911-ae92-67e27cb94908"
+            }
+          ]
+        }
+      ]
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "645019d6-d14a-4f90-bb53-4b39c4de1a05",
+        "combinedForm": "me-nexus:645019d6-d14a-4f90-bb53-4b39c4de1a05"
+      }
+    ],
+    "entityType": "Infrastructure",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  },
+  {
+    "name": "Europa_1.27.24",
+    "assetFC": {
+      "functionalType": "script"
+    },
+    "AssetSC": {
+      "entityType": "AssetSC",
+      "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8",
+      "identifierScope": "me-nexus",
+      "identifierValue": "12ac2d53-d58d-4f77-967a-2c6623f5af83-sc",
+      "structuralType": "digital.document",
+      "structuralProperties": {
+        "fileDetails": {
+          "fileName": "Europa_1.27.24.pdf",
+          "fileExtension": "pdf"
+        }
+      },
+      "identifier": [
+        {
+          "identifier": [
+            {
+              "identifierScope": "me-nexus",
+              "identifierValue": "12ac2d53-d58d-4f77-967a-2c6623f5af83-sc",
+              "combinedForm": "me-nexus:12ac2d53-d58d-4f77-967a-2c6623f5af83-sc"
+            }
+          ]
+        }
+      ]
+    },
+    "identifier": [
+      {
+        "identifierScope": "me-nexus",
+        "identifierValue": "12ac2d53-d58d-4f77-967a-2c6623f5af83",
+        "combinedForm": "me-nexus:12ac2d53-d58d-4f77-967a-2c6623f5af83"
+      }
+    ],
+    "entityType": "Asset",
+    "schemaVersion": "https://movielabs.com/omc/json/schema/v2.8"
+  }
+]
