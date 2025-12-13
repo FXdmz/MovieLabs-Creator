@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Asset Import Wizard Component
+ * 
+ * Multi-step wizard for importing files as OMC Asset entities.
+ * Guides users through file upload, classification, grouping, and review.
+ * 
+ * @steps
+ * 1. Upload Files: Drag-drop or select files, auto-detect structural types
+ * 2. Classify: Set functional types, edit metadata properties
+ * 3. Group: Optionally combine related assets (image sequences, sidecars)
+ * 4. Review: Final review before creating Asset entities
+ * 
+ * @features
+ * - Auto-detects structural type from MIME type
+ * - Extracts metadata via server API (audio/video/PDF)
+ * - Filters functional types based on selected structural type
+ * - Supports ordered/unordered asset groups
+ */
+
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";

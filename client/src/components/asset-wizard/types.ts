@@ -1,5 +1,23 @@
+/**
+ * @fileoverview Asset Wizard Type Definitions
+ * 
+ * Type definitions and constants for the multi-step asset import wizard.
+ * Includes interfaces for staged assets, asset groups, and the mapping
+ * between OMC structural types and valid functional types.
+ * 
+ * @exports
+ * - StructuralProperties: Properties based on asset physical/digital format
+ * - FunctionalProperties: Properties based on asset purpose/use
+ * - StagedAsset: File being processed through the wizard
+ * - AssetGroup: Collection of related assets (e.g., image sequences)
+ * - WizardState: Multi-step wizard state
+ * - STRUCTURAL_TO_FUNCTIONAL_MAP: Valid functional types per structural type
+ * - getFunctionalTypesForStructural: Lookup function for type filtering
+ */
+
 import { ExtractedMetadata, ProvenanceInfo } from "@/lib/file-metadata";
 
+/** Properties derived from asset's physical/digital structure (format, dimensions, codec) */
 export interface StructuralProperties {
   fileDetails?: {
     fileName?: string;
@@ -27,6 +45,7 @@ export interface StructuralProperties {
   [key: string]: any;
 }
 
+/** Properties derived from asset's purpose/function in production (audio mix type, camera metadata) */
 export interface FunctionalProperties {
   audioChannelName?: string[];
   audioContent?: string;
@@ -45,6 +64,7 @@ export interface FunctionalProperties {
   [key: string]: any;
 }
 
+/** A file being processed through the wizard with extracted/user-specified metadata */
 export interface StagedAsset {
   id: string;
   file: File;
@@ -58,6 +78,7 @@ export interface StagedAsset {
   provenance: ProvenanceInfo;
 }
 
+/** A collection of related assets (e.g., image sequence, video with sidecar) */
 export interface AssetGroup {
   id: string;
   name: string;
@@ -65,12 +86,18 @@ export interface AssetGroup {
   isOrdered: boolean;
 }
 
+/** Multi-step wizard state: current step, staged assets, and groups */
 export interface WizardState {
   step: number;
   stagedAssets: StagedAsset[];
   groups: AssetGroup[];
 }
 
+/**
+ * Mapping from OMC structural types to valid functional types.
+ * Based on MovieLabs OMC specification - constrains which functional
+ * types make sense for each structural type.
+ */
 export const STRUCTURAL_TO_FUNCTIONAL_MAP: Record<string, string[]> = {
   "assetGroup": [
     "artwork.storyboard",
@@ -221,6 +248,13 @@ export const STRUCTURAL_TO_FUNCTIONAL_MAP: Record<string, string[]> = {
   ]
 };
 
+/**
+ * Gets valid functional types for a given structural type.
+ * Falls back to parent types if no exact match found.
+ * 
+ * @param structuralType - The asset's structural type (e.g., "digital.audio")
+ * @returns Array of valid functional types for this structural type
+ */
 export function getFunctionalTypesForStructural(structuralType: string): string[] {
   if (STRUCTURAL_TO_FUNCTIONAL_MAP[structuralType]) {
     return STRUCTURAL_TO_FUNCTIONAL_MAP[structuralType];

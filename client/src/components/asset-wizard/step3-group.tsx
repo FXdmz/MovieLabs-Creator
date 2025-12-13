@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Step 3: Asset Grouping
+ * 
+ * Third step of the asset wizard - allows users to optionally group
+ * related assets together (e.g., image sequences, video with sidecar XML).
+ * 
+ * @features
+ * - Select multiple assets to combine into a group
+ * - Create named asset groups
+ * - Toggle ordered/unordered for sequences
+ * - Remove assets from groups
+ * - Delete entire groups
+ * - Visual separation of grouped vs ungrouped assets
+ */
+
 import { useState } from "react";
 import { Plus, Trash2, GripVertical, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";

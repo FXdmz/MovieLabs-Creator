@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Step 4: Review and Create
+ * 
+ * Final step of the asset wizard - displays a summary of all staged
+ * assets and groups for user review before creating OMC entities.
+ * 
+ * @features
+ * - Summary table of all assets with types
+ * - Expandable rows for detailed property view
+ * - Groups section showing asset collections
+ * - Property display for structural, functional, provenance
+ * - "Create Assets" button to finalize
+ */
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";

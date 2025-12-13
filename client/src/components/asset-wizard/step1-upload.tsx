@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Step 1: File Upload
+ * 
+ * First step of the asset wizard - handles file upload via drag-drop
+ * or file picker. Displays staged files with auto-detected structural
+ * types that can be overridden by the user.
+ * 
+ * @features
+ * - Drag-and-drop file upload
+ * - File picker button
+ * - Processing indicator during metadata extraction
+ * - Table view of staged files with icons by file type
+ * - Structural type selector with auto-detection
+ * - Remove individual files
+ */
+
 import { useCallback, useState } from "react";
 import { Upload, FileVideo, FileAudio, FileImage, FileText, File, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

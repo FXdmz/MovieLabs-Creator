@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Step 2: Classification
+ * 
+ * Second step of the asset wizard - allows users to set functional types
+ * and edit metadata properties for each staged asset.
+ * 
+ * @features
+ * - Collapsible cards for each staged asset
+ * - Functional type selector filtered by structural type
+ * - Structural properties editor (dimensions, codec, etc.)
+ * - Functional properties editor (audio mix, camera metadata)
+ * - Provenance editor (creator, creation date, software)
+ * - Dynamic form fields based on selected types
+ */
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
