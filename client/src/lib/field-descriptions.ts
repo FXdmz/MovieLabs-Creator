@@ -1,3 +1,17 @@
+/**
+ * @fileoverview OMC Field Descriptions - Human-readable field help text.
+ * Provides descriptions and required flags for all entity type fields,
+ * used for form tooltips and validation messages.
+ * 
+ * @exports CREATIVE_WORK_FIELD_DESCRIPTIONS - CreativeWork field metadata
+ * @exports ASSET_FIELD_DESCRIPTIONS - Asset field metadata
+ * @exports LOCATION_FIELD_DESCRIPTIONS - Location field metadata
+ * @exports TASK_FIELD_DESCRIPTIONS - Task field metadata
+ * @exports INFRASTRUCTURE_FIELD_DESCRIPTIONS - Infrastructure field metadata
+ * @exports PARTICIPANT_FIELD_DESCRIPTIONS - Participant field metadata
+ * @exports CONTEXT_FIELD_DESCRIPTIONS - Context field metadata
+ * @exports getFieldDescription - Lookup function by entity type and field
+ */
 export const CREATIVE_WORK_FIELD_DESCRIPTIONS: Record<string, { description: string; required?: boolean }> = {
   entityType: {
     description: "The type of OMC entity. For Creative Works, this is always 'CreativeWork'.",

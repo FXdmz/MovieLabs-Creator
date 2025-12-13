@@ -1,3 +1,12 @@
+/**
+ * @fileoverview React Query Client Configuration.
+ * Configures TanStack Query client with default options and
+ * provides API request utilities with error handling.
+ * 
+ * @exports apiRequest - Generic fetch wrapper with error handling
+ * @exports getQueryFn - Query function factory with 401 handling
+ * @exports queryClient - Pre-configured QueryClient instance
+ */
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {

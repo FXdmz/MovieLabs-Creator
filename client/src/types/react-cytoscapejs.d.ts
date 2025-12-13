@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Type Declarations for react-cytoscapejs.
+ * Provides TypeScript definitions for the Cytoscape.js React wrapper
+ * used in entity relationship graph visualization.
+ */
 declare module 'react-cytoscapejs' {
   import { Component } from 'react';
   import { Core, ElementDefinition, LayoutOptions, Stylesheet } from 'cytoscape';

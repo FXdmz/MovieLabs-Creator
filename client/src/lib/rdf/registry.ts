@@ -1,3 +1,14 @@
+/**
+ * @fileoverview JSON-to-RDF Property Mapping Registry
+ * 
+ * Maps OMC JSON property names to their corresponding RDF predicates.
+ * Provides metadata about property types (literal, reference, date, array)
+ * and entity class lookups for type conversion.
+ * 
+ * @exports getPropertyMapping - Get RDF predicate for a JSON property name
+ * @exports getEntityClass - Get RDF class NamedNode for an entity type
+ * @exports PropertyMapping - Interface for property metadata
+ */
 import { NamedNode, DataFactory } from 'n3';
 import { NAMESPACES, ns, OMC, OMCT, MENEXUS, RDF, RDFS, SKOS } from './namespaces';
 

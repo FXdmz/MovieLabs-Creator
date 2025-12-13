@@ -1,3 +1,14 @@
+/**
+ * @fileoverview ME-NEXUS to OMC Service Mapping.
+ * Maps ME-NEXUS hierarchical service classifications (L1/L2/L3)
+ * to OMC functional classes for Task entity classification.
+ * 
+ * @exports MeNexusService - Service definition with hierarchy
+ * @exports OmcFunctionalClass - OMC functional class reference
+ * @exports getOmcFunctionalClass - Map service to OMC class
+ * @exports getServiceDisplayName - Format service hierarchy for display
+ * @exports serviceMatchesSearch - Search filter for services
+ */
 export interface MeNexusService {
   serviceId: string;
   serviceName: string;

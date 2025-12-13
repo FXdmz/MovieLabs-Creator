@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Asset Type Definitions - OMC Asset structural and functional types.
+ * Defines the hierarchical classification system for media production assets
+ * according to MovieLabs OMC v2.8 specification.
+ * 
+ * @exports ASSET_STRUCTURAL_TYPES - Physical/digital asset structure types
+ * @exports ASSET_FUNCTIONAL_TYPES - Purpose/usage classification for assets
+ */
 export const ASSET_STRUCTURAL_TYPES = [
   { value: "assetGroup", label: "Asset Group" },
   { value: "digital", label: "Digital" },

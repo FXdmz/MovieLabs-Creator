@@ -1,3 +1,10 @@
+/**
+ * @fileoverview RDF Round-Trip Test Suite
+ * 
+ * Vitest tests verifying JSON→RDF→JSON parity for all OMC entity types.
+ * Uses fixture data and validates results against the OMC-JSON Schema v2.8.
+ * Run with: npx vitest run
+ */
 import { describe, it, expect, beforeAll } from 'vitest';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';

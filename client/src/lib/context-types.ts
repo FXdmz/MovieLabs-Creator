@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Context Type Definitions - OMC Context entity types.
+ * Defines workflow grouping contexts for media production (narrative,
+ * production, editorial, VFX, color, audio contexts).
+ * 
+ * @exports CONTEXT_STRUCTURAL_TYPES - Available context type options
+ * @exports getContextStructuralProperties - Get properties for context type
+ * @exports getContextStructuralDefaults - Get default values for context type
+ */
 export const CONTEXT_STRUCTURAL_TYPES = [
   { value: "NarrativeContext", label: "Narrative Context - Story elements and narrative structure" },
   { value: "ProductionContext", label: "Production Context - Production planning and execution" },

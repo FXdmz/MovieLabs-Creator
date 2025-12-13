@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Participant Type Definitions - OMC Participant entity types.
+ * Defines structural and functional classifications for production participants
+ * (Person, Department, Organization, Service) per OMC v2.8 specification.
+ * 
+ * @exports PARTICIPANT_STRUCTURAL_TYPES - Person, Department, Organization, Service
+ * @exports PARTICIPANT_FUNCTIONAL_TYPES - Role-based classifications by type
+ * @exports getParticipantStructuralProperties - Get fields for participant type
+ * @exports getParticipantStructuralDefaults - Get default values by type
+ * @exports getParticipantFunctionalTypes - Get functional options by structural type
+ */
 export const PARTICIPANT_STRUCTURAL_TYPES = [
   { value: 'Person', label: 'Person - Individual associated with the production' },
   { value: 'Department', label: 'Department - Part of an organization with specific responsibilities' },

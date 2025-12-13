@@ -1,3 +1,9 @@
+/**
+ * @fileoverview IETF BCP 47 Language Tags.
+ * Common language codes with regional variants for title/content localization.
+ * 
+ * @exports IETF_LANGUAGE_CODES - Array of {code, name} for supported languages
+ */
 export const IETF_LANGUAGE_CODES: { code: string; name: string }[] = [
   { code: "en", name: "English" },
   { code: "en-US", name: "English (United States)" },

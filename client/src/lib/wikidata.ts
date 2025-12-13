@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Wikidata Integration - Person and Media Entity Lookup.
+ * Provides search and data extraction from Wikidata SPARQL API
+ * for auto-populating Participant and CreativeWork entities.
+ * 
+ * @features
+ * - Person search with filtering for humans (Q5)
+ * - Media search for films, TV series, episodes
+ * - Data extraction for OMC entity population
+ * - Image URL generation from Wikimedia Commons
+ * 
+ * @exports WikidataPerson - Person search result interface
+ * @exports WikidataMedia - Media search result interface
+ * @exports searchPeople - Search Wikidata for people
+ * @exports searchMedia - Search Wikidata for films/TV shows
+ * @exports extractWikidataPersonData - Convert to Participant format
+ * @exports extractWikidataMediaData - Convert to CreativeWork format
+ */
 export interface WikidataPerson {
   id: string;
   name: string;

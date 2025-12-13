@@ -1,3 +1,10 @@
+/**
+ * @fileoverview RDF Round-Trip Test Fixtures
+ * 
+ * Sample OMC entity data for testing JSON↔RDF conversion. Includes fixtures
+ * for all entity types: Asset, Participant, Task, CreativeWork, Infrastructure,
+ * Location, and Context. Used by rdf-roundtrip.spec.ts.
+ */
 export const assetFixture = {
   entityType: 'Asset',
   schemaVersion: 'https://movielabs.com/omc/json/schema/v2.8',

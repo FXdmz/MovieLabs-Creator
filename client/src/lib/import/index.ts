@@ -1,3 +1,18 @@
+/**
+ * @fileoverview OMC File Import Module - Barrel file for import functionality.
+ * Provides unified API for importing OMC entities from JSON and RDF/TTL files.
+ * 
+ * @features
+ * - Single and multi-entity import from JSON files
+ * - Single and multi-entity import from RDF/TTL files
+ * - Automatic file type detection based on extension
+ * - RDF store integration for imported entities
+ * 
+ * @exports parseOmcFile - Single entity import with auto-detection
+ * @exports parseOmcFileMulti - Multi-entity import with auto-detection
+ * @exports parseOmcFileToRdf - Import and convert to RDF store
+ * @exports importEntitiesToRdfStore - Convert imported entities to RDF
+ */
 export { parseOmcJson, parseOmcJsonMulti, type ImportResult, type ImportedEntity, type MultiImportResult } from './json-importer';
 export { parseOmcTtl, parseOmcTtlMulti } from './ttl-importer';
 

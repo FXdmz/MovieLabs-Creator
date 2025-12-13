@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Property Definitions - OMC entity property metadata.
+ * Defines form field configurations for Asset structural, functional, and
+ * provenance properties with labels, descriptions, types, and validation options.
+ * 
+ * @exports PropertyDefinition - Interface for property metadata
+ * @exports STRUCTURAL_PROPERTY_DEFINITIONS - File, dimensions, audio, 3D properties
+ * @exports FUNCTIONAL_PROPERTY_DEFINITIONS - Audio content, texture, timing properties
+ * @exports PROVENANCE_PROPERTY_DEFINITIONS - Creation date, modification, creator info
+ * @exports getStructuralPropertiesForType - Get properties by structural type
+ * @exports getFunctionalPropertiesForType - Get properties by functional type
+ */
 export interface PropertyDefinition {
   key: string;
   label: string;

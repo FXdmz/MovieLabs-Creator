@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Functional Properties Mapping - Asset functional type to properties.
+ * Maps OMC Asset functional types to their applicable property fields
+ * (audio, timing, camera metadata, etc.) per OMC v2.8 specification.
+ * 
+ * @exports FUNCTIONAL_PROPERTIES_BY_TYPE - Type to property array mapping
+ * @exports ALL_FUNCTIONAL_PROPERTIES - Complete list of functional properties
+ * @exports getRelevantFunctionalProperties - Get properties for a type
+ * @exports hasFunctionalProperties - Check if type has properties
+ */
 export const FUNCTIONAL_PROPERTIES_BY_TYPE: Record<string, string[]> = {
   "artwork": [],
   "artwork.animatedStoryboard": [],

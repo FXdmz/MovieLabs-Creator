@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Structural Properties Mapping - Asset structural type to properties.
+ * Maps OMC Asset structural types (digital, physical, geometry) to their
+ * applicable property fields per OMC v2.8 specification.
+ * 
+ * @exports STRUCTURAL_PROPERTIES_BY_TYPE - Type to property array mapping
+ * @exports ALL_STRUCTURAL_PROPERTIES - Complete list of structural properties
+ * @exports getRelevantStructuralProperties - Get properties for a type
+ */
 export const STRUCTURAL_PROPERTIES_BY_TYPE: Record<string, string[]> = {
   "assetGroup": ["assetGroup"],
   "digital": ["fileDetails", "codec"],

@@ -1,3 +1,21 @@
+/**
+ * @fileoverview File Metadata Extraction - Asset creation from uploaded files.
+ * Extracts technical metadata from media files (images, audio, video, PDFs)
+ * and maps to OMC Asset entities with proper structural/functional types.
+ * 
+ * @features
+ * - Client-side extraction for images (dimensions)
+ * - Client-side extraction for audio/video (duration, dimensions)
+ * - Server-side extraction for deeper metadata (codec, sample rate)
+ * - MIME type to OMC structural type mapping
+ * - Auto-generation of Asset entities from file metadata
+ * 
+ * @exports ExtractedMetadata - Extracted file metadata interface
+ * @exports extractFileMetadata - Main extraction function
+ * @exports mapMetadataToAsset - Convert metadata to OMC Asset
+ * @exports getStructuralTypeFromMime - Map MIME to structural type
+ * @exports getFunctionalTypeFromMime - Map MIME/name to functional type
+ */
 import { ASSET_STRUCTURAL_TYPES } from "./asset-types";
 
 export interface ProvenanceInfo {

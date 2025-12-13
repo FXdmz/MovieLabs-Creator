@@ -1,3 +1,14 @@
+/**
+ * @fileoverview RDF Serialization Functions
+ * 
+ * Provides functions for converting between Entity objects and RDF/Turtle format.
+ * Uses the adapter system for JSON↔RDF conversion and N3.js Writer for output.
+ * 
+ * @exports serializeStoreToTurtle - Serialize OmcRdfStore to Turtle string
+ * @exports entitiesToTurtleViaRdf - Convert Entity array to Turtle string
+ * @exports entityToTurtleViaRdf - Convert single Entity to Turtle string
+ * @exports entitiesToJsonViaRdf - Round-trip entities through RDF back to JSON
+ */
 import { Writer, Quad } from 'n3';
 import { OmcRdfStore } from './store';
 import { NAMESPACES } from './namespaces';

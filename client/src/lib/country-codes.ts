@@ -1,3 +1,9 @@
+/**
+ * @fileoverview ISO 3166-1 Alpha-2 Country Codes.
+ * Complete list of country codes for address/location forms.
+ * 
+ * @exports ISO_COUNTRY_CODES - Array of {code, name} objects for all countries
+ */
 export const ISO_COUNTRY_CODES = [
   { code: "AD", name: "Andorra" },
   { code: "AE", name: "United Arab Emirates" },
