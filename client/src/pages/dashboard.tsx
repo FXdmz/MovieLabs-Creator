@@ -1060,7 +1060,14 @@ export default function Dashboard() {
             <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
               <Logo />
             </a>
-            <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-accent" />
+            <div className="flex items-center gap-1">
+              <Link href="/">
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
+                  <Home className="h-4 w-4" />
+                </Button>
+              </Link>
+              <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-accent" />
+            </div>
           </div>
           <div className="space-y-2">
             <div className="relative">
@@ -1431,11 +1438,6 @@ export default function Dashboard() {
               </Button>
             </>
           )}
-          <Link href="/">
-            <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
-              <Home className="h-4 w-4" /> Home
-            </Button>
-          </Link>
           <HelpDialog 
             trigger={
               <Button variant="outline" className="w-full gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-help-builder">
