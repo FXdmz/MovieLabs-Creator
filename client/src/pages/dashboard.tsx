@@ -142,6 +142,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -279,6 +289,10 @@ export default function Dashboard() {
   const [editingFolder, setEditingFolder] = useState<string | null>(null);
   const [editFolderName, setEditFolderName] = useState("");
   const [contextMenuEntityId, setContextMenuEntityId] = useState<string | null>(null);
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false);
+  const [deleteTargetEntity, setDeleteTargetEntity] = useState<{id: string, name: string} | null>(null);
+  const [renamingEntityId, setRenamingEntityId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
 
@@ -300,12 +314,69 @@ export default function Dashboard() {
     });
   };
 
-  const handleContextMenuDelete = (entityId: string) => {
+  const handleContextMenuDeleteConfirm = (entityId: string) => {
     const entity = entities.find(e => e.id === entityId);
     if (entity) {
-      removeEntity(entityId);
-      toast({ title: "Entity Deleted", description: `Deleted "${entity.name}"` });
+      setDeleteTargetEntity({ id: entity.id, name: entity.name });
+      setShowDeleteConfirmDialog(true);
     }
+  };
+
+  const handleConfirmedDelete = () => {
+    if (deleteTargetEntity) {
+      removeEntity(deleteTargetEntity.id);
+      toast({ title: "Entity Deleted", description: `Deleted "${deleteTargetEntity.name}"` });
+      setDeleteTargetEntity(null);
+      setShowDeleteConfirmDialog(false);
+    }
+  };
+
+  const handleContextMenuDuplicate = (entityId: string) => {
+    const entity = entities.find(e => e.id === entityId);
+    if (entity) {
+      const newId = crypto.randomUUID();
+      const newContent = {
+        ...entity.content,
+        name: `${entity.name} (Copy)`,
+        identifier: [{
+          identifierScope: "me-nexus",
+          identifierValue: newId,
+          combinedForm: `me-nexus:${newId}`
+        }]
+      };
+      addEntityFromContent(entity.type, newId, newContent, entity.folder);
+      toast({ title: "Entity Duplicated", description: `Created copy of "${entity.name}"` });
+    }
+  };
+
+  const handleContextMenuExport = (entityId: string, format: "json" | "ttl") => {
+    const entity = entities.find(e => e.id === entityId);
+    if (entity) {
+      selectEntity(entityId);
+      const success = useOntologyStore.getState().downloadCurrentAs(format, entity.name.toLowerCase().replace(/\s+/g, '-'));
+      if (success) {
+        toast({ title: "Exported", description: `Exported "${entity.name}" as ${format.toUpperCase()}` });
+      }
+    }
+  };
+
+  const handleContextMenuRename = (entityId: string) => {
+    const entity = entities.find(e => e.id === entityId);
+    if (entity) {
+      setRenamingEntityId(entityId);
+      setRenameValue(entity.name);
+    }
+  };
+
+  const handleRenameEntity = (entityId: string) => {
+    const entity = entities.find(e => e.id === entityId);
+    if (entity && renameValue.trim() && renameValue !== entity.name) {
+      const updatedContent = { ...entity.content, name: renameValue.trim() };
+      updateEntity(entityId, updatedContent);
+      toast({ title: "Entity Renamed", description: `Renamed to "${renameValue.trim()}"` });
+    }
+    setRenamingEntityId(null);
+    setRenameValue("");
   };
 
   const toggleFolderCollapse = (folderName: string) => {
@@ -1119,7 +1190,7 @@ export default function Dashboard() {
                         <ContextMenu key={entity.id}>
                           <ContextMenuTrigger asChild>
                             <button
-                              onClick={() => selectEntity(entity.id)}
+                              onClick={() => renamingEntityId !== entity.id && selectEntity(entity.id)}
                               className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
                                 selectedEntityId === entity.id
                                   ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
@@ -1131,11 +1202,30 @@ export default function Dashboard() {
                                 {getEntityIcon(entity.type)}
                               </div>
                               <div className="flex-1 text-left truncate">
-                                <div className="truncate text-xs">{entity.name}</div>
+                                {renamingEntityId === entity.id ? (
+                                  <Input
+                                    value={renameValue}
+                                    onChange={(e) => setRenameValue(e.target.value)}
+                                    onBlur={() => handleRenameEntity(entity.id)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleRenameEntity(entity.id); if (e.key === 'Escape') { setRenamingEntityId(null); setRenameValue(""); } }}
+                                    className="h-5 px-1 py-0 text-xs"
+                                    autoFocus
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                ) : (
+                                  <div className="truncate text-xs">{entity.name}</div>
+                                )}
                               </div>
                             </button>
                           </ContextMenuTrigger>
                           <ContextMenuContent>
+                            <ContextMenuItem onClick={() => handleContextMenuRename(entity.id)}>
+                              <Pencil className="h-4 w-4 mr-2" /> Rename
+                            </ContextMenuItem>
+                            <ContextMenuItem onClick={() => handleContextMenuDuplicate(entity.id)}>
+                              <Copy className="h-4 w-4 mr-2" /> Duplicate
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
                             <ContextMenuItem onClick={() => handleContextMenuView(entity.id)}>
                               <Eye className="h-4 w-4 mr-2" /> View OMC
                             </ContextMenuItem>
@@ -1143,6 +1233,19 @@ export default function Dashboard() {
                               <Network className="h-4 w-4 mr-2" /> Visualize
                             </ContextMenuItem>
                             <ContextMenuSeparator />
+                            <ContextMenuSub>
+                              <ContextMenuSubTrigger>
+                                <Download className="h-4 w-4 mr-2" /> Export
+                              </ContextMenuSubTrigger>
+                              <ContextMenuSubContent>
+                                <ContextMenuItem onClick={() => handleContextMenuExport(entity.id, 'json')}>
+                                  <FileJson className="h-4 w-4 mr-2" /> Export as JSON
+                                </ContextMenuItem>
+                                <ContextMenuItem onClick={() => handleContextMenuExport(entity.id, 'ttl')}>
+                                  <FileText className="h-4 w-4 mr-2" /> Export as TTL
+                                </ContextMenuItem>
+                              </ContextMenuSubContent>
+                            </ContextMenuSub>
                             <ContextMenuSub>
                               <ContextMenuSubTrigger>
                                 <FolderOpen className="h-4 w-4 mr-2" /> Move to Folder
@@ -1160,7 +1263,7 @@ export default function Dashboard() {
                               </ContextMenuSubContent>
                             </ContextMenuSub>
                             <ContextMenuSeparator />
-                            <ContextMenuItem onClick={() => handleContextMenuDelete(entity.id)} className="text-destructive">
+                            <ContextMenuItem onClick={() => handleContextMenuDeleteConfirm(entity.id)} className="text-destructive">
                               <Trash2 className="h-4 w-4 mr-2" /> Delete
                             </ContextMenuItem>
                           </ContextMenuContent>
@@ -1177,7 +1280,7 @@ export default function Dashboard() {
               <ContextMenu key={entity.id}>
                 <ContextMenuTrigger asChild>
                   <button
-                    onClick={() => selectEntity(entity.id)}
+                    onClick={() => renamingEntityId !== entity.id && selectEntity(entity.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
                       selectedEntityId === entity.id
                         ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
@@ -1189,15 +1292,36 @@ export default function Dashboard() {
                       {getEntityIcon(entity.type)}
                     </div>
                     <div className="flex-1 text-left truncate">
-                      <div className="truncate">{entity.name}</div>
-                      <div className="text-[10px] uppercase tracking-wider opacity-70">{entity.type}</div>
+                      {renamingEntityId === entity.id ? (
+                        <Input
+                          value={renameValue}
+                          onChange={(e) => setRenameValue(e.target.value)}
+                          onBlur={() => handleRenameEntity(entity.id)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') handleRenameEntity(entity.id); if (e.key === 'Escape') { setRenamingEntityId(null); setRenameValue(""); } }}
+                          className="h-6 px-1 py-0 text-sm"
+                          autoFocus
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <>
+                          <div className="truncate">{entity.name}</div>
+                          <div className="text-[10px] uppercase tracking-wider opacity-70">{entity.type}</div>
+                        </>
+                      )}
                     </div>
-                    {selectedEntityId === entity.id && (
+                    {selectedEntityId === entity.id && !renamingEntityId && (
                       <ChevronRight className="h-3 w-3 opacity-50" />
                     )}
                   </button>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
+                  <ContextMenuItem onClick={() => handleContextMenuRename(entity.id)}>
+                    <Pencil className="h-4 w-4 mr-2" /> Rename
+                  </ContextMenuItem>
+                  <ContextMenuItem onClick={() => handleContextMenuDuplicate(entity.id)}>
+                    <Copy className="h-4 w-4 mr-2" /> Duplicate
+                  </ContextMenuItem>
+                  <ContextMenuSeparator />
                   <ContextMenuItem onClick={() => handleContextMenuView(entity.id)}>
                     <Eye className="h-4 w-4 mr-2" /> View OMC
                   </ContextMenuItem>
@@ -1205,6 +1329,19 @@ export default function Dashboard() {
                     <Network className="h-4 w-4 mr-2" /> Visualize
                   </ContextMenuItem>
                   <ContextMenuSeparator />
+                  <ContextMenuSub>
+                    <ContextMenuSubTrigger>
+                      <Download className="h-4 w-4 mr-2" /> Export
+                    </ContextMenuSubTrigger>
+                    <ContextMenuSubContent>
+                      <ContextMenuItem onClick={() => handleContextMenuExport(entity.id, 'json')}>
+                        <FileJson className="h-4 w-4 mr-2" /> Export as JSON
+                      </ContextMenuItem>
+                      <ContextMenuItem onClick={() => handleContextMenuExport(entity.id, 'ttl')}>
+                        <FileText className="h-4 w-4 mr-2" /> Export as TTL
+                      </ContextMenuItem>
+                    </ContextMenuSubContent>
+                  </ContextMenuSub>
                   {folders.length > 0 ? (
                     <ContextMenuSub>
                       <ContextMenuSubTrigger>
@@ -1224,7 +1361,7 @@ export default function Dashboard() {
                     </ContextMenuItem>
                   )}
                   <ContextMenuSeparator />
-                  <ContextMenuItem onClick={() => handleContextMenuDelete(entity.id)} className="text-destructive">
+                  <ContextMenuItem onClick={() => handleContextMenuDeleteConfirm(entity.id)} className="text-destructive">
                     <Trash2 className="h-4 w-4 mr-2" /> Delete
                   </ContextMenuItem>
                 </ContextMenuContent>
@@ -1907,6 +2044,26 @@ export default function Dashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirmDialog} onOpenChange={setShowDeleteConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Entity</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deleteTargetEntity?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setShowDeleteConfirmDialog(false); setDeleteTargetEntity(null); }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmedDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
