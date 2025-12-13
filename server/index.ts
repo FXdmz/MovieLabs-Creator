@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Express Server Entry Point
+ * 
+ * This is the main entry point for the ME-DMZ Ontology Builder backend server.
+ * It initializes Express with JSON/URL-encoded body parsing, request logging,
+ * and conditional Vite development server or static file serving.
+ * 
+ * @responsibilities
+ * - Initialize Express application with middleware
+ * - Set up request/response logging for API calls
+ * - Register API routes via routes.ts
+ * - Configure Vite HMR in development or static serving in production
+ * - Bind server to port 5000 (or PORT env variable)
+ * 
+ * @architecture
+ * The server serves both the API (/api/*) and the React frontend from a single port.
+ * In development, Vite handles frontend HMR. In production, pre-built static files are served.
+ */
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -22,6 +41,13 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+/**
+ * Logs a timestamped message to the console.
+ * Used for API request logging and server status messages.
+ * 
+ * @param message - The message to log
+ * @param source - The source identifier (default: "express")
+ */
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",

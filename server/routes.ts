@@ -1,15 +1,43 @@
+/**
+ * @fileoverview API Route Definitions
+ * 
+ * Defines all backend API endpoints for the ME-DMZ Ontology Builder.
+ * These routes handle external service proxying and file metadata extraction.
+ * 
+ * @endpoints
+ * - POST /api/validate/movielabs - Proxy to MovieLabs OMC schema validator
+ * - GET /api/geocode/autocomplete - Proxy to Geoapify address autocomplete
+ * - POST /api/assets/metadata - Extract metadata from uploaded files
+ * 
+ * @security
+ * API keys (GEOAPIFY_API_KEY) are kept server-side to prevent exposure to clients.
+ * File uploads are limited to 100MB and stored in memory only during processing.
+ * 
+ * @dependencies
+ * - multer: File upload handling
+ * - music-metadata: Audio/video file metadata extraction
+ * - pdf-parse: PDF document metadata and content extraction
+ */
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import multer from "multer";
 import * as mm from "music-metadata";
-// pdf-parse uses CommonJS, we'll import it dynamically when needed
 
+/** Multer configuration for in-memory file uploads (max 100MB) */
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 }
 });
 
+/**
+ * Registers all API routes on the Express application.
+ * 
+ * @param httpServer - The HTTP server instance
+ * @param app - The Express application instance
+ * @returns The HTTP server (for chaining)
+ */
 export async function registerRoutes(
   httpServer: Server,
   app: Express
