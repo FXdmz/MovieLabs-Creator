@@ -1,6 +1,7 @@
 import { Entity } from "../store";
 import { entitiesToTurtle, entityToTurtle } from "./rdf/serializer";
 import { entitiesToTurtleViaRdf, entitiesToJsonViaRdf } from "../rdf/serializer";
+import { applyAllSchemaTransforms } from "./property-mapping";
 
 export type ExportFormat = "json" | "ttl";
 
@@ -127,7 +128,8 @@ function applyContextTransformIndependent(context: any): any {
 }
 
 function transformEntityForJsonExport(entity: Entity): any {
-  return applySchemaComplianceTransform(entity.content, entity.type);
+  const complianceTransformed = applySchemaComplianceTransform(entity.content, entity.type);
+  return applyAllSchemaTransforms(complianceTransformed);
 }
 
 function cleanEntityForRdfExport(content: any): any {

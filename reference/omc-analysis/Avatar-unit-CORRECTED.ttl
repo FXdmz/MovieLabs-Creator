@@ -1,0 +1,218 @@
+@prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+@prefix omcT: <https://movielabs.com/omc/rdf/schema/v2.8Tentative#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix me: <https://me-nexus.com/id/> .
+@prefix menexus: <https://me-nexus.com/schema#> .
+
+# ============================================================================
+# CREATIVE WORK
+# ============================================================================
+
+me:8b63933a-c11f-4c14-940b-842c566dd82e
+    rdf:type omc:CreativeWork ;
+    rdfs:label "Avatar" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "8b63933a-c11f-4c14-940b-842c566dd82e"
+    ] ;
+    omc:hasTitle _:creativeWorkTitle0_1 ;
+    skos:definition "2009 film directed by James Cameron" ;
+    omc:creativeWorkType "creativeWork" ;
+    omc:creativeWorkCategory "movie" ;
+    omc:approximateLength "PT2H42M" .
+
+_:creativeWorkTitle0_1
+    omc:hasTitleName "Avatar" ;
+    omc:hasTitleType "release" ;
+    omc:titleLanguage "en" .
+
+# ============================================================================
+# LOCATION
+# ============================================================================
+
+me:d1864144-8dd0-4be5-917e-7831e7f1b18a
+    rdf:type omc:Location ;
+    rdfs:label "Minnesota Production Office" ;  # Fixed spelling
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "d1864144-8dd0-4be5-917e-7831e7f1b18a"
+    ] ;
+    omc:hasAddress _:address_2 ;
+    omc:hasCoords _:coordinates_3 .
+
+_:address_2
+    rdf:type omc:Address ;
+    omc:hasStreetNumberAndName "2231 Rue Que Frenchman" ;
+    omc:hasCity "Carlos" ;
+    omc:hasPostalCode "56308" ;
+    omc:hasCountry "US" .
+
+_:coordinates_3
+    rdf:type omc:LatLon ;
+    omc:hasLatitude "45.93623278"^^xsd:decimal ;
+    omc:hasLongitude "-95.329697362"^^xsd:decimal .
+
+# ============================================================================
+# PARTICIPANTS
+# ============================================================================
+
+# James Cameron - Director
+me:66e00c2e-ca9f-4be7-8249-cfbb1fb37933
+    rdf:type omc:Participant ;
+    rdfs:label "James Cameron" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "66e00c2e-ca9f-4be7-8249-cfbb1fb37933"
+    ] ;
+    omc:hasParticipantStructuralCharacteristic me:60fc8713-2e05-48ef-9b97-e409c5ace862 ;
+    omc:hasParticipantFunctionalCharacteristic _:participantFC_5 .
+
+me:60fc8713-2e05-48ef-9b97-e409c5ace862
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_4 ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "60fc8713-2e05-48ef-9b97-e409c5ace862"
+    ] ;
+    omc:hasLocation me:d1864144-8dd0-4be5-917e-7831e7f1b18a .  # FIXED: No quotes!
+
+_:personName_4
+    omc:hasFullName "James Cameron" ;
+    omc:hasFirstName "James" ;
+    omc:hasLastName "Cameron" .
+
+_:participantFC_5
+    omc:hasFunctionalType "crew" ;
+    omc:hasJobTitle "director" .
+
+# Steven Spielberg - Producer
+me:21217cf0-ec16-4939-8f46-a9dc4cdfdbd4
+    rdf:type omc:Participant ;
+    rdfs:label "Steven Spielberg" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "21217cf0-ec16-4939-8f46-a9dc4cdfdbd4"
+    ] ;
+    omc:hasParticipantStructuralCharacteristic me:aeffb71b-1ae4-47a4-96ff-3c83979764f9 ;
+    omc:hasParticipantFunctionalCharacteristic _:participantFC_7 .
+
+me:aeffb71b-1ae4-47a4-96ff-3c83979764f9
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_6 ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "aeffb71b-1ae4-47a4-96ff-3c83979764f9"
+    ] ;
+    omc:hasLocation me:d1864144-8dd0-4be5-917e-7831e7f1b18a .  # FIXED: No quotes!
+
+_:personName_6
+    omc:hasFullName "Steven Spielberg" ;
+    omc:hasFirstName "Steven" ;
+    omc:hasLastName "Spielberg" .
+
+_:participantFC_7
+    omc:hasFunctionalType "crew" ;
+    omc:hasJobTitle "producer" .
+
+# ============================================================================
+# INFRASTRUCTURE
+# ============================================================================
+
+# Maya 3D Animation Software
+me:d57bafc7-98d8-4d55-90b7-8f3c18268833
+    rdf:type omc:Infrastructure ;
+    rdfs:label "Maya" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "d57bafc7-98d8-4d55-90b7-8f3c18268833"
+    ] ;
+    omc:hasInfrastructureStructuralCharacteristic me:04472ef4-279f-4dd6-aaa3-e4326d8de23d .
+
+me:04472ef4-279f-4dd6-aaa3-e4326d8de23d
+    rdf:type omc:InfrastructureSC ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "04472ef4-279f-4dd6-aaa3-e4326d8de23d"
+    ] ;
+    omc:hasStructuralType "software.tool" ;
+    omc:hasStructuralProperties _:structuralProperties_8 .
+
+_:structuralProperties_8
+    rdf:type omc:StructuralPropertiesForTool ;
+    omc:hasSoftwareType "3D Animation Software" ;
+    omc:hasVendor "Autodesk" ;
+    omc:hasProductName "Maya" ;
+    omc:hasVersionNumber "2024" ;
+    omc:hasDeploymentType "desktop" ;
+    omc:hasPlatform "Windows, macOS, Linux" .
+
+# Final Draft Screenwriting Software
+me:645019d6-d14a-4f90-bb53-4b39c4de1a05
+    rdf:type omc:Infrastructure ;
+    rdfs:label "Final Draft" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "645019d6-d14a-4f90-bb53-4b39c4de1a05"
+    ] ;
+    omc:hasInfrastructureStructuralCharacteristic me:f4644e28-0c7d-4911-ae92-67e27cb94908 .
+
+me:f4644e28-0c7d-4911-ae92-67e27cb94908
+    rdf:type omc:InfrastructureSC ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "f4644e28-0c7d-4911-ae92-67e27cb94908"
+    ] ;
+    omc:hasStructuralType "software.tool" ;
+    omc:hasStructuralProperties _:structuralProperties_9 .
+
+_:structuralProperties_9
+    rdf:type omc:StructuralPropertiesForTool ;
+    omc:hasSoftwareType "Screenwriting Software" ;
+    omc:hasVendor "Final Draft, Inc." ;
+    omc:hasProductName "Final Draft" ;
+    omc:hasVersionNumber "13" ;
+    omc:hasDeploymentType "desktop" ;
+    omc:hasPlatform "Windows, macOS" .
+
+# ============================================================================
+# ASSETS
+# ============================================================================
+
+me:12ac2d53-d58d-4f77-967a-2c6623f5af83
+    rdf:type omc:Asset ;
+    rdfs:label "Avatar Script v1.27" ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "12ac2d53-d58d-4f77-967a-2c6623f5af83"
+    ] ;
+    omc:hasAssetFunctionalCharacteristic _:assetFC_10 ;
+    omc:hasAssetStructuralCharacteristic me:12ac2d53-d58d-4f77-967a-2c6623f5af83-sc .
+
+_:assetFC_10
+    omc:hasFunctionalType "script" ;
+    omc:hasScriptVersion "1.27" ;
+    omc:hasCreationDate "2024-01-27"^^xsd:date .
+
+me:12ac2d53-d58d-4f77-967a-2c6623f5af83-sc
+    rdf:type omc:AssetAsStructure ;
+    omc:hasIdentifier [
+        omc:hasIdentifierScope "me-nexus" ;
+        omc:hasIdentifierValue "12ac2d53-d58d-4f77-967a-2c6623f5af83-sc"
+    ] ;
+    omc:hasStructuralType "digital.document" ;
+    omc:hasStructuralProperties _:structuralProperties_11 .
+
+_:structuralProperties_11
+    omc:hasFileDetails _:fileDetails_12 .
+
+_:fileDetails_12
+    omc:hasFileName "Avatar_Script_v1.27.24.pdf" ;
+    omc:hasFileExtension "pdf" ;
+    omc:hasFileSize "2847392"^^xsd:long ;
+    omc:hasMimeType "application/pdf" .
