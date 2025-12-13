@@ -1482,7 +1482,7 @@ export default function Dashboard() {
                     onChange={(e) => updateEntity(selectedEntity.id, { ...selectedEntity.content, name: e.target.value })}
                     className="h-8 text-base font-semibold border-transparent hover:border-border focus:border-input px-2 bg-transparent w-[180px]"
                   />
-                  <Badge variant="outline" className="font-mono text-[10px] h-6 bg-muted/50 max-w-[200px] truncate">
+                  <Badge variant="outline" className="font-mono text-[10px] h-6 bg-muted/50 whitespace-nowrap">
                     {Array.isArray(selectedEntity.content.identifier) 
                       ? selectedEntity.content.identifier[0]?.combinedForm || selectedEntity.content.identifier[0]?.identifierValue || 'No ID'
                       : selectedEntity.content.identifier || 'No ID'}
