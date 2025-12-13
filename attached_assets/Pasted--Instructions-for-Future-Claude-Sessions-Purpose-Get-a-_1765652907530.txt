@@ -1,0 +1,499 @@
+# Instructions for Future Claude Sessions
+
+**Purpose:** Get a new Claude instance up to speed in under 5 minutes
+
+-----
+
+## 🚀 **QUICK START** (User: Read This First!)
+
+When starting a new Claude chat session about this project:
+
+### **1. Paste This Context Prompt:**
+
+```markdown
+I'm working on a MovieLabs OMC Creator tool (TypeScript/Replit). 
+GitHub: https://github.com/FXdmz/MovieLabs-Creator
+
+**Status:** Milestone 1 Complete (JSON: 9.5/10, RDF: 9/10, Tests: 23/23 ✅)
+
+**What it does:** Exports production data to RDF/Turtle and JSON following MovieLabs OMC v2.8 spec.
+
+**Recent wins:**
+✅ Fixed RDF location string literals (graph traversal now works)
+✅ Fixed property name compliance (givenName, familyName, etc.)
+✅ Added entityType inference
+✅ 23/23 tests passing
+
+**Stack:** React 19, TypeScript, N3.js (RDF), Zustand (state), PostgreSQL, Vite
+
+I have complete documentation ready to share. What would you like to start with?
+```
+
+### **2. Upload These Files:**
+
+**Required** (in order of importance):
+
+1. `CODEBASE_OVERVIEW.md` - Architecture, file locations, data flow
+1. `codebase-quick-nav.md` - Find any functionality in 30 seconds
+1. Latest sample outputs (`.ttl` and `.json` files)
+
+**Optional** (for specific tasks):
+4. `refactoring-opportunities.md` - Improvement ideas
+5. `final-validation-report.md` - Latest bug fixes
+6. `property-mapping-reference.md` - RDF↔JSON property map
+
+### **3. Ask Your Question**
+
+Claude now has full context and can:
+
+- Locate any file in the codebase
+- Debug specific issues
+- Suggest refactoring
+- Add new features
+- Optimize performance
+
+-----
+
+## 📋 **FOR CLAUDE: HOW TO USE THESE DOCUMENTS**
+
+### When User Asks: “Where is X?”
+
+**Action:** Check `codebase-quick-nav.md`
+
+**Example:**
+
+```
+User: "Where do I fix how JSON is exported?"
+You: [Check codebase-quick-nav.md → "Export / Serialization" section]
+→ client/src/lib/export/property-mapping.ts (property transforms)
+→ client/src/lib/export/index.ts (orchestration)
+```
+
+-----
+
+### When User Asks: “How does X work?”
+
+**Action:** Check `CODEBASE_OVERVIEW.md`
+
+**Example:**
+
+```
+User: "How does the export flow work?"
+You: [Check CODEBASE_OVERVIEW.md → Section 3: DATA FLOW]
+→ Explain the complete flow from UI button to file download
+→ Show the two RDF paths (N3.js vs legacy)
+→ Show property mapping layer
+```
+
+-----
+
+### When User Asks: “What should I improve?”
+
+**Action:** Check `refactoring-opportunities.md`
+
+**Example:**
+
+```
+User: "What's the low-hanging fruit for improvements?"
+You: [Check refactoring-opportunities.md → "HIGH IMPACT, LOW EFFORT"]
+→ Consolidate RDF serializers (2-3 hours, high impact)
+→ Extract magic strings (1-2 hours, prevents bugs)
+→ Add JSDoc comments (2-3 hours, onboarding)
+```
+
+-----
+
+### When User Asks: “How do I add X?”
+
+**Action:** Check `codebase-quick-nav.md` → “COMMON PATTERNS”
+
+**Example:**
+
+```
+User: "How do I add a new entity type?"
+You: [Check codebase-quick-nav.md → "Adding a New Entity Type"]
+→ Provide the 8-step checklist
+→ Show the template code
+→ List all files to touch
+```
+
+-----
+
+### When User Reports: “X is broken”
+
+**Action:** Check `final-validation-report.md` + relevant docs
+
+**Example:**
+
+```
+User: "Graph traversal isn't working"
+You: [Check final-validation-report.md → Known issues]
+→ Check if it's the location string literal bug
+→ Point to serializer.ts:565-574
+→ Show the exact fix
+```
+
+-----
+
+## 🎯 **COMMON QUESTION PATTERNS**
+
+### Pattern: “Find the code that does X”
+
+**Response Template:**
+
+```
+The code you're looking for is in:
+📁 client/src/lib/[area]/[file].ts
+
+Specifically:
+- Line X-Y: [description]
+
+Related files:
+- 📁 [other file]: [purpose]
+
+Would you like me to:
+1. Show you the relevant code?
+2. Explain how it works?
+3. Suggest improvements?
+```
+
+-----
+
+### Pattern: “Fix bug in X”
+
+**Response Template:**
+
+```
+I found the issue. Here's what's happening:
+
+**Current code** (file.ts:line):
+[code snippet]
+
+**Problem:** [explanation]
+
+**Fix:**
+[corrected code]
+
+**Testing:**
+[how to verify the fix]
+
+Would you like me to explain why this works?
+```
+
+-----
+
+### Pattern: “Add feature X”
+
+**Response Template:**
+
+```
+To add [feature], you'll need to modify these files:
+
+**1. [Primary file]**
+   - Add: [what to add]
+   - Line: [where]
+
+**2. [Secondary file]**
+   - Update: [what to update]
+
+**3. [Test file]**
+   - Test: [what to test]
+
+Here's the implementation:
+[code]
+
+Estimated effort: [time]
+Risk level: [low/medium/high]
+```
+
+-----
+
+## 📚 **DOCUMENT QUICK REFERENCE**
+
+|Document                       |Use When                       |Key Sections                                   |
+|-------------------------------|-------------------------------|-----------------------------------------------|
+|`CODEBASE_OVERVIEW.md`         |Need architecture understanding|Project structure, Data flow, Dependencies     |
+|`codebase-quick-nav.md`        |Need to find specific code     |“I NEED TO…”, File locations, Data flow maps   |
+|`refactoring-opportunities.md` |Want to improve code           |Priority matrix, Quick wins, 30-day plan       |
+|`final-validation-report.md`   |Need bug fix history           |What was fixed, Validation results, Test scores|
+|`property-mapping-reference.md`|Working with RDF↔JSON          |Property maps, Code examples, Validation       |
+|`quick-fix-guide.md`           |Need immediate fixes           |3 remaining issues (if any)                    |
+
+-----
+
+## 🔍 **INFORMATION HIERARCHY**
+
+```
+User Question
+    ↓
+codebase-quick-nav.md (Find the right file)
+    ↓
+CODEBASE_OVERVIEW.md (Understand the architecture)
+    ↓
+[Specific Document] (Deep dive into that area)
+    ↓
+Provide Answer with Code Examples
+```
+
+-----
+
+## 💡 **RESPONSE BEST PRACTICES**
+
+### ✅ DO:
+
+1. **Always cite file paths** - Be specific
+1. **Show code snippets** - Not just descriptions
+1. **Provide line numbers** - When known
+1. **Offer next steps** - “Would you like me to…”
+1. **Reference documentation** - “As shown in CODEBASE_OVERVIEW.md…”
+
+### ❌ DON’T:
+
+1. **Guess file locations** - Check docs first
+1. **Provide outdated info** - These docs are current
+1. **Overlook tests** - Always mention testing
+1. **Ignore architecture** - Explain how parts fit
+1. **Give incomplete answers** - Use all available docs
+
+-----
+
+## 🎓 **LEARNING PATTERNS**
+
+### First Time Questions:
+
+```
+User: "Where do I change property names?"
+You: [Quick answer + educational context]
+→ "The property mapping is in client/src/lib/export/property-mapping.ts
+   
+   This is part of the export layer that transforms internal RDF 
+   property names to OMC v2.8 JSON schema compliant names.
+   
+   For example: 'firstName' → 'givenName'
+   
+   See CODEBASE_OVERVIEW.md section 4 for the complete data flow."
+```
+
+### Follow-up Questions:
+
+```
+User: "How do I add a new mapping?"
+You: [Specific instructions + code]
+→ [Provide exact code to add]
+   [Show where to add it]
+   [Explain the pattern]
+   [Mention related files that need updates]
+```
+
+-----
+
+## 🚨 **CRITICAL REMINDERS**
+
+### 1. Two RDF Serialization Paths Exist
+
+```
+Legacy: client/src/lib/export/rdf/serializer.ts
+Modern: client/src/lib/rdf/serializer.ts (N3.js) ← Prefer this
+```
+
+**When user asks about RDF serialization:**
+
+- Clarify which path they’re using
+- Recommend N3.js path for new work
+- Note that legacy path may be deprecated soon
+
+-----
+
+### 2. Property Mappings Are Bidirectional
+
+```
+RDF Property ←→ JSON Property
+firstName    ←→ givenName
+city         ←→ locality
+```
+
+**When user asks about property names:**
+
+- Check both RDF and JSON side
+- Reference property-mapping-reference.md
+- Show the complete mapping table
+
+-----
+
+### 3. State Is Client-Side
+
+```
+Database: Only users table
+Zustand:  All entity data
+```
+
+**When user asks about data persistence:**
+
+- Explain current architecture
+- Mention this is client-side only
+- Reference refactoring-opportunities.md #7 for database persistence
+
+-----
+
+### 4. Tests Are Comprehensive
+
+```
+23/23 tests passing
+Location: client/src/lib/rdf/rdf-roundtrip.spec.ts
+```
+
+**When user makes changes:**
+
+- Always remind them to run tests
+- Suggest adding tests for new features
+- Reference test fixtures in **fixtures**/
+
+-----
+
+## 📊 **PROJECT STATUS SNAPSHOT**
+
+**Current State:**
+
+- Milestone 1: ✅ Complete
+- JSON Compliance: 9.5/10
+- RDF Compliance: 9/10
+- Test Coverage: 23/23 passing
+- Production Ready: YES
+
+**Recently Fixed:**
+
+- ✅ RDF location string literals
+- ✅ Property name compliance
+- ✅ entityType inference
+
+**Known Minor Issues:**
+
+- combinedForm field (non-blocking)
+- Circular identifier pattern (cosmetic)
+- Legacy RDF serializer (refactoring needed)
+
+**Next Milestones:**
+
+- Milestone 2: Task, Context, Infrastructure entities
+- Database persistence
+- Multi-user collaboration
+- API layer
+
+-----
+
+## 🎯 **EXAMPLE INTERACTION**
+
+```
+User: "I need to add support for Custom Properties on entities"
+
+Claude: Based on CODEBASE_OVERVIEW.md, here's how to add Custom Properties:
+
+**Files to modify:**
+
+1. **shared/schema.ts** (if persisting to database)
+   Add customProperties field
+
+2. **client/src/lib/constants.ts**
+   Define CUSTOM_PROPERTY_TYPES
+
+3. **client/src/lib/rdf/adapters/base.ts**
+   Add toRdf/fromRdf for custom properties
+
+4. **client/src/lib/export/property-mapping.ts**
+   Add any property name mappings
+
+5. **client/src/lib/property-definitions.ts**
+   Add form field definitions
+
+**Implementation:**
+[Provide specific code for each file]
+
+**Testing:**
+Add tests in rdf-roundtrip.spec.ts:
+[Provide test code]
+
+**Effort estimate:** 4-6 hours
+**Risk level:** Low-Medium
+
+From refactoring-opportunities.md, consider also implementing
+runtime validation (#13) to ensure custom properties are valid.
+
+Would you like me to:
+1. Show the complete implementation?
+2. Help with the test cases?
+3. Explain the RDF serialization approach?
+```
+
+-----
+
+## 🔄 **WHEN TO REQUEST MORE INFORMATION**
+
+### Ask User For:
+
+**1. Specific Files (if needed):**
+
+```
+"To give you the exact fix, I need to see:
+- client/src/lib/export/rdf/serializer.ts (the actual code)
+
+Could you upload that file or share the relevant section?"
+```
+
+**2. Error Messages:**
+
+```
+"What's the exact error message you're seeing?
+This will help me identify the issue faster."
+```
+
+**3. Use Case Context:**
+
+```
+"Are you trying to:
+1. Fix an existing bug?
+2. Add a new feature?
+3. Optimize performance?
+
+This helps me give you the most relevant solution."
+```
+
+**4. Environment Details:**
+
+```
+"Are you:
+- Running in development (npm run dev)?
+- Testing in production build?
+- Running specific tests?
+
+This affects which code path is active."
+```
+
+-----
+
+## ✅ **SESSION CHECKLIST**
+
+Before answering, verify you have:
+
+- [ ] Read the user’s question completely
+- [ ] Checked codebase-quick-nav.md for file locations
+- [ ] Reviewed CODEBASE_OVERVIEW.md for architecture
+- [ ] Referenced specific line numbers when possible
+- [ ] Provided code examples
+- [ ] Mentioned testing implications
+- [ ] Offered follow-up options
+
+-----
+
+## 🎉 **SUCCESS CRITERIA**
+
+You’ve done well when:
+
+1. ✅ User finds the code in under 2 minutes
+1. ✅ User understands how it fits in the architecture
+1. ✅ User has working code to implement
+1. ✅ User knows how to test the changes
+1. ✅ User feels confident making the change
+
+-----
+
+**With these documents, every Claude session picks up exactly where the last one left off. No context loss, no re-explaining, just continuous productivity.** 🚀
