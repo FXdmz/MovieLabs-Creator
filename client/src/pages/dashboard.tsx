@@ -34,7 +34,8 @@ import {
   X,
   Filter,
   Undo2,
-  Redo2
+  Redo2,
+  Package
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -223,6 +224,9 @@ export default function Dashboard() {
   const [showExportNameDialog, setShowExportNameDialog] = useState(false);
   const [exportFileName, setExportFileName] = useState("omc-ontology");
   const [exportFormat, setExportFormat] = useState<"json" | "ttl">("json");
+  const [showExportPackageDialog, setShowExportPackageDialog] = useState(false);
+  const [exportPackageName, setExportPackageName] = useState("omc-project");
+  const [autoScreenshotFilename, setAutoScreenshotFilename] = useState<string | undefined>(undefined);
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
 
@@ -818,6 +822,33 @@ export default function Dashboard() {
     setShowExportNameDialog(false);
   };
 
+  const handleExportPackage = () => {
+    setExportPackageName("omc-project");
+    setShowExportPackageDialog(true);
+  };
+
+  const executeExportPackage = () => {
+    const { downloadAs } = useOntologyStore.getState();
+    const sanitizedName = exportPackageName.replace(/[^a-zA-Z0-9-_]/g, '_') || "omc-project";
+    
+    downloadAs("json", `${sanitizedName}.json`);
+    downloadAs("ttl", `${sanitizedName}.ttl`);
+    
+    setAutoScreenshotFilename(sanitizedName);
+    setShowExportPackageDialog(false);
+    setShowVisualizeAllDialog(true);
+    
+    toast({
+      title: "Exporting Package",
+      description: `Downloading ${sanitizedName}.json, ${sanitizedName}.ttl, and ${sanitizedName}.jpg`
+    });
+  };
+
+  const handleAutoScreenshotComplete = () => {
+    setAutoScreenshotFilename(undefined);
+    setShowVisualizeAllDialog(false);
+  };
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans">
       {/* Sidebar */}
@@ -1154,6 +1185,10 @@ export default function Dashboard() {
                     <DropdownMenuItem onClick={handleExportAllTtl} className="gap-2" disabled={entities.length === 0}>
                       <FileText className="h-4 w-4" /> Export All as TTL (RDF)
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleExportPackage} className="gap-2" disabled={entities.length === 0}>
+                      <Package className="h-4 w-4" /> Export Package (JSON + TTL + Graph)
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -1395,6 +1430,8 @@ export default function Dashboard() {
         onOpenChange={setShowVisualizeAllDialog}
         entities={entities}
         title="Project Entity Graph"
+        autoScreenshotFilename={autoScreenshotFilename}
+        onAutoScreenshotComplete={handleAutoScreenshotComplete}
       />
 
       <ImportEntityDialog
@@ -1414,6 +1451,59 @@ export default function Dashboard() {
         onOpenChange={setShowViewAllOmcDialog}
         entities={entities}
       />
+
+      <Dialog open={showExportPackageDialog} onOpenChange={(open) => {
+        if (!open) {
+          setShowExportPackageDialog(false);
+          setExportPackageName("omc-project");
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              <Package className="h-5 w-5 inline mr-2" />Export Package
+            </DialogTitle>
+            <DialogDescription>
+              Export all {entities.length} entities as JSON, RDF/TTL, and a graph image.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="flex items-center gap-2">
+              <Input
+                value={exportPackageName}
+                onChange={(e) => setExportPackageName(e.target.value)}
+                placeholder="omc-project"
+                className="flex-1"
+                data-testid="input-export-package-name"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && exportPackageName.trim()) {
+                    executeExportPackage();
+                  }
+                }}
+              />
+              <span className="text-muted-foreground font-mono text-sm">.*</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Downloads: {exportPackageName || "omc-project"}.json, {exportPackageName || "omc-project"}.ttl, {exportPackageName || "omc-project"}.jpg
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowExportPackageDialog(false);
+              setExportPackageName("omc-project");
+            }}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={executeExportPackage} 
+              data-testid="button-confirm-export-package"
+              disabled={!exportPackageName.trim()}
+            >
+              <Download className="h-4 w-4 mr-2" /> Export All
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showExportNameDialog} onOpenChange={(open) => {
         if (!open) {

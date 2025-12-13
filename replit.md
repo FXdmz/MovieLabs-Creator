@@ -33,6 +33,11 @@ The tool is designed for media production professionals who need to create stand
   - Proper namespace prefixes (omc:, omcT:, me:, menexus:)
   - Entity types mapped to correct RDF classes
   - Relationships serialized with correct predicates
+- **Export Package**: One-click export of complete project
+  - Downloads JSON file with all entities
+  - Downloads TTL (RDF) file with all entities
+  - Auto-captures graph visualization as JPG screenshot
+  - Single filename dialog for all three files
 
 ### Graph Visualization
 - **Interactive Cytoscape.js Graph**: Visualize entity relationships
@@ -178,6 +183,10 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 13, 2025
+- Export Package feature
+  - Single dialog to export JSON + TTL + graph screenshot
+  - Auto-screenshot when graph visualization opens
+  - Filename reused for all three files (project.json, project.ttl, project.jpg)
 - JSON Export Schema Compliance Transforms
   - Property name mapping (RDF→JSON): streetNumberAndName→street, city→locality, firstName→givenName, lastName→familyName, geo→coordinates, creativeWorkTitle→title, titleName→titleText, titleLanguage→language
   - Object reference conversion: CURIE string refs (prefix:value) converted to {"@id": value} format

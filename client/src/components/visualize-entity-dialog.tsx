@@ -39,6 +39,8 @@ interface VisualizeEntityDialogProps {
   entity?: Entity | null;
   entities?: Entity[];
   title?: string;
+  autoScreenshotFilename?: string;
+  onAutoScreenshotComplete?: () => void;
 }
 
 const ME_DMZ_COLORS = {
@@ -366,6 +368,8 @@ export function VisualizeEntityDialog({
   entity,
   entities,
   title,
+  autoScreenshotFilename,
+  onAutoScreenshotComplete,
 }: VisualizeEntityDialogProps) {
   const cyRef = useRef<Core | null>(null);
   const [layoutName, setLayoutName] = useState("circle");
@@ -374,6 +378,7 @@ export function VisualizeEntityDialog({
   const [showContext, setShowContext] = useState(true);
   const [screenshotDialogOpen, setScreenshotDialogOpen] = useState(false);
   const [screenshotFilename, setScreenshotFilename] = useState("entity-graph");
+  const [autoScreenshotTaken, setAutoScreenshotTaken] = useState(false);
 
   const isMultiMode = entities && entities.length > 0;
   
@@ -588,8 +593,47 @@ export function VisualizeEntityDialog({
     if (!open) {
       setCyReady(false);
       setSelectedElement(null);
+      setAutoScreenshotTaken(false);
     }
   }, [open]);
+
+  // Auto-screenshot when requested and graph is ready
+  useEffect(() => {
+    if (open && cyReady && autoScreenshotFilename && !autoScreenshotTaken && cyRef.current) {
+      const timer = setTimeout(() => {
+        if (!cyRef.current) return;
+        
+        const jpgData = cyRef.current.jpg({
+          output: 'blob',
+          bg: '#ffffff',
+          full: true,
+          scale: 2,
+          quality: 0.95,
+        });
+        
+        const filename = autoScreenshotFilename.endsWith('.jpg') 
+          ? autoScreenshotFilename 
+          : `${autoScreenshotFilename}.jpg`;
+        
+        const url = URL.createObjectURL(jpgData);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        setAutoScreenshotTaken(true);
+        
+        if (onAutoScreenshotComplete) {
+          onAutoScreenshotComplete();
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [open, cyReady, autoScreenshotFilename, autoScreenshotTaken, onAutoScreenshotComplete]);
 
   const handleZoomIn = () => {
     if (cyRef.current) {
