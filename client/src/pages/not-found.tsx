@@ -1,6 +1,14 @@
+/**
+ * @fileoverview 404 Not Found Page
+ * 
+ * Displayed when a user navigates to a route that doesn't exist.
+ * Provides a friendly error message with developer hint.
+ */
+
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
+/** 404 error page component */
 export default function NotFound() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">

@@ -1,3 +1,29 @@
+/**
+ * @fileoverview Main Dashboard Page - Ontology Builder Interface
+ * 
+ * The primary application interface for creating, editing, and managing
+ * OMC (Ontology for Media Creation) entities. This page provides:
+ * 
+ * @features
+ * - Entity sidebar with search, filtering, and type counts
+ * - Dynamic form editing with real-time OMC schema validation
+ * - MovieLabs API validation with local fallback
+ * - Dual export (JSON/RDF TTL) with graph screenshot packaging
+ * - Multi-entity project import from JSON or TTL files
+ * - Asset import wizard for file-based asset creation
+ * - Graph visualization of entity relationships
+ * - Undo/redo with keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
+ * 
+ * @layout
+ * - Header: Logo, navigation, export controls, help
+ * - Sidebar: Entity list with filters and action buttons
+ * - Main content: Dynamic form or welcome message
+ * 
+ * @state
+ * - Uses Zustand store (useOntologyStore) for entity management
+ * - Local state for UI dialogs, validation, and filtering
+ */
+
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation, Link } from "wouter";
 import { useOntologyStore } from "@/lib/store";

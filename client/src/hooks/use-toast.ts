@@ -1,3 +1,23 @@
+/**
+ * @fileoverview Toast Notification System
+ * 
+ * Provides a global toast notification system using React context and
+ * a reducer pattern. Toasts are managed in memory and synced to
+ * subscribed components.
+ * 
+ * @exports
+ * - useToast: Hook to show/dismiss toasts and access current toasts
+ * - toast: Direct function to show a toast without hook
+ * 
+ * @example
+ * const { toast } = useToast();
+ * toast({ title: "Success", description: "Entity saved" });
+ * 
+ * @pattern
+ * Uses a custom state management pattern with listeners array
+ * for cross-component synchronization without React Context.
+ */
+
 import * as React from "react"
 
 import type {
@@ -5,7 +25,10 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
+/** Maximum number of toasts shown simultaneously */
 const TOAST_LIMIT = 1
+
+/** Delay before removing dismissed toasts from DOM (ms) */
 const TOAST_REMOVE_DELAY = 1000000
 
 type ToasterToast = ToastProps & {

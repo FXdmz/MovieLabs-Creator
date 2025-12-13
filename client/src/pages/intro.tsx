@@ -1,3 +1,25 @@
+/**
+ * @fileoverview Landing Page - Application Introduction
+ * 
+ * The welcome page that introduces users to the ME-DMZ Ontology Builder.
+ * Explains what the OMC (Ontology for Media Creation) is and provides
+ * quick-start buttons to create different entity types.
+ * 
+ * @sections
+ * - Hero: MovieLabs branding with call-to-action
+ * - Features: Six key capabilities with icons
+ * - What is OMC: Educational content about the ontology standard
+ * - Building Blocks: Cards for each entity type (Task, Asset, etc.)
+ * - Quick Create: Direct buttons to create entities by type
+ * 
+ * @navigation
+ * - Header: Logo, help button, theme toggle, "Get Started" button
+ * - Footer: ME-DMZ branding and MovieLabs attribution
+ * 
+ * @icons
+ * - Uses custom MovieLabs visual language SVG icons for entity types
+ */
+
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
