@@ -1,12 +1,15 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { Entity } from "@/lib/store";
-import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X, Layers } from "lucide-react";
+import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X, Layers, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -369,6 +372,8 @@ export function VisualizeEntityDialog({
   const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null);
   const [showLegend, setShowLegend] = useState(true);
   const [showContext, setShowContext] = useState(true);
+  const [screenshotDialogOpen, setScreenshotDialogOpen] = useState(false);
+  const [screenshotFilename, setScreenshotFilename] = useState("entity-graph");
 
   const isMultiMode = entities && entities.length > 0;
   
@@ -606,6 +611,42 @@ export function VisualizeEntityDialog({
     }
   };
 
+  const handleScreenshotClick = () => {
+    const defaultName = isMultiMode 
+      ? "project-entity-graph" 
+      : entity 
+        ? `${entity.type.toLowerCase()}-${entity.name.replace(/[^a-zA-Z0-9]/g, '-')}`
+        : "entity-graph";
+    setScreenshotFilename(defaultName);
+    setScreenshotDialogOpen(true);
+  };
+
+  const handleScreenshotSave = () => {
+    if (!cyRef.current) return;
+    
+    const jpgData = cyRef.current.jpg({
+      output: 'blob',
+      bg: '#ffffff',
+      full: true,
+      scale: 2,
+      quality: 0.95,
+    });
+    
+    const filename = screenshotFilename.trim() || 'entity-graph';
+    const finalFilename = filename.endsWith('.jpg') ? filename : `${filename}.jpg`;
+    
+    const url = URL.createObjectURL(jpgData);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = finalFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    setScreenshotDialogOpen(false);
+  };
+
   if (!entity && !isMultiMode) return null;
 
   const dialogTitle = title 
@@ -703,6 +744,15 @@ export function VisualizeEntityDialog({
               data-testid="button-fit"
             >
               <Maximize2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleScreenshotClick}
+              title="Save screenshot"
+              data-testid="button-screenshot"
+            >
+              <Camera className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -907,6 +957,53 @@ export function VisualizeEntityDialog({
           </div>
           <div>Scroll to zoom • Drag to pan • Click nodes or edges to select</div>
         </div>
+
+        {/* Screenshot Filename Dialog */}
+        <Dialog open={screenshotDialogOpen} onOpenChange={setScreenshotDialogOpen}>
+          <DialogContent className="sm:max-w-md" data-testid="dialog-screenshot-filename">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Camera className="h-5 w-5" />
+                Save Graph Screenshot
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="screenshot-filename">Filename</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="screenshot-filename"
+                    value={screenshotFilename}
+                    onChange={(e) => setScreenshotFilename(e.target.value)}
+                    placeholder="entity-graph"
+                    data-testid="input-screenshot-filename"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleScreenshotSave();
+                      }
+                    }}
+                  />
+                  <span className="text-muted-foreground text-sm">.jpg</span>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setScreenshotDialogOpen(false)}
+                data-testid="button-screenshot-cancel"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleScreenshotSave}
+                data-testid="button-screenshot-save"
+              >
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );
