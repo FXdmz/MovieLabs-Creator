@@ -90,6 +90,15 @@ function addWorkUnit(ctx: AdapterContext, parent: RdfSubject, workUnit: any): vo
       }
     }
   }
+  
+  if (workUnit.participantRef) {
+    const refId = typeof workUnit.participantRef === 'string' 
+      ? (workUnit.participantRef.startsWith('me-nexus:') ? workUnit.participantRef.slice(9) : workUnit.participantRef)
+      : extractEntityId(workUnit.participantRef);
+    if (refId) {
+      ctx.store.addReference(wuNode, OMCT.workUnitHasParticipant, refId);
+    }
+  }
 }
 
 function addContext(ctx: AdapterContext, parent: RdfSubject, contextObj: any): void {

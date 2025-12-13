@@ -10,12 +10,20 @@ export function locationToRdf(ctx: AdapterContext, entityId: string, content: an
   const subject = jsonToRdfBase(ctx, entityId, content);
   if (!subject) return null;
   
+  if (content.description) {
+    ctx.store.addLiteral(subject, OMC.hasDescription, content.description);
+  }
+  
   if (content.address) {
     addAddress(ctx, subject, content.address);
   }
   
   if (content.geo) {
     addCoords(ctx, subject, content.geo);
+  }
+  
+  if (content.location) {
+    addLocationCoords(ctx, subject, content.location);
   }
   
   return subject;
@@ -26,6 +34,9 @@ function addAddress(ctx: AdapterContext, parent: RdfSubject, address: any): void
   ctx.store.addQuad(parent, OMC.hasAddress, addrNode);
   ctx.store.addQuad(addrNode, ns('rdf', 'type'), ns('omc', 'Address'));
   
+  if (address.fullAddress) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasFullAddress'), address.fullAddress);
+  }
   if (address.streetNumberAndName) {
     ctx.store.addLiteral(addrNode, ns('omc', 'hasStreetNumberAndName'), address.streetNumberAndName);
   }
@@ -56,5 +67,28 @@ function addCoords(ctx: AdapterContext, parent: RdfSubject, geo: any): void {
   }
   if (geo.longitude !== undefined && geo.longitude !== null) {
     ctx.store.addLiteral(geoNode, ns('omc', 'hasLongitude'), geo.longitude);
+  }
+}
+
+function addLocationCoords(ctx: AdapterContext, parent: RdfSubject, location: any): void {
+  const locNode = blankNode();
+  ctx.store.addQuad(parent, OMC.hasCoords, locNode);
+  ctx.store.addQuad(locNode, ns('rdf', 'type'), ns('omc', 'LatLon'));
+  
+  if (location.lat !== undefined && location.lat !== null) {
+    ctx.store.addLiteral(locNode, ns('omc', 'hasLatitude'), location.lat);
+  }
+  if (location.lon !== undefined && location.lon !== null) {
+    ctx.store.addLiteral(locNode, ns('omc', 'hasLongitude'), location.lon);
+  }
+}
+
+function addFullAddress(ctx: AdapterContext, parent: RdfSubject, address: any): void {
+  const addrNode = blankNode();
+  ctx.store.addQuad(parent, OMC.hasAddress, addrNode);
+  ctx.store.addQuad(addrNode, ns('rdf', 'type'), ns('omc', 'Address'));
+  
+  if (address.fullAddress) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasFullAddress'), address.fullAddress);
   }
 }

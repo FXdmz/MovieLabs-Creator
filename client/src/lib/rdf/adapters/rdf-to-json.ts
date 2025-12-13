@@ -314,9 +314,16 @@ export function rdfCreativeWorkToJson(ctx: AdapterContext, subject: RdfSubject):
   const base = rdfToJsonBase(ctx, subject);
   if (!base) return null;
 
-  const title = ctx.store.getLiteralValue(subject, ns('omc', 'hasTitle'));
-  if (title) {
-    base.title = { titleClass: 'release', titleValue: title };
+  const titleNodes = ctx.store.getObjects(subject, ns('omc', 'hasTitle'));
+  if (titleNodes.length > 0) {
+    const titleNode = titleNodes[0] as RdfSubject;
+    const titleValue = ctx.store.getLiteralValue(titleNode, ns('omc', 'hasTitleValue'));
+    const titleClass = ctx.store.getLiteralValue(titleNode, ns('omc', 'hasTitleClass'));
+    if (titleValue || titleClass) {
+      base.title = {};
+      if (titleValue) base.title.titleValue = titleValue;
+      if (titleClass) base.title.titleClass = titleClass;
+    }
   }
 
   return base;
@@ -326,13 +333,17 @@ export function rdfInfrastructureToJson(ctx: AdapterContext, subject: RdfSubject
   const base = rdfToJsonBase(ctx, subject);
   if (!base) return null;
 
-  const structuralType = ctx.store.getLiteralValue(subject, ns('omc', 'hasStructuralType'));
-  if (structuralType) {
-    base.structuralCharacteristics = { structuralType };
-  }
-
   const description = ctx.store.getLiteralValue(subject, ns('omc', 'hasDescription'));
   if (description) base.description = description;
+
+  const scNodes = ctx.store.getObjects(subject, ns('omc', 'hasInfrastructureStructuralCharacteristic'));
+  if (scNodes.length > 0) {
+    const scNode = scNodes[0] as RdfSubject;
+    const structuralType = ctx.store.getLiteralValue(scNode, ns('omc', 'hasStructuralType'));
+    if (structuralType) {
+      base.structuralCharacteristics = { structuralType };
+    }
+  }
 
   return base;
 }
@@ -344,15 +355,23 @@ export function rdfLocationToJson(ctx: AdapterContext, subject: RdfSubject): any
   const description = ctx.store.getLiteralValue(subject, ns('omc', 'hasDescription'));
   if (description) base.description = description;
 
-  const address = ctx.store.getLiteralValue(subject, ns('omc', 'hasFormattedAddress'));
-  if (address) {
-    base.address = { fullAddress: address };
+  const addressNodes = ctx.store.getObjects(subject, ns('omc', 'hasAddress'));
+  if (addressNodes.length > 0) {
+    const addrNode = addressNodes[0] as RdfSubject;
+    const fullAddress = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasFullAddress'));
+    if (fullAddress) {
+      base.address = { fullAddress };
+    }
   }
 
-  const lat = ctx.store.getLiteralValue(subject, ns('omc', 'hasLatitude'));
-  const lon = ctx.store.getLiteralValue(subject, ns('omc', 'hasLongitude'));
-  if (lat !== null && lon !== null) {
-    base.location = { lat, lon };
+  const coordNodes = ctx.store.getObjects(subject, ns('omc', 'hasCoords'));
+  if (coordNodes.length > 0) {
+    const coordNode = coordNodes[0] as RdfSubject;
+    const lat = ctx.store.getLiteralValue(coordNode, ns('omc', 'hasLatitude'));
+    const lon = ctx.store.getLiteralValue(coordNode, ns('omc', 'hasLongitude'));
+    if (lat !== null && lon !== null) {
+      base.location = { lat, lon };
+    }
   }
 
   return base;
@@ -362,9 +381,14 @@ export function rdfContextToJson(ctx: AdapterContext, subject: RdfSubject): any 
   const base = rdfToJsonBase(ctx, subject);
   if (!base) return null;
 
-  const contextType = ctx.store.getLiteralValue(subject, ns('omc', 'hasContextType'));
+  const contextClass = ctx.store.getLiteralValue(subject, ns('omc', 'contextClass'));
+  if (contextClass) {
+    base.contextClass = contextClass;
+  }
+
+  const contextType = ctx.store.getLiteralValue(subject, ns('omc', 'contextType'));
   if (contextType) {
-    base.contextClass = contextType;
+    base.contextType = contextType;
   }
 
   return base;
@@ -379,7 +403,8 @@ const rdfAdapters: Record<string, RdfToJsonAdapter> = {
   CreativeWork: rdfCreativeWorkToJson,
   Infrastructure: rdfInfrastructureToJson,
   Location: rdfLocationToJson,
-  Context: rdfContextToJson
+  Context: rdfContextToJson,
+  MediaCreationContextComponent: rdfContextToJson
 };
 
 export function rdfEntityToJson(store: OmcRdfStore, entityId: string): any | null {

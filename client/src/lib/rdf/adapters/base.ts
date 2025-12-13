@@ -100,7 +100,10 @@ export function rdfToJsonBase(ctx: AdapterContext, subject: RdfSubject): any {
   const typeNode = ctx.store.getEntityType(subject);
   if (!typeNode) return null;
   
-  const typeName = typeNode.value.split('#').pop() || '';
+  let typeName = typeNode.value.split('#').pop() || '';
+  if (typeName === 'MediaCreationContextComponent') {
+    typeName = 'Context';
+  }
   
   const name = ctx.store.getLiteralValue(subject, RDFS.label);
   

@@ -111,6 +111,8 @@ export const OMC = {
   hasContext: ns('omc', 'hasContext'),
   hasContextComponent: ns('omc', 'hasContextComponent'),
   contextType: ns('omc', 'contextType'),
+  contextClass: ns('omc', 'contextClass'),
+  hasDescription: ns('omc', 'hasDescription'),
   
   hasLocation: ns('omc', 'hasLocation'),
   hasAddress: ns('omc', 'hasAddress'),

@@ -190,6 +190,14 @@ Preferred communication style: Simple, everyday language.
   - Round-trip tests: JSON → RDF → JSON parity verification
   - Tests located at `client/src/lib/rdf/rdf-roundtrip.spec.ts`
   - Run tests with: `npx vitest run`
+  - All 23 tests passing (fixed adapter issues for all entity types)
+- Fixed RDF adapter round-trip issues:
+  - Participant Location string refs now handled correctly
+  - Task workUnit.participantRef string format supported
+  - CreativeWork title.titleValue preserved
+  - Infrastructure description and structuralCharacteristics fixed
+  - Location description, fullAddress, and lat/lon coordinates working
+  - Context entity type mapping fixed (MediaCreationContextComponent → Context)
 
 ### December 12, 2025
 - JSON import Task relationship transformation (workUnit, scheduling, state, assets)

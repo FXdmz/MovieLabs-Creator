@@ -19,7 +19,14 @@ export function participantToRdf(ctx: AdapterContext, entityId: string, content:
   }
   
   if (content.Location) {
-    const locId = extractEntityId(content.Location);
+    let locId: string | null = null;
+    if (typeof content.Location === 'string') {
+      locId = content.Location.startsWith('me-nexus:') 
+        ? content.Location.slice(9) 
+        : content.Location;
+    } else {
+      locId = extractEntityId(content.Location);
+    }
     if (locId) {
       ctx.store.addReference(subject, OMC.hasLocation, locId);
     }

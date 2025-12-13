@@ -10,8 +10,16 @@ export function infrastructureToRdf(ctx: AdapterContext, entityId: string, conte
   const subject = jsonToRdfBase(ctx, entityId, content);
   if (!subject) return null;
   
+  if (content.description) {
+    ctx.store.addLiteral(subject, OMC.hasDescription, content.description);
+  }
+  
   if (content.InfrastructureSC) {
     addInfrastructureSC(ctx, subject, content.InfrastructureSC);
+  }
+  
+  if (content.structuralCharacteristics) {
+    addInfrastructureSC(ctx, subject, content.structuralCharacteristics);
   }
   
   if (content.infrastructureFC) {

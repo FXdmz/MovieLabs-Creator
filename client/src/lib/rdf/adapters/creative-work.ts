@@ -16,6 +16,10 @@ export function creativeWorkToRdf(ctx: AdapterContext, entityId: string, content
     }
   }
   
+  if (content.title) {
+    addSingleTitle(ctx, subject, content.title);
+  }
+  
   if (content.creativeWorkType) {
     ctx.store.addLiteral(subject, ns('omc', 'creativeWorkType'), content.creativeWorkType);
   }
@@ -43,5 +47,17 @@ function addTitle(ctx: AdapterContext, parent: RdfSubject, title: any): void {
   }
   if (title.titleLanguage) {
     ctx.store.addLiteral(titleNode, ns('omc', 'titleLanguage'), title.titleLanguage);
+  }
+}
+
+function addSingleTitle(ctx: AdapterContext, parent: RdfSubject, title: any): void {
+  const titleNode = blankNode();
+  ctx.store.addQuad(parent, OMC.hasTitle, titleNode);
+  
+  if (title.titleValue) {
+    ctx.store.addLiteral(titleNode, ns('omc', 'hasTitleValue'), title.titleValue);
+  }
+  if (title.titleClass) {
+    ctx.store.addLiteral(titleNode, ns('omc', 'hasTitleClass'), title.titleClass);
   }
 }

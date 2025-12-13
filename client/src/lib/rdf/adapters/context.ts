@@ -14,6 +14,10 @@ export function contextToRdf(ctx: AdapterContext, entityId: string, content: any
     ctx.store.addLiteral(subject, OMC.contextType, content.contextType);
   }
   
+  if (content.contextClass) {
+    ctx.store.addLiteral(subject, OMC.contextClass, content.contextClass);
+  }
+  
   if (content.ContextSC) {
     addContextSC(ctx, subject, content.ContextSC);
   }
