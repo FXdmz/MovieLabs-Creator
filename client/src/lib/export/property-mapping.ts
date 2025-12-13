@@ -1,8 +1,58 @@
 /**
- * Property name mapping from RDF/internal JSON to official OMC JSON Schema
- * Based on MovieLabs OMC-JSON Schema v2.8
+ * @fileoverview Property Mapping Module for OMC JSON Schema Compliance
+ * 
+ * This module handles the transformation of entity data from internal/RDF format
+ * to the official MovieLabs OMC-JSON Schema v2.8 format. It is a critical component
+ * of the export pipeline that ensures exported JSON validates against the OMC schema.
+ * 
+ * ## Purpose
+ * The application stores entity data using property names that may differ from the
+ * official OMC schema (e.g., 'firstName' vs 'givenName'). This module provides the
+ * mapping layer to convert between these formats.
+ * 
+ * ## Key Responsibilities
+ * 1. **Property Name Mapping** - Convert RDF/internal property names to OMC schema names
+ * 2. **Object Reference Conversion** - Convert CURIE strings to {@id: value} objects
+ * 3. **Identifier Structure Cleanup** - Flatten nested identifiers, remove combinedForm
+ * 4. **Metadata Cleanup** - Remove entityType/schemaVersion from nested objects
+ * 5. **Blank Node Filtering** - Remove temporary blank node references from output
+ * 
+ * ## Data Flow
+ * ```
+ * Entity Content → transformPropertyNames() → fixObjectReferences() 
+ *   → fixIdentifierStructure() → cleanNestedObjects() → removeBlankNodeReferences()
+ *   → Schema-Compliant JSON
+ * ```
+ * 
+ * ## Usage
+ * ```typescript
+ * import { applyAllSchemaTransforms } from './property-mapping';
+ * 
+ * const schemaCompliant = applyAllSchemaTransforms(entityContent);
+ * ```
+ * 
+ * ## Related Files
+ * - `./index.ts` - Export orchestration that calls these transforms
+ * - `../rdf/adapters/rdf-to-json.ts` - RDF→JSON conversion using similar mappings
+ * - `./rdf/serializer.ts` - JSON→RDF predicate mappings (inverse direction)
+ * 
+ * @module property-mapping
+ * @see https://movielabs.com/omc/json/schema/v2.8 - Official OMC JSON Schema
  */
 
+/**
+ * Mapping from internal/RDF property names to official OMC JSON Schema property names.
+ * 
+ * These mappings correct property names that differ between:
+ * - How data is stored internally (often matching RDF predicate local names)
+ * - What the OMC-JSON Schema v2.8 expects
+ * 
+ * @example
+ * // Internal storage uses 'firstName', but OMC schema expects 'givenName'
+ * const mapped = mapPropertyName('firstName'); // Returns 'givenName'
+ * 
+ * @constant
+ */
 const RDF_TO_JSON_PROPERTY_MAP: Record<string, string> = {
   // Address properties
   'streetNumberAndName': 'street',
@@ -24,7 +74,21 @@ const RDF_TO_JSON_PROPERTY_MAP: Record<string, string> = {
 };
 
 /**
- * Properties that should be object references with @id instead of strings
+ * Properties that represent entity references and should be converted to object format.
+ * 
+ * In OMC-JSON, entity references are expressed as objects with an @id property:
+ * ```json
+ * { "Location": { "@id": "me-nexus:uuid-here" } }
+ * ```
+ * 
+ * NOT as simple strings:
+ * ```json
+ * { "Location": "me-nexus:uuid-here" }  // WRONG
+ * ```
+ * 
+ * This set defines which property names should trigger this conversion.
+ * 
+ * @constant
  */
 const OBJECT_REFERENCE_PROPERTIES = new Set([
   'Location',
@@ -37,8 +101,31 @@ const OBJECT_REFERENCE_PROPERTIES = new Set([
 ]);
 
 /**
- * Properties that should NOT have entityType/schemaVersion
- * (nested utility objects, not root entities)
+ * Properties containing nested utility objects that should NOT have metadata fields.
+ * 
+ * In OMC-JSON, only root-level entities should have `entityType` and `schemaVersion`.
+ * Nested utility objects (like address, personName, coordinates) are structural
+ * helpers and should not contain these metadata fields.
+ * 
+ * This set identifies property names that contain such utility objects, allowing
+ * the cleanup process to strip metadata from them.
+ * 
+ * @example
+ * // CORRECT: No metadata in nested address
+ * {
+ *   "Location": {
+ *     "address": { "street": "123 Main", "locality": "LA" }
+ *   }
+ * }
+ * 
+ * // WRONG: Nested object has metadata
+ * {
+ *   "Location": {
+ *     "address": { "entityType": "Address", "street": "123 Main" }
+ *   }
+ * }
+ * 
+ * @constant
  */
 const NESTED_OBJECT_PROPERTIES = new Set([
   'address',
@@ -57,18 +144,58 @@ const NESTED_OBJECT_PROPERTIES = new Set([
 ]);
 
 /**
- * Pattern to match blank node IDs that should not be exported
+ * Regular expression pattern to identify blank node IDs.
+ * 
+ * Blank nodes are temporary identifiers created during RDF processing that look like:
+ * - "b0_identifier"
+ * - "b1_something"
+ * - "b123_value"
+ * 
+ * These should be filtered out of the final JSON export as they are implementation
+ * artifacts, not meaningful identifiers.
+ * 
+ * @constant
  */
 const BLANK_NODE_PATTERN = /^b\d+_/;
 
 /**
- * Pattern to match CURIE-style references (prefix:value format)
- * These are string references that should be converted to {\"@id\": value}
+ * Regular expression pattern to identify CURIE-style reference strings.
+ * 
+ * CURIEs (Compact URIs) are used internally to reference other entities:
+ * - "me-nexus:uuid-value" → references an entity with that ID
+ * - "omc:Asset" → references the Asset type
+ * 
+ * These string references need to be converted to object references for JSON export:
+ * ```json
+ * { "@id": "me-nexus:uuid-value" }
+ * ```
+ * 
+ * The pattern matches: prefix (letters, numbers, hyphens) + colon + local name
+ * Examples that match: "me-nexus:abc123", "omc:Asset", "xsd:string"
+ * Examples that don't match: "http://example.com", "just-text", ":no-prefix"
+ * 
+ * @constant
  */
 const CURIE_PATTERN = /^[a-zA-Z][a-zA-Z0-9-]*:[a-zA-Z0-9-]+$/;
 
+// =============================================================================
+// DETECTION FUNCTIONS
+// These functions identify specific patterns in values for conditional processing
+// =============================================================================
+
 /**
- * Check if a value looks like a blank node ID
+ * Determines if a value is a blank node ID that should be filtered from output.
+ * 
+ * Blank nodes are temporary identifiers created during RDF round-trip processing.
+ * They should not appear in the final exported JSON.
+ * 
+ * @param value - Any value to check
+ * @returns true if the value matches the blank node pattern (e.g., "b0_xyz")
+ * 
+ * @example
+ * isBlankNodeId("b0_12345");      // true
+ * isBlankNodeId("me-nexus:uuid"); // false
+ * isBlankNodeId(123);             // false
  */
 export function isBlankNodeId(value: any): boolean {
   if (typeof value !== 'string') return false;
@@ -76,37 +203,94 @@ export function isBlankNodeId(value: any): boolean {
 }
 
 /**
- * Check if a value is a CURIE-style reference string (e.g., "me-nexus:uuid")
- * These should be converted to {\"@id\": value} format
+ * Determines if a value is a CURIE-style entity reference string.
+ * 
+ * CURIEs (Compact URIs) are used internally to reference entities. They need
+ * to be converted to object references with @id for OMC-JSON compliance.
+ * 
+ * @param value - Any value to check
+ * @returns true if the value is a CURIE string (e.g., "me-nexus:uuid")
+ * 
+ * @example
+ * isCurieReference("me-nexus:abc-123");  // true
+ * isCurieReference("omc:Asset");          // true
+ * isCurieReference("http://example.com"); // false (has //)
+ * isCurieReference("plain-text");         // false (no colon)
  */
 export function isCurieReference(value: any): boolean {
   if (typeof value !== 'string') return false;
   return CURIE_PATTERN.test(value);
 }
 
+// =============================================================================
+// PROPERTY NAME MAPPING
+// Convert internal property names to OMC schema-compliant names
+// =============================================================================
+
 /**
- * Map a single property name from RDF/internal to OMC JSON
+ * Maps a single property name from internal/RDF format to OMC JSON Schema format.
+ * 
+ * If the property has a mapping defined in RDF_TO_JSON_PROPERTY_MAP, the mapped
+ * name is returned. Otherwise, the original name is returned unchanged.
+ * 
+ * @param rdfProperty - The internal/RDF property name
+ * @returns The OMC-JSON Schema compliant property name
+ * 
+ * @example
+ * mapPropertyName('firstName');    // 'givenName'
+ * mapPropertyName('city');         // 'locality'
+ * mapPropertyName('name');         // 'name' (no mapping, returned as-is)
  */
 export function mapPropertyName(rdfProperty: string): string {
   return RDF_TO_JSON_PROPERTY_MAP[rdfProperty] || rdfProperty;
 }
 
 /**
- * Check if a property should be an object reference
+ * Checks if a property should contain an object reference with @id.
+ * 
+ * Entity reference properties (Location, Participant, Asset, etc.) should be
+ * objects with an @id property, not simple strings.
+ * 
+ * @param propertyName - The property name to check
+ * @returns true if this property should be an object reference
+ * 
+ * @example
+ * isObjectReferenceProperty('Location');  // true
+ * isObjectReferenceProperty('name');      // false
  */
 export function isObjectReferenceProperty(propertyName: string): boolean {
   return OBJECT_REFERENCE_PROPERTIES.has(propertyName);
 }
 
 /**
- * Check if a property is a nested utility object that shouldn't have metadata
+ * Checks if a property contains a nested utility object.
+ * 
+ * Nested utility objects should not have entityType or schemaVersion fields.
+ * This function identifies such properties for metadata cleanup.
+ * 
+ * @param propertyName - The property name to check
+ * @returns true if this property contains a nested utility object
+ * 
+ * @example
+ * isNestedObjectProperty('address');      // true
+ * isNestedObjectProperty('personName');   // true
+ * isNestedObjectProperty('name');         // false
  */
 export function isNestedObjectProperty(propertyName: string): boolean {
   return NESTED_OBJECT_PROPERTIES.has(propertyName);
 }
 
 /**
- * Convert a string reference to an object reference with @id
+ * Converts a CURIE string reference to an object reference with @id.
+ * 
+ * This is the core transformation for entity references in OMC-JSON format.
+ * 
+ * @param value - The CURIE string reference
+ * @returns An object with the @id property containing the reference
+ * 
+ * @example
+ * toObjectReference("me-nexus:abc-123");
+ * // Returns: { "@id": "me-nexus:abc-123" }
  */
 export function toObjectReference(value: string): { "@id": string } {
   return { "@id": value };
