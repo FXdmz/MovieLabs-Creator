@@ -155,6 +155,14 @@ Preferred communication style: Simple, everyday language.
 - `client/src/lib/export/` - JSON and RDF export logic
 - `client/src/lib/export/rdf/` - RDF serializer and prefixes
 
+### RDF Domain Layer
+- `client/src/lib/rdf/store.ts` - N3.js-based RDF store wrapper
+- `client/src/lib/rdf/namespaces.ts` - OMC namespace definitions and predicates
+- `client/src/lib/rdf/registry.ts` - JSON-to-RDF property mapping registry
+- `client/src/lib/rdf/adapters/` - Entity type adapters (JSON↔RDF conversion)
+- `client/src/lib/rdf/adapters/json-to-rdf.ts` - JSON→RDF converters
+- `client/src/lib/rdf/adapters/rdf-to-json.ts` - RDF→JSON converters
+
 ### Components
 - `client/src/components/task-form.tsx` - Task entity form
 - `client/src/components/task-classifier.tsx` - ME-NEXUS classification
@@ -167,6 +175,15 @@ Preferred communication style: Simple, everyday language.
 - `client/src/pages/dashboard.tsx` - Main builder interface
 
 ## Development Milestones
+
+### December 13, 2025
+- Hybrid RDF architecture implementation
+  - RDF domain layer with N3.js Store and OmcRdfStore wrapper
+  - JSON-to-RDF and RDF-to-JSON bidirectional adapters
+  - Property mapping registry for schema-to-predicate translation
+  - Entity adapters for all OMC types (Asset, Task, Participant, etc.)
+  - Round-trip parity between JSON and TTL import/export
+- RDF-to-JSON adapter format fixes for workUnit, participantRef, Location refs
 
 ### December 12, 2025
 - JSON import Task relationship transformation (workUnit, scheduling, state, assets)
