@@ -131,8 +131,8 @@ describe('RDF Round-Trip Tests', () => {
       const result = rdfEntityToJson(store, entityId);
       
       expect(result.ParticipantSC?.personName?.fullName).toBe('John Smith');
-      expect(result.ParticipantSC?.personName?.firstName).toBe('John');
-      expect(result.ParticipantSC?.personName?.lastName).toBe('Smith');
+      expect(result.ParticipantSC?.personName?.givenName).toBe('John');
+      expect(result.ParticipantSC?.personName?.familyName).toBe('Smith');
     });
 
     it('should preserve Location as string reference', () => {

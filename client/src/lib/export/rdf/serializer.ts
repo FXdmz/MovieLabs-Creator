@@ -85,6 +85,7 @@ const jsonToRdfPredicate: Record<string, string> = {
   companyName: "omc:hasCompanyName",
   fullName: "omc:hasFullName",
   firstName: "omc:hasFirstName",
+  givenName: "omc:hasFirstName",
   firstGivenName: "omc:hasFirstName",
   lastName: "omc:hasLastName",
   familyName: "omc:hasLastName",
@@ -559,7 +560,15 @@ function entityToTriples(entity: Entity): Triple[] {
         }
       });
     } else {
-      triples.push({ subject: subj, predicate, object: formatLiteral(value) });
+      // Check if this is an entity reference property that should be a URI, not a literal
+      const entityRefProperties = new Set(['Location', 'location', 'Participant', 'participant', 'Asset', 'asset', 'Context', 'context', 'CreativeWork', 'creativeWork', 'Infrastructure', 'infrastructure', 'Task', 'task']);
+      if (entityRefProperties.has(key) && typeof value === 'string') {
+        // Convert CURIE string to URI (e.g., "me-nexus:uuid" -> "me:uuid")
+        const uri = combinedFormToUri(value as string);
+        triples.push({ subject: subj, predicate, object: uri });
+      } else {
+        triples.push({ subject: subj, predicate, object: formatLiteral(value) });
+      }
     }
   }
   

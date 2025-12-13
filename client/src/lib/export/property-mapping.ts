@@ -13,6 +13,7 @@ const RDF_TO_JSON_PROPERTY_MAP: Record<string, string> = {
   
   // Person name properties
   'firstName': 'givenName',
+  'firstGivenName': 'givenName',
   'lastName': 'familyName',
   'middleName': 'additionalName',
   

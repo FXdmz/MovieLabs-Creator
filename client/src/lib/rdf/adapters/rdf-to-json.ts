@@ -262,6 +262,18 @@ function rdfParticipantSCToJson(ctx: AdapterContext, scNode: RdfSubject): any {
   const structuralType = ctx.store.getLiteralValue(scNode, ns('omc', 'hasStructuralType'));
   if (structuralType) result.structuralType = structuralType;
   
+  // Infer entityType from structuralType if not already set
+  if (!result.entityType && structuralType) {
+    const typeMap: Record<string, string> = {
+      'person': 'Person',
+      'organization': 'Organization',
+      'department': 'Department',
+      'service': 'Service'
+    };
+    const inferred = typeMap[structuralType.toLowerCase()];
+    if (inferred) result.entityType = inferred;
+  }
+  
   const personNameNodes = ctx.store.getObjects(scNode, ns('omc', 'hasPersonName'));
   if (personNameNodes.length > 0) {
     const nameNode = personNameNodes[0] as RdfSubject;
@@ -270,8 +282,8 @@ function rdfParticipantSCToJson(ctx: AdapterContext, scNode: RdfSubject): any {
     const firstName = ctx.store.getLiteralValue(nameNode, ns('omc', 'hasFirstName'));
     const lastName = ctx.store.getLiteralValue(nameNode, ns('omc', 'hasLastName'));
     if (fullName) personName.fullName = fullName;
-    if (firstName) personName.firstName = firstName;
-    if (lastName) personName.lastName = lastName;
+    if (firstName) personName.givenName = firstName;
+    if (lastName) personName.familyName = lastName;
     if (Object.keys(personName).length > 0) result.personName = personName;
   }
   
