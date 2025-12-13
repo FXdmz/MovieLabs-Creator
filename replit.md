@@ -178,6 +178,13 @@ Preferred communication style: Simple, everyday language.
 ## Development Milestones
 
 ### December 13, 2025
+- JSON Export Schema Compliance Transforms
+  - Property name mapping (RDF→JSON): streetNumberAndName→street, city→locality, firstName→givenName, lastName→familyName, geo→coordinates, creativeWorkTitle→title, titleName→titleText, titleLanguage→language
+  - Object reference conversion: CURIE string refs (prefix:value) converted to {"@id": value} format
+  - Identifier structure flattening: double-nested identifiers fixed, combinedForm field removed
+  - Nested metadata cleanup: entityType/schemaVersion removed from nested objects
+  - Blank node ID handling: b0_ prefixed IDs filtered out of exports
+  - New file: `client/src/lib/export/property-mapping.ts`
 - "View All OMC" button in sidebar
   - Opens popup dialog showing combined output of all entities
   - JSON tab with copy button
