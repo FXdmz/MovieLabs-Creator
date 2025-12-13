@@ -61,7 +61,12 @@ import {
   Filter,
   Undo2,
   Redo2,
-  Package
+  Package,
+  FolderOpen,
+  FolderClosed,
+  FolderPlus,
+  MoreHorizontal,
+  Pencil
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -136,6 +141,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Copy } from "lucide-react";
 import { ViewEntityDialog } from "@/components/view-entity-dialog";
 import { ViewAllOmcDialog } from "@/components/view-all-omc-dialog";
@@ -228,7 +238,7 @@ const getEntityIcon = (entityType: string) => {
 };
 
 export default function Dashboard() {
-  const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, removeEntity, exportJson, undo, redo, canUndo, canRedo } = useOntologyStore();
+  const { entities, addEntity, addEntityFromContent, selectedEntityId, selectEntity, updateEntity, updateEntityFolder, removeEntity, exportJson, undo, redo, canUndo, canRedo, folders, createFolder, renameFolder, deleteFolder } = useOntologyStore();
   const [location, setLocation] = useLocation();
   const [schema, setSchema] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -253,8 +263,66 @@ export default function Dashboard() {
   const [showExportPackageDialog, setShowExportPackageDialog] = useState(false);
   const [exportPackageName, setExportPackageName] = useState("omc-project");
   const [autoScreenshotFilename, setAutoScreenshotFilename] = useState<string | undefined>(undefined);
+  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
+  const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [editingFolder, setEditingFolder] = useState<string | null>(null);
+  const [editFolderName, setEditFolderName] = useState("");
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
+
+  const toggleFolderCollapse = (folderName: string) => {
+    setCollapsedFolders(prev => {
+      const next = new Set(prev);
+      if (next.has(folderName)) {
+        next.delete(folderName);
+      } else {
+        next.add(folderName);
+      }
+      return next;
+    });
+  };
+
+  const handleCreateFolder = () => {
+    if (newFolderName.trim()) {
+      createFolder(newFolderName.trim());
+      setNewFolderName("");
+      setShowNewFolderDialog(false);
+      toast({ title: "Folder Created", description: `Created folder "${newFolderName.trim()}"` });
+    }
+  };
+
+  const handleRenameFolder = (oldName: string) => {
+    if (editFolderName.trim() && editFolderName !== oldName) {
+      renameFolder(oldName, editFolderName.trim());
+      toast({ title: "Folder Renamed", description: `Renamed to "${editFolderName.trim()}"` });
+    }
+    setEditingFolder(null);
+    setEditFolderName("");
+  };
+
+  const handleDeleteFolder = (name: string) => {
+    deleteFolder(name);
+    toast({ title: "Folder Deleted", description: `Deleted folder "${name}"` });
+  };
+
+  const entitiesByFolder = useMemo(() => {
+    const grouped: Record<string, typeof filteredEntities> = {};
+    const uncategorized: typeof filteredEntities = [];
+    
+    for (const entity of filteredEntities) {
+      if (entity.folder) {
+        if (!grouped[entity.folder]) {
+          grouped[entity.folder] = [];
+        }
+        grouped[entity.folder].push(entity);
+      } else {
+        uncategorized.push(entity);
+      }
+    }
+    
+    return { grouped, uncategorized };
+  }, [filteredEntities]);
 
   const handleImportSuccess = (result: ImportResult) => {
     if (result.success && result.entityType && result.entityId && result.content) {
@@ -964,7 +1032,79 @@ export default function Dashboard() {
 
         <ScrollArea className="flex-1 px-2 py-2">
           <div className="space-y-1">
-            {filteredEntities.map((entity) => (
+            {/* Folder sections */}
+            {folders.map((folderName) => {
+              const folderEntities = entitiesByFolder.grouped[folderName] || [];
+              const isCollapsed = collapsedFolders.has(folderName);
+              const isEditing = editingFolder === folderName;
+              
+              return (
+                <Collapsible key={folderName} open={!isCollapsed} onOpenChange={() => toggleFolderCollapse(folderName)}>
+                  <div className="flex items-center gap-1 group">
+                    <CollapsibleTrigger asChild>
+                      <button className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent transition-colors" data-testid={`folder-${folderName}`}>
+                        {isCollapsed ? <FolderClosed className="h-4 w-4" /> : <FolderOpen className="h-4 w-4" />}
+                        {isEditing ? (
+                          <Input
+                            value={editFolderName}
+                            onChange={(e) => setEditFolderName(e.target.value)}
+                            onBlur={() => handleRenameFolder(folderName)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') handleRenameFolder(folderName); if (e.key === 'Escape') { setEditingFolder(null); setEditFolderName(""); } }}
+                            className="h-5 px-1 py-0 text-sm"
+                            autoFocus
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        ) : (
+                          <span className="font-medium truncate">{folderName}</span>
+                        )}
+                        <Badge variant="secondary" className="ml-auto text-[10px] h-4">{folderEntities.length}</Badge>
+                      </button>
+                    </CollapsibleTrigger>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" data-testid={`folder-menu-${folderName}`}>
+                          <MoreHorizontal className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => { setEditingFolder(folderName); setEditFolderName(folderName); }}>
+                          <Pencil className="h-3 w-3 mr-2" /> Rename
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDeleteFolder(folderName)} className="text-destructive">
+                          <Trash2 className="h-3 w-3 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <CollapsibleContent>
+                    <div className="ml-4 border-l border-sidebar-border/50 pl-2 space-y-0.5 mt-0.5">
+                      {folderEntities.map((entity) => (
+                        <button
+                          key={entity.id}
+                          onClick={() => selectEntity(entity.id)}
+                          className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                            selectedEntityId === entity.id
+                              ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
+                              : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                          }`}
+                          data-testid={`entity-${entity.id}`}
+                        >
+                          <div className={`p-1 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
+                            {getEntityIcon(entity.type)}
+                          </div>
+                          <div className="flex-1 text-left truncate">
+                            <div className="truncate text-xs">{entity.name}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+            
+            {/* Uncategorized entities */}
+            {entitiesByFolder.uncategorized.map((entity) => (
               <button
                 key={entity.id}
                 onClick={() => selectEntity(entity.id)}
@@ -973,6 +1113,7 @@ export default function Dashboard() {
                     ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 }`}
+                data-testid={`entity-${entity.id}`}
               >
                 <div className={`p-1.5 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
                   {getEntityIcon(entity.type)}
@@ -986,6 +1127,19 @@ export default function Dashboard() {
                 )}
               </button>
             ))}
+            
+            {/* New folder button */}
+            {entities.length > 0 && (
+              <button
+                onClick={() => setShowNewFolderDialog(true)}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+                data-testid="button-new-folder"
+              >
+                <FolderPlus className="h-4 w-4" />
+                <span>New Folder</span>
+              </button>
+            )}
+            
             {filteredEntities.length === 0 && entities.length > 0 && (
               <div className="px-4 py-8 text-center text-sidebar-foreground/50 text-sm">
                 No entities found
@@ -1092,6 +1246,37 @@ export default function Dashboard() {
                         ? selectedEntity.content.identifier[0]?.combinedForm || selectedEntity.content.identifier[0]?.identifierValue || 'No ID'
                         : selectedEntity.content.identifier || 'No ID'}
                     </Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-6 gap-1.5 text-xs" data-testid="button-folder-picker">
+                          {selectedEntity.folder ? <FolderOpen className="h-3 w-3" /> : <FolderClosed className="h-3 w-3 opacity-50" />}
+                          {selectedEntity.folder || "No folder"}
+                          <ChevronDown className="h-3 w-3 opacity-50" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        <DropdownMenuLabel className="text-xs">Move to folder</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => updateEntityFolder(selectedEntity.id, null)}>
+                          <X className="h-3 w-3 mr-2 opacity-50" /> No folder
+                        </DropdownMenuItem>
+                        {folders.map((f) => (
+                          <DropdownMenuItem key={f} onClick={() => updateEntityFolder(selectedEntity.id, f)}>
+                            <FolderOpen className="h-3 w-3 mr-2" /> {f}
+                            {selectedEntity.folder === f && <ChevronRight className="h-3 w-3 ml-auto" />}
+                          </DropdownMenuItem>
+                        ))}
+                        {folders.length === 0 && (
+                          <DropdownMenuItem disabled className="text-xs text-muted-foreground">
+                            No folders yet
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => setShowNewFolderDialog(true)}>
+                          <FolderPlus className="h-3 w-3 mr-2" /> New folder...
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               </div>
@@ -1477,6 +1662,41 @@ export default function Dashboard() {
         onOpenChange={setShowViewAllOmcDialog}
         entities={entities}
       />
+
+      {/* New Folder Dialog */}
+      <Dialog open={showNewFolderDialog} onOpenChange={setShowNewFolderDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderPlus className="h-5 w-5" /> Create New Folder
+            </DialogTitle>
+            <DialogDescription>
+              Organize your entities into folders for better management.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              placeholder="Folder name"
+              data-testid="input-new-folder-name"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && newFolderName.trim()) {
+                  handleCreateFolder();
+                }
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setShowNewFolderDialog(false); setNewFolderName(""); }}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateFolder} disabled={!newFolderName.trim()} data-testid="button-confirm-create-folder">
+              Create Folder
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showExportPackageDialog} onOpenChange={(open) => {
         if (!open) {

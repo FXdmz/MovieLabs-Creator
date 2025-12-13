@@ -70,6 +70,7 @@ export interface Entity {
   type: EntityType;
   name: string;
   content: any;
+  folder?: string | null;
 }
 
 /**
@@ -82,6 +83,7 @@ export interface Entity {
 interface HistoryState {
   entities: Entity[];
   selectedEntityId: string | null;
+  folders: string[];
 }
 
 /**
@@ -118,13 +120,18 @@ const MAX_HISTORY = 50;
 interface OntologyStore {
   entities: Entity[];
   selectedEntityId: string | null;
+  folders: string[];
   past: HistoryState[];
   future: HistoryState[];
-  addEntity: (type: EntityType) => void;
-  addEntityFromContent: (type: EntityType, id: string, content: any) => void;
+  addEntity: (type: EntityType, folder?: string | null) => void;
+  addEntityFromContent: (type: EntityType, id: string, content: any, folder?: string | null) => void;
   updateEntity: (id: string, content: any) => void;
+  updateEntityFolder: (id: string, folder: string | null) => void;
   removeEntity: (id: string) => void;
   selectEntity: (id: string | null) => void;
+  createFolder: (name: string) => void;
+  renameFolder: (oldName: string, newName: string) => void;
+  deleteFolder: (name: string) => void;
   undo: () => void;
   redo: () => void;
   canUndo: () => boolean;
@@ -158,7 +165,7 @@ interface OntologyStore {
  * }));
  */
 const saveToHistory = (state: OntologyStore): HistoryState[] => {
-  const newPast = [...state.past, { entities: state.entities, selectedEntityId: state.selectedEntityId }];
+  const newPast = [...state.past, { entities: state.entities, selectedEntityId: state.selectedEntityId, folders: state.folders }];
   return newPast.slice(-MAX_HISTORY);
 };
 
@@ -196,6 +203,7 @@ const saveToHistory = (state: OntologyStore): HistoryState[] => {
 export const useOntologyStore = create<OntologyStore>((set, get) => ({
   entities: [],
   selectedEntityId: null,
+  folders: [],
   past: [],
   future: [],
   
@@ -316,13 +324,60 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       id,
       type,
       name: `New ${type}`,
-      content: defaultContent
+      content: defaultContent,
+      folder: null
     };
     set((state) => ({
       past: saveToHistory(state),
       future: [],
       entities: [...state.entities, newEntity],
       selectedEntityId: id
+    }));
+  },
+
+  updateEntityFolder: (id, folder) => {
+    set((state) => ({
+      past: saveToHistory(state),
+      future: [],
+      entities: state.entities.map((e) => 
+        e.id === id ? { ...e, folder } : e
+      )
+    }));
+  },
+
+  createFolder: (name) => {
+    set((state) => {
+      if (state.folders.includes(name)) return state;
+      return {
+        past: saveToHistory(state),
+        future: [],
+        folders: [...state.folders, name].sort()
+      };
+    });
+  },
+
+  renameFolder: (oldName, newName) => {
+    set((state) => {
+      if (!state.folders.includes(oldName) || state.folders.includes(newName)) return state;
+      return {
+        past: saveToHistory(state),
+        future: [],
+        folders: state.folders.map(f => f === oldName ? newName : f).sort(),
+        entities: state.entities.map(e => 
+          e.folder === oldName ? { ...e, folder: newName } : e
+        )
+      };
+    });
+  },
+
+  deleteFolder: (name) => {
+    set((state) => ({
+      past: saveToHistory(state),
+      future: [],
+      folders: state.folders.filter(f => f !== name),
+      entities: state.entities.map(e => 
+        e.folder === name ? { ...e, folder: null } : e
+      )
     }));
   },
   
@@ -336,12 +391,13 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
    * @param {string} id - The entity's unique identifier
    * @param {any} content - Full OMC-compliant entity content
    */
-  addEntityFromContent: (type, id, content) => {
+  addEntityFromContent: (type, id, content, folder = null) => {
     const newEntity: Entity = {
       id,
       type,
       name: content.name || `New ${type}`,
-      content
+      content,
+      folder
     };
     set((state) => ({
       past: saveToHistory(state),
@@ -402,7 +458,7 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
    * No-op if past stack is empty.
    */
   undo: () => {
-    const { past, entities, selectedEntityId, future } = get();
+    const { past, entities, selectedEntityId, folders, future } = get();
     if (past.length === 0) return;
     
     const previous = past[past.length - 1];
@@ -412,7 +468,8 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       past: newPast,
       entities: previous.entities,
       selectedEntityId: previous.selectedEntityId,
-      future: [{ entities, selectedEntityId }, ...future].slice(0, MAX_HISTORY)
+      folders: previous.folders || [],
+      future: [{ entities, selectedEntityId, folders }, ...future].slice(0, MAX_HISTORY)
     });
   },
   
@@ -423,16 +480,17 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
    * No-op if future stack is empty.
    */
   redo: () => {
-    const { past, entities, selectedEntityId, future } = get();
+    const { past, entities, selectedEntityId, folders, future } = get();
     if (future.length === 0) return;
     
     const next = future[0];
     const newFuture = future.slice(1);
     
     set({
-      past: [...past, { entities, selectedEntityId }].slice(-MAX_HISTORY),
+      past: [...past, { entities, selectedEntityId, folders }].slice(-MAX_HISTORY),
       entities: next.entities,
       selectedEntityId: next.selectedEntityId,
+      folders: next.folders || [],
       future: newFuture
     });
   },
