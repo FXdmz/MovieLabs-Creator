@@ -1471,24 +1471,23 @@ export default function Dashboard() {
         {selectedEntity ? (
           <>
             {/* Toolbar */}
-            <div className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm">
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-0.5">
+            <div className="h-14 border-b border-border flex items-center justify-between px-4 bg-card/50 backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest px-2 py-1 bg-primary/10 rounded">
                     {selectedEntity.type}
                   </span>
-                  <div className="flex items-center gap-3">
-                    <Input 
-                      value={selectedEntity.name} 
-                      onChange={(e) => updateEntity(selectedEntity.id, { ...selectedEntity.content, name: e.target.value })}
-                      className="h-8 text-lg font-bold border-transparent hover:border-border focus:border-input px-0 bg-transparent w-[300px]"
-                    />
-                    <Badge variant="outline" className="font-mono text-[10px] h-5 bg-muted/50">
-                      {Array.isArray(selectedEntity.content.identifier) 
-                        ? selectedEntity.content.identifier[0]?.combinedForm || selectedEntity.content.identifier[0]?.identifierValue || 'No ID'
-                        : selectedEntity.content.identifier || 'No ID'}
-                    </Badge>
-                    <DropdownMenu>
+                  <Input 
+                    value={selectedEntity.name} 
+                    onChange={(e) => updateEntity(selectedEntity.id, { ...selectedEntity.content, name: e.target.value })}
+                    className="h-8 text-base font-semibold border-transparent hover:border-border focus:border-input px-2 bg-transparent w-[180px]"
+                  />
+                  <Badge variant="outline" className="font-mono text-[10px] h-6 bg-muted/50 max-w-[200px] truncate">
+                    {Array.isArray(selectedEntity.content.identifier) 
+                      ? selectedEntity.content.identifier[0]?.combinedForm || selectedEntity.content.identifier[0]?.identifierValue || 'No ID'
+                      : selectedEntity.content.identifier || 'No ID'}
+                  </Badge>
+                  <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="h-6 gap-1.5 text-xs" data-testid="button-folder-picker">
                           {selectedEntity.folder ? <FolderOpen className="h-3 w-3" /> : <FolderClosed className="h-3 w-3 opacity-50" />}
@@ -1518,12 +1517,11 @@ export default function Dashboard() {
                           <FolderPlus className="h-3 w-3 mr-2" /> New folder...
                         </DropdownMenuItem>
                       </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+                  </DropdownMenu>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <TooltipProvider>
                   <div className="flex items-center border rounded-md">
                     <Tooltip>
