@@ -1,12 +1,94 @@
+/**
+ * @fileoverview RDF/TTL Serializer for OMC Entities
+ * 
+ * Converts OMC JSON entities to RDF triples and serializes them as Turtle (TTL) format.
+ * This is the primary export mechanism for generating RDF-compliant output from the
+ * ontology builder's internal entity representation.
+ * 
+ * ## Architecture
+ * 
+ * The serialization pipeline follows these stages:
+ * 1. **Entity → Triples**: Each entity is converted to a set of RDF triples
+ * 2. **Triples → Turtle**: Triples are grouped by subject and formatted as TTL
+ * 
+ * ## Key Concepts
+ * 
+ * - **Triple**: RDF's fundamental unit (subject, predicate, object)
+ * - **Blank Nodes**: Anonymous nodes for nested structures (e.g., `_:state_1`)
+ * - **CURIE**: Compact URI format (e.g., `me:uuid123` for `me-nexus:uuid123`)
+ * - **Literal**: Typed string values with optional XSD datatypes
+ * 
+ * ## Data Flow
+ * 
+ * ```
+ * Entity (JSON)
+ *   ↓ entityToTriples()
+ * Triple[] (intermediate)
+ *   ↓ triplesToTurtle()
+ * TTL string (output)
+ * ```
+ * 
+ * ## Usage
+ * 
+ * ```typescript
+ * import { entitiesToTurtle, entityToTurtle } from './rdf/serializer';
+ * 
+ * // Export all entities to TTL
+ * const ttl = entitiesToTurtle(entities);
+ * 
+ * // Export single entity to TTL
+ * const singleTtl = entityToTurtle(entity);
+ * ```
+ * 
+ * ## Special Handling
+ * 
+ * - **Task entities**: Complex nested structures (state, workUnit, Context) 
+ *   are handled by `processTaskSpecificProperties()`
+ * - **Entity references**: String refs like "me-nexus:uuid" are converted to URIs
+ * - **Scheduling**: DateTime values get XSD datatype annotations
+ * 
+ * @module rdf/serializer
+ */
+
 import { Entity } from "../../store";
 import { getPrefixDeclarations, entityTypeToRdfClass } from "./prefixes";
 
+/**
+ * Represents a single RDF triple (statement).
+ * 
+ * RDF triples are the fundamental building blocks of RDF data,
+ * expressing facts as subject-predicate-object statements.
+ * 
+ * @example
+ * // "Entity me:task1 has type omc:Task"
+ * { subject: "me:task1", predicate: "rdf:type", object: "omc:Task" }
+ * 
+ * @example
+ * // "Entity me:task1 has label 'Color Grading'"
+ * { subject: "me:task1", predicate: "rdfs:label", object: '"Color Grading"' }
+ */
 interface Triple {
   subject: string;
   predicate: string;
   object: string;
 }
 
+// ============================================================================
+// STRING FORMATTING UTILITIES
+// ============================================================================
+
+/**
+ * Escapes special characters in a string for Turtle literal format.
+ * 
+ * Handles: backslash, quotes, newlines, carriage returns, tabs.
+ * 
+ * @param value - The string to escape
+ * @returns Escaped string safe for use in TTL literals
+ * 
+ * @example
+ * escapeString('Hello "World"') // 'Hello \\"World\\"'
+ * escapeString('Line1\nLine2')  // 'Line1\\nLine2'
+ */
 function escapeString(value: string): string {
   return value
     .replace(/\\/g, "\\\\")
@@ -16,6 +98,19 @@ function escapeString(value: string): string {
     .replace(/\t/g, "\\t");
 }
 
+/**
+ * Formats a JavaScript value as an RDF literal with appropriate XSD datatype.
+ * 
+ * @param value - The value to format (string, number, boolean, Date, or other)
+ * @returns Turtle-formatted literal string with optional XSD type annotation
+ * 
+ * @example
+ * formatLiteral("hello")       // '"hello"'
+ * formatLiteral(42)            // '"42"^^xsd:integer'
+ * formatLiteral(3.14)          // '"3.14"^^xsd:decimal'
+ * formatLiteral(true)          // '"true"^^xsd:boolean'
+ * formatLiteral(new Date())    // '"2025-12-13T..."^^xsd:dateTime'
+ */
 function formatLiteral(value: unknown): string {
   if (typeof value === "string") {
     return `"${escapeString(value)}"`;
@@ -35,6 +130,29 @@ function formatLiteral(value: unknown): string {
   return `"${escapeString(String(value))}"`;
 }
 
+// ============================================================================
+// URI AND IDENTIFIER UTILITIES
+// ============================================================================
+
+/**
+ * Generates the RDF URI for an entity based on its identifier.
+ * 
+ * Uses the entity's first identifier to construct a CURIE or URN.
+ * Falls back to using the entity's internal ID with the `me:` prefix.
+ * 
+ * @param entity - The entity to get a URI for
+ * @returns RDF URI string (e.g., "me:uuid123" or "<urn:scope:value>")
+ * 
+ * @example
+ * // Entity with me-nexus identifier
+ * getEntityUri({ content: { identifier: [{ identifierScope: "me-nexus", identifierValue: "abc" }] }})
+ * // Returns: "me:abc"
+ * 
+ * @example
+ * // Entity with custom scope
+ * getEntityUri({ content: { identifier: [{ identifierScope: "imdb", identifierValue: "tt123" }] }})
+ * // Returns: "<urn:imdb:tt123>"
+ */
 function getEntityUri(entity: Entity): string {
   const identifier = entity.content?.identifier;
   if (Array.isArray(identifier) && identifier.length > 0) {
@@ -49,6 +167,37 @@ function getEntityUri(entity: Entity): string {
   return `me:${entity.id}`;
 }
 
+// ============================================================================
+// PREDICATE MAPPING CONFIGURATION
+// ============================================================================
+
+/**
+ * Maps JSON property names to RDF predicates.
+ * 
+ * This is the core mapping table that translates OMC-JSON property names
+ * to their corresponding RDF predicates from the OMC ontology and related
+ * namespaces (omc:, omcT:, menexus:, rdfs:, skos:).
+ * 
+ * ## Namespace Prefixes Used
+ * - `omc:` - MovieLabs OMC ontology properties
+ * - `omcT:` - OMC topology/relationship properties
+ * - `menexus:` - ME-NEXUS extension properties
+ * - `rdfs:` - RDF Schema vocabulary
+ * - `skos:` - SKOS vocabulary (for descriptions)
+ * - `rdf:` - Core RDF vocabulary
+ * 
+ * ## Mapping Categories
+ * - **Core**: name, entityType, identifier, description
+ * - **Asset**: AssetSC, assetFC, structuralType, functionalType
+ * - **Task**: TaskSC, taskFC, taskName
+ * - **Participant**: ParticipantSC, personName, organizationName
+ * - **Location**: address, street, city, geo, coordinates
+ * - **Creative Work**: title, titleName, depicts
+ * - **Media**: mimeType, fileSize, duration, dimensions
+ * - **ME-NEXUS**: meNexusService, l1, l2, l3
+ * 
+ * Properties not in this map default to `omc:{propertyName}`.
+ */
 const jsonToRdfPredicate: Record<string, string> = {
   name: "rdfs:label",
   entityType: "rdf:type",
@@ -241,6 +390,14 @@ const jsonToRdfPredicate: Record<string, string> = {
   Asset: "omc:Asset"
 };
 
+/**
+ * Properties to skip during generic property processing.
+ * 
+ * These properties are either:
+ * - Handled specially by dedicated processing functions (state, workUnit)
+ * - Internal/computed values not needed in RDF output (combinedForm)
+ * - Processed elsewhere in the pipeline (schemaVersion, meNexusService)
+ */
 const skipProperties = new Set([
   "combinedForm",
   "region",
@@ -252,6 +409,17 @@ const skipProperties = new Set([
   "meNexusService"
 ]);
 
+/**
+ * Maps task state string values to OMC State Descriptor URIs.
+ * 
+ * Normalizes various state string formats (with/without hyphens, underscores)
+ * to their canonical OMC ontology representations.
+ * 
+ * @example
+ * "in_process" -> "omc:InProcess"
+ * "in-process" -> "omc:InProcess"
+ * "complete"   -> "omc:Completed"
+ */
 const STATE_DESCRIPTOR_MAP: Record<string, string> = {
   "assigned": "omc:Assigned",
   "in_process": "omc:InProcess",
@@ -265,6 +433,25 @@ const STATE_DESCRIPTOR_MAP: Record<string, string> = {
   "cancelled": "omc:Cancelled"
 };
 
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Converts a JSON property key to its corresponding RDF predicate.
+ * 
+ * Looks up the key in `jsonToRdfPredicate` mapping, returning null for
+ * properties that should be skipped, or defaulting to `omc:{key}`.
+ * 
+ * @param key - The JSON property name
+ * @returns RDF predicate string, or null if property should be skipped
+ * 
+ * @example
+ * jsonKeyToRdfPredicate("name")        // "rdfs:label"
+ * jsonKeyToRdfPredicate("duration")    // "omc:hasDuration"
+ * jsonKeyToRdfPredicate("combinedForm") // null (skipped)
+ * jsonKeyToRdfPredicate("customProp")  // "omc:customProp"
+ */
 function jsonKeyToRdfPredicate(key: string): string | null {
   if (skipProperties.has(key)) {
     return null;
@@ -272,13 +459,41 @@ function jsonKeyToRdfPredicate(key: string): string | null {
   return jsonToRdfPredicate[key] || `omc:${key}`;
 }
 
+/** Counter for generating unique blank node identifiers. Reset before each export. */
 let blankNodeCounter = 0;
 
+/**
+ * Generates a unique blank node identifier for anonymous RDF nodes.
+ * 
+ * Used for nested structures that don't have their own identifier,
+ * such as state objects, scheduling info, or structural characteristics.
+ * 
+ * @param prefix - Descriptive prefix for the blank node (e.g., "state", "workunit")
+ * @returns Blank node identifier in format `_:{prefix}_{counter}`
+ * 
+ * @example
+ * generateBlankNodeId("state")    // "_:state_1"
+ * generateBlankNodeId("address")  // "_:address_2"
+ */
 function generateBlankNodeId(prefix: string): string {
   blankNodeCounter++;
   return `_:${prefix}_${blankNodeCounter}`;
 }
 
+/**
+ * Converts a combined form identifier string to an RDF URI.
+ * 
+ * Combined form is the `scope:value` format used in OMC identifiers.
+ * This function converts it to appropriate RDF URI notation.
+ * 
+ * @param combinedForm - Identifier in "scope:value" format
+ * @returns RDF URI (CURIE for me-nexus, URN for other scopes)
+ * 
+ * @example
+ * combinedFormToUri("me-nexus:abc123")  // "me:abc123"
+ * combinedFormToUri("imdb:tt1234567")   // "<urn:imdb:tt1234567>"
+ * combinedFormToUri("abc123")            // "me:abc123"
+ */
 function combinedFormToUri(combinedForm: string): string {
   if (combinedForm.startsWith("me-nexus:")) {
     return `me:${combinedForm.replace("me-nexus:", "")}`;
@@ -292,6 +507,42 @@ function combinedFormToUri(combinedForm: string): string {
   return `me:${combinedForm}`;
 }
 
+// ============================================================================
+// TASK-SPECIFIC PROCESSING
+// ============================================================================
+
+/**
+ * Processes Task-specific properties that require special RDF serialization.
+ * 
+ * Task entities have complex nested structures that need custom handling:
+ * - **State**: Serialized as a typed omc:State node with descriptor
+ * - **Context**: Each context becomes a MediaCreationContextComponent with
+ *   scheduling, contributesTo, and uses relationships
+ * - **WorkUnit**: Serialized with participant references using omcT predicates
+ * 
+ * This function handles these complex structures before the generic
+ * property processing runs.
+ * 
+ * @param subject - The RDF URI of the Task entity
+ * @param content - The Task's content object
+ * @param triples - Array to append generated triples to (mutated)
+ * 
+ * ## Generated Triple Patterns
+ * 
+ * For State:
+ * ```turtle
+ * me:task1 omc:hasState _:state_1 .
+ * _:state_1 rdf:type omc:State ;
+ *           omc:hasStateDescriptor omc:InProcess .
+ * ```
+ * 
+ * For WorkUnit with Participant:
+ * ```turtle
+ * me:task1 omc:hasWorkUnit me:workunit1 .
+ * me:workunit1 omcT:aWorkUnitHas.Participant me:person1 .
+ * me:person1 omc:hasWorkUnit me:workunit1 .
+ * ```
+ */
 function processTaskSpecificProperties(subject: string, content: any, triples: Triple[]): void {
   if (content.state && typeof content.state === 'string') {
     const stateNodeId = generateBlankNodeId("state");
@@ -455,6 +706,34 @@ function processTaskSpecificProperties(subject: string, content: any, triples: T
   }
 }
 
+// ============================================================================
+// ENTITY TO TRIPLES CONVERSION
+// ============================================================================
+
+/**
+ * Converts an entity to an array of RDF triples.
+ * 
+ * This is the main conversion function that transforms a single entity
+ * into its RDF representation. It handles:
+ * 
+ * 1. Core entity type and label
+ * 2. Task-specific properties via processTaskSpecificProperties()
+ * 3. All other properties via recursive processValue()
+ * 
+ * @param entity - The entity to convert
+ * @returns Array of Triple objects representing the entity in RDF
+ * 
+ * @example
+ * const triples = entityToTriples({
+ *   id: "abc123",
+ *   type: "Asset",
+ *   name: "Hero Shot",
+ *   content: { entityType: "Asset", ... }
+ * });
+ * // Returns triples like:
+ * // { subject: "me:abc123", predicate: "rdf:type", object: "omc:Asset" }
+ * // { subject: "me:abc123", predicate: "rdfs:label", object: '"Hero Shot"' }
+ */
 function entityToTriples(entity: Entity): Triple[] {
   const triples: Triple[] = [];
   const subject = getEntityUri(entity);
@@ -603,6 +882,31 @@ function entityToTriples(entity: Entity): Triple[] {
   return triples;
 }
 
+// ============================================================================
+// TURTLE SERIALIZATION
+// ============================================================================
+
+/**
+ * Converts an array of triples to Turtle (TTL) format string.
+ * 
+ * Groups triples by subject and formats them using Turtle's abbreviated
+ * notation with `;` for predicate continuation and `,` for object continuation.
+ * 
+ * @param triples - Array of Triple objects to serialize
+ * @returns Formatted Turtle string (without prefix declarations)
+ * 
+ * @example
+ * // Input triples:
+ * [
+ *   { subject: "me:task1", predicate: "rdf:type", object: "omc:Task" },
+ *   { subject: "me:task1", predicate: "rdfs:label", object: '"Color Grading"' }
+ * ]
+ * 
+ * // Output:
+ * // me:task1
+ * //     rdf:type omc:Task ;
+ * //     rdfs:label "Color Grading" .
+ */
 function triplesToTurtle(triples: Triple[]): string {
   const grouped: Map<string, Map<string, Set<string>>> = new Map();
   
@@ -641,6 +945,33 @@ function triplesToTurtle(triples: Triple[]): string {
   return lines.join("\n");
 }
 
+// ============================================================================
+// PUBLIC API
+// ============================================================================
+
+/**
+ * Converts multiple entities to a complete Turtle document.
+ * 
+ * This is the main export function for RDF/TTL output. It:
+ * 1. Resets the blank node counter for consistent output
+ * 2. Generates namespace prefix declarations
+ * 3. Converts all entities to triples
+ * 4. Serializes triples to Turtle format
+ * 
+ * @param entities - Array of entities to convert
+ * @returns Complete Turtle document string with prefixes
+ * 
+ * @example
+ * import { entitiesToTurtle } from './rdf/serializer';
+ * 
+ * const entities = store.getState().entities;
+ * const ttlDocument = entitiesToTurtle(entities);
+ * 
+ * // Download as file
+ * const blob = new Blob([ttlDocument], { type: 'text/turtle' });
+ * 
+ * @see entityToTurtle - For single entity export
+ */
 export function entitiesToTurtle(entities: Entity[]): string {
   blankNodeCounter = 0;
   const prefixes = getPrefixDeclarations();
@@ -655,6 +986,23 @@ export function entitiesToTurtle(entities: Entity[]): string {
   return `${prefixes}\n\n${turtleBody}`;
 }
 
+/**
+ * Converts a single entity to a complete Turtle document.
+ * 
+ * Convenience wrapper around entitiesToTurtle for single-entity export.
+ * Includes full prefix declarations and proper formatting.
+ * 
+ * @param entity - The entity to convert
+ * @returns Complete Turtle document string with prefixes
+ * 
+ * @example
+ * import { entityToTurtle } from './rdf/serializer';
+ * 
+ * const selectedEntity = store.getState().getSelectedEntity();
+ * const ttl = entityToTurtle(selectedEntity);
+ * 
+ * @see entitiesToTurtle - For multi-entity export
+ */
 export function entityToTurtle(entity: Entity): string {
   return entitiesToTurtle([entity]);
 }
