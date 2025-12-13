@@ -146,6 +146,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { Copy } from "lucide-react";
 import { ViewEntityDialog } from "@/components/view-entity-dialog";
 import { ViewAllOmcDialog } from "@/components/view-all-omc-dialog";
@@ -268,8 +278,35 @@ export default function Dashboard() {
   const [newFolderName, setNewFolderName] = useState("");
   const [editingFolder, setEditingFolder] = useState<string | null>(null);
   const [editFolderName, setEditFolderName] = useState("");
+  const [contextMenuEntityId, setContextMenuEntityId] = useState<string | null>(null);
   const hasHandledCreate = useRef(false);
   const { toast } = useToast();
+
+  const handleContextMenuView = (entityId: string) => {
+    selectEntity(entityId);
+    setShowViewDialog(true);
+  };
+
+  const handleContextMenuVisualize = (entityId: string) => {
+    selectEntity(entityId);
+    setShowVisualizeDialog(true);
+  };
+
+  const handleContextMenuMoveToFolder = (entityId: string, folder: string | null) => {
+    updateEntityFolder(entityId, folder);
+    toast({ 
+      title: folder ? "Moved to Folder" : "Removed from Folder", 
+      description: folder ? `Entity moved to "${folder}"` : "Entity moved to uncategorized" 
+    });
+  };
+
+  const handleContextMenuDelete = (entityId: string) => {
+    const entity = entities.find(e => e.id === entityId);
+    if (entity) {
+      removeEntity(entityId);
+      toast({ title: "Entity Deleted", description: `Deleted "${entity.name}"` });
+    }
+  };
 
   const toggleFolderCollapse = (folderName: string) => {
     setCollapsedFolders(prev => {
@@ -1079,23 +1116,55 @@ export default function Dashboard() {
                   <CollapsibleContent>
                     <div className="ml-4 border-l border-sidebar-border/50 pl-2 space-y-0.5 mt-0.5">
                       {folderEntities.map((entity) => (
-                        <button
-                          key={entity.id}
-                          onClick={() => selectEntity(entity.id)}
-                          className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                            selectedEntityId === entity.id
-                              ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
-                              : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                          }`}
-                          data-testid={`entity-${entity.id}`}
-                        >
-                          <div className={`p-1 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
-                            {getEntityIcon(entity.type)}
-                          </div>
-                          <div className="flex-1 text-left truncate">
-                            <div className="truncate text-xs">{entity.name}</div>
-                          </div>
-                        </button>
+                        <ContextMenu key={entity.id}>
+                          <ContextMenuTrigger asChild>
+                            <button
+                              onClick={() => selectEntity(entity.id)}
+                              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                                selectedEntityId === entity.id
+                                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
+                                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                              }`}
+                              data-testid={`entity-${entity.id}`}
+                            >
+                              <div className={`p-1 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
+                                {getEntityIcon(entity.type)}
+                              </div>
+                              <div className="flex-1 text-left truncate">
+                                <div className="truncate text-xs">{entity.name}</div>
+                              </div>
+                            </button>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent>
+                            <ContextMenuItem onClick={() => handleContextMenuView(entity.id)}>
+                              <Eye className="h-4 w-4 mr-2" /> View OMC
+                            </ContextMenuItem>
+                            <ContextMenuItem onClick={() => handleContextMenuVisualize(entity.id)}>
+                              <Network className="h-4 w-4 mr-2" /> Visualize
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
+                            <ContextMenuSub>
+                              <ContextMenuSubTrigger>
+                                <FolderOpen className="h-4 w-4 mr-2" /> Move to Folder
+                              </ContextMenuSubTrigger>
+                              <ContextMenuSubContent>
+                                <ContextMenuItem onClick={() => handleContextMenuMoveToFolder(entity.id, null)}>
+                                  <X className="h-4 w-4 mr-2" /> Remove from Folder
+                                </ContextMenuItem>
+                                {folders.length > 0 && <ContextMenuSeparator />}
+                                {folders.filter(f => f !== entity.folder).map((folder) => (
+                                  <ContextMenuItem key={folder} onClick={() => handleContextMenuMoveToFolder(entity.id, folder)}>
+                                    <FolderClosed className="h-4 w-4 mr-2" /> {folder}
+                                  </ContextMenuItem>
+                                ))}
+                              </ContextMenuSubContent>
+                            </ContextMenuSub>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem onClick={() => handleContextMenuDelete(entity.id)} className="text-destructive">
+                              <Trash2 className="h-4 w-4 mr-2" /> Delete
+                            </ContextMenuItem>
+                          </ContextMenuContent>
+                        </ContextMenu>
                       ))}
                     </div>
                   </CollapsibleContent>
@@ -1105,27 +1174,61 @@ export default function Dashboard() {
             
             {/* Uncategorized entities */}
             {entitiesByFolder.uncategorized.map((entity) => (
-              <button
-                key={entity.id}
-                onClick={() => selectEntity(entity.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-                  selectedEntityId === entity.id
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                }`}
-                data-testid={`entity-${entity.id}`}
-              >
-                <div className={`p-1.5 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
-                  {getEntityIcon(entity.type)}
-                </div>
-                <div className="flex-1 text-left truncate">
-                  <div className="truncate">{entity.name}</div>
-                  <div className="text-[10px] uppercase tracking-wider opacity-70">{entity.type}</div>
-                </div>
-                {selectedEntityId === entity.id && (
-                  <ChevronRight className="h-3 w-3 opacity-50" />
-                )}
-              </button>
+              <ContextMenu key={entity.id}>
+                <ContextMenuTrigger asChild>
+                  <button
+                    onClick={() => selectEntity(entity.id)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                      selectedEntityId === entity.id
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                    }`}
+                    data-testid={`entity-${entity.id}`}
+                  >
+                    <div className={`p-1.5 rounded-sm ${selectedEntityId === entity.id ? 'bg-sidebar-primary-foreground/10' : 'bg-sidebar-accent/50'}`}>
+                      {getEntityIcon(entity.type)}
+                    </div>
+                    <div className="flex-1 text-left truncate">
+                      <div className="truncate">{entity.name}</div>
+                      <div className="text-[10px] uppercase tracking-wider opacity-70">{entity.type}</div>
+                    </div>
+                    {selectedEntityId === entity.id && (
+                      <ChevronRight className="h-3 w-3 opacity-50" />
+                    )}
+                  </button>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem onClick={() => handleContextMenuView(entity.id)}>
+                    <Eye className="h-4 w-4 mr-2" /> View OMC
+                  </ContextMenuItem>
+                  <ContextMenuItem onClick={() => handleContextMenuVisualize(entity.id)}>
+                    <Network className="h-4 w-4 mr-2" /> Visualize
+                  </ContextMenuItem>
+                  <ContextMenuSeparator />
+                  {folders.length > 0 ? (
+                    <ContextMenuSub>
+                      <ContextMenuSubTrigger>
+                        <FolderOpen className="h-4 w-4 mr-2" /> Move to Folder
+                      </ContextMenuSubTrigger>
+                      <ContextMenuSubContent>
+                        {folders.map((folder) => (
+                          <ContextMenuItem key={folder} onClick={() => handleContextMenuMoveToFolder(entity.id, folder)}>
+                            <FolderClosed className="h-4 w-4 mr-2" /> {folder}
+                          </ContextMenuItem>
+                        ))}
+                      </ContextMenuSubContent>
+                    </ContextMenuSub>
+                  ) : (
+                    <ContextMenuItem onClick={() => setShowNewFolderDialog(true)}>
+                      <FolderPlus className="h-4 w-4 mr-2" /> Create Folder
+                    </ContextMenuItem>
+                  )}
+                  <ContextMenuSeparator />
+                  <ContextMenuItem onClick={() => handleContextMenuDelete(entity.id)} className="text-destructive">
+                    <Trash2 className="h-4 w-4 mr-2" /> Delete
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
             ))}
             
             {/* New folder button */}
