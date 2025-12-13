@@ -306,24 +306,6 @@ export default function Dashboard() {
     toast({ title: "Folder Deleted", description: `Deleted folder "${name}"` });
   };
 
-  const entitiesByFolder = useMemo(() => {
-    const grouped: Record<string, typeof filteredEntities> = {};
-    const uncategorized: typeof filteredEntities = [];
-    
-    for (const entity of filteredEntities) {
-      if (entity.folder) {
-        if (!grouped[entity.folder]) {
-          grouped[entity.folder] = [];
-        }
-        grouped[entity.folder].push(entity);
-      } else {
-        uncategorized.push(entity);
-      }
-    }
-    
-    return { grouped, uncategorized };
-  }, [filteredEntities]);
-
   const handleImportSuccess = (result: ImportResult) => {
     if (result.success && result.entityType && result.entityId && result.content) {
       addEntityFromContent(result.entityType, result.entityId, result.content);
@@ -544,6 +526,24 @@ export default function Dashboard() {
     const matchesType = typeFilter === "all" || e.type === typeFilter;
     return matchesSearch && matchesType;
   });
+
+  const entitiesByFolder = useMemo(() => {
+    const grouped: Record<string, typeof filteredEntities> = {};
+    const uncategorized: typeof filteredEntities = [];
+    
+    for (const entity of filteredEntities) {
+      if (entity.folder) {
+        if (!grouped[entity.folder]) {
+          grouped[entity.folder] = [];
+        }
+        grouped[entity.folder].push(entity);
+      } else {
+        uncategorized.push(entity);
+      }
+    }
+    
+    return { grouped, uncategorized };
+  }, [filteredEntities]);
 
   const entityTypeCounts = useMemo(() => {
     const counts: Record<string, number> = { all: entities.length };
