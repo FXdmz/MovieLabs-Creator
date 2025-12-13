@@ -1,34 +1,29 @@
 /**
- * @fileoverview Landing Page - Application Introduction
+ * @fileoverview Landing Page - Project Aescher Private Beta
  * 
- * The welcome page that introduces users to the ME-DMZ Ontology Builder.
- * Explains what the OMC (Ontology for Media Creation) is and provides
- * quick-start buttons to create different entity types.
+ * The private beta launch page for project_aescher - the brain for production.
+ * Introduces users to the intelligent production management platform.
  * 
  * @sections
- * - Hero: MovieLabs branding with call-to-action
- * - Features: Six key capabilities with icons
- * - What is OMC: Educational content about the ontology standard
- * - Building Blocks: Cards for each entity type (Task, Asset, etc.)
- * - Quick Create: Direct buttons to create entities by type
+ * - Hero: Project Aescher branding with private beta messaging
+ * - Features: Core capabilities of the production brain
+ * - 2030 Vision: MovieLabs partnership and vision alignment
+ * - OMC Foundation: Technical foundation using OMC standard
  * 
  * @navigation
- * - Header: Logo, help button, theme toggle, "Get Started" button
- * - Footer: ME-DMZ branding and MovieLabs attribution
- * 
- * @icons
- * - Uses custom MovieLabs visual language SVG icons for entity types
+ * - Header: Logo, theme toggle, beta access button
+ * - Footer: Attribution and partnership logos
  */
 
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, HelpCircle } from "lucide-react";
-import { Logo } from "@/components/logo";
-import { HelpDialog } from "@/components/help-dialog";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, Brain, Sparkles, Zap, Network, Shield, Clock, Check } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useToast } from "@/hooks/use-toast";
 
-// Hero image served from public folder for reliable production builds
 const heroImage = "/hero-background.jpg";
 
 const ParticipantIcon = ({ className }: { className?: string }) => (
@@ -75,52 +70,41 @@ const ContextIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const InfrastructureIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="2210.983 568.944 264.57 149.92" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path 
-      d="M 2418.681 574.152 C 2445.961 574.152 2468.07 605.473 2468.07 644.111 C 2468.07 682.749 2445.951 714.07 2418.681 714.07 L 2270.521 714.07 C 2243.269 714.07 2221.15 682.749 2221.15 644.111 C 2221.15 605.473 2243.269 574.152 2270.521 574.152 L 2418.681 574.152 Z" 
-      strokeWidth="4" 
-      fill="currentColor"
-      stroke="currentColor"
-    />
-  </svg>
-);
-
-const CreativeWorkIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 46.35 45.5" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path 
-      fill="currentColor" 
-      stroke="currentColor"
-      strokeWidth="0.5"
-      d="M36,22.17a33.27,33.27,0,0,1-9.67-3.41,12.62,12.62,0,0,0,.07-4.63Q24.49,3.3,24.49,3.29A33,33,0,0,1,14,7.17a32.91,32.91,0,0,1-11.18,0S3.46,10.73,4.73,18c1.62,9.19,13.61,13.84,13.61,13.84a30.66,30.66,0,0,0,6.2-8c-.26,1.48-.57,3.25-.94,5.33C22,38.32,31.66,46.79,31.66,46.79s12-4.65,13.61-13.84q1.9-10.83,1.91-10.83A32.91,32.91,0,0,1,36,22.17Z" 
-      transform="translate(-1.82 -2.3)"
-    />
-  </svg>
-);
-
 export default function Intro() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
+
+  const handleBetaSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    
+    setIsSubmitting(true);
+    // Simulate signup
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    toast({
+      title: "You're on the list!",
+      description: "We'll notify you when private beta access is available.",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-background dark:to-background">
-      <header className="border-b bg-white/80 dark:bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="block">
-              <Logo className="h-8 w-auto dark:hidden" variant="light" />
-              <Logo className="h-8 w-auto hidden dark:block" variant="dark" />
-            </a>
+            <h1 className="text-xl font-light text-white tracking-wide">
+              project_<span className="italic font-medium">aescher</span>
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <ThemeToggle />
-            <HelpDialog 
-              trigger={
-                <Button variant="outline" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] transition-all duration-200" data-testid="button-help-intro">
-                  <HelpCircle className="h-4 w-4" /> Help
-                </Button>
-              }
-            />
             <Link href="/builder">
-              <Button data-testid="button-get-started-header" className="bg-[#232073] hover:bg-[#1a1857] dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
-                Get Started
+              <Button data-testid="button-access-beta" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300">
+                Access Beta
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -129,115 +113,232 @@ export default function Intro() {
       </header>
 
       <main>
-        <section className="relative">
+        {/* Hero Section */}
+        <section className="relative min-h-[80vh] flex items-center">
           <img 
             src={heroImage} 
             alt="" 
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-[#0d1129]/70" />
-          <div className="relative container mx-auto px-6 py-16 md:py-24">
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-900/80 to-slate-950" />
+          <div className="relative container mx-auto px-6 py-24">
             <div className="max-w-4xl mx-auto text-center">
-              <img 
-                src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
-                alt="MovieLabs 2030 Vision" 
-                className="h-48 md:h-64 mx-auto mb-8"
-                data-testid="img-movielabs-logo"
-              />
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                MovieLabs OMC Builder
+              <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
+                <Sparkles className="h-4 w-4 text-violet-400" />
+                <span className="text-sm text-violet-300 font-medium">Private Beta</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl font-light text-white mb-6 tracking-tight">
+                project_<span className="italic font-medium bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">aescher</span>
               </h1>
+              
+              <p className="text-2xl md:text-3xl text-slate-300 font-light mb-4">
+                The brain for production.
+              </p>
+              
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12">
+                An intelligent orchestration layer that connects every aspect of your production workflow—from creative vision to final delivery.
+              </p>
+
+              {!isSubmitted ? (
+                <form onSubmit={handleBetaSignup} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-violet-500"
+                    data-testid="input-beta-email"
+                  />
+                  <Button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 whitespace-nowrap"
+                    data-testid="button-request-access"
+                  >
+                    {isSubmitting ? "Joining..." : "Request Access"}
+                  </Button>
+                </form>
+              ) : (
+                <div className="flex items-center justify-center gap-2 text-green-400">
+                  <Check className="h-5 w-5" />
+                  <span>You're on the waitlist!</span>
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        <section className="bg-white dark:bg-card py-16">
+        {/* Features Section */}
+        <section className="py-24 bg-slate-900/50">
           <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="prose prose-lg max-w-none text-muted-foreground mb-8 text-center">
-                <p className="text-lg mb-4">
-                  Create standardized metadata that speaks the language of modern media production! 
-                  The <strong className="text-[#232073] dark:text-primary">OMC Builder</strong> helps you craft OMC-compliant documents 
-                  with an intuitive form-based interface and real-time validation.
-                </p>
-                <p className="text-lg">
-                  Import existing projects, visualize entity relationships, and export in both JSON and RDF/TTL formats—all with 
-                  industry-standard interoperability from script to screen.
+            <div className="max-w-4xl mx-auto text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+                Intelligence at every step
+              </h2>
+              <p className="text-lg text-slate-400">
+                A unified system that understands the full context of your production.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-violet-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Brain className="h-6 w-6 text-violet-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">Contextual Intelligence</h3>
+                  <p className="text-sm text-slate-400">
+                    Understands relationships between people, tasks, assets, and timelines to surface what matters.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Network className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">Connected Workflows</h3>
+                  <p className="text-sm text-slate-400">
+                    Seamlessly integrates across departments, tools, and stages of production.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Zap className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">Real-time Coordination</h3>
+                  <p className="text-sm text-slate-400">
+                    Instantly propagates changes and keeps everyone aligned without manual updates.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Shield className="h-6 w-6 text-emerald-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">Industry Standards</h3>
+                  <p className="text-sm text-slate-400">
+                    Built on MovieLabs OMC for true interoperability across the production ecosystem.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Clock className="h-6 w-6 text-amber-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">Predictive Planning</h3>
+                  <p className="text-sm text-slate-400">
+                    Anticipates bottlenecks and resource conflicts before they impact your schedule.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white/5 border-white/10 hover:border-violet-500/30 transition-all duration-300 hover:bg-white/[0.07]">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <Sparkles className="h-6 w-6 text-rose-400" />
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">AI-Powered Insights</h3>
+                  <p className="text-sm text-slate-400">
+                    Surfaces actionable recommendations based on production patterns and best practices.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* 2030 Vision Section */}
+        <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center">
+              <img 
+                src="https://movielabs.com/wp-content/uploads/2023/06/2030_vision_logo_tm.png" 
+                alt="MovieLabs 2030 Vision" 
+                className="h-32 md:h-40 mx-auto mb-8 opacity-90"
+                data-testid="img-movielabs-logo"
+              />
+              <h2 className="text-3xl md:text-4xl font-light text-white mb-6">
+                Aligned with the 2030 Vision
+              </h2>
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
+                Project Aescher is built on the principles of MovieLabs' 2030 Vision for the future of media production—enabling software-defined workflows, interoperability, and intelligent automation.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-500">
+                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Software-Defined Workflows</span>
+                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Cloud-Native Production</span>
+                <span className="px-4 py-2 bg-white/5 rounded-full border border-white/10">Semantic Interoperability</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* OMC Foundation Section */}
+        <section className="py-24 bg-slate-950 border-t border-white/5">
+          <div className="container mx-auto px-6">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+                  Powered by OMC
+                </h2>
+                <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                  The Ontology for Media Creation provides the semantic foundation for understanding production workflows.
                 </p>
               </div>
-              <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-[#232073]/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <ParticipantIcon className="h-6 w-6 text-violet-400" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Schema Validated</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Real-time validation against OMC v2.8
-                  </p>
+                  <h3 className="font-medium text-white text-sm">Participants</h3>
+                  <p className="text-xs text-slate-500 mt-1">People & Organizations</p>
                 </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
+                
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <TaskIcon className="h-6 w-6 text-green-400" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">All Entity Types</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Tasks, Assets, Participants, Locations & more
-                  </p>
+                  <h3 className="font-medium text-white text-sm">Tasks</h3>
+                  <p className="text-xs text-slate-500 mt-1">Work Activities</p>
                 </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <ArrowRight className="h-6 w-6 text-[#232073] dark:text-primary" />
+                
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <AssetIcon className="h-6 w-6 text-orange-400" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Dual Export</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Export as JSON or RDF/TTL formats
-                  </p>
+                  <h3 className="font-medium text-white text-sm">Assets</h3>
+                  <p className="text-xs text-slate-500 mt-1">Digital & Physical Media</p>
                 </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-[#232073] dark:text-primary">
-                      <circle cx="12" cy="12" r="3"/>
-                      <circle cx="19" cy="5" r="2"/>
-                      <circle cx="5" cy="19" r="2"/>
-                      <circle cx="5" cy="5" r="2"/>
-                      <line x1="12" y1="9" x2="12" y2="5"/>
-                      <line x1="9.5" y1="13.5" x2="6" y2="17"/>
-                      <line x1="14.5" y1="10.5" x2="17.5" y2="6.5"/>
-                    </svg>
+                
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <ContextIcon className="h-6 w-6 text-yellow-400" />
                   </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Graph View</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Visualize entity relationships
-                  </p>
-                </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-[#232073] dark:text-primary">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Project Import</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Import JSON or TTL projects
-                  </p>
-                </div>
-                <div className="text-center p-4">
-                  <div className="w-12 h-12 bg-[#CEECF2] dark:bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <TaskIcon className="h-6 w-6 text-[#232073] dark:text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2 text-sm">Task Classification</h3>
-                  <p className="text-xs text-muted-foreground">
-                    ME-NEXUS service taxonomy
-                  </p>
+                  <h3 className="font-medium text-white text-sm">Contexts</h3>
+                  <p className="text-xs text-slate-500 mt-1">Workflow Groupings</p>
                 </div>
               </div>
-              <div className="text-center mt-10">
+              
+              <div className="text-center">
                 <Link href="/builder">
-                  <Button size="lg" data-testid="button-start-building" className="bg-[#232073] hover:bg-[#1a1857] dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-lg px-8 py-6">
-                    Start Building OMC
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="border-white/20 text-white hover:bg-white/10 hover:border-white/30"
+                    data-testid="button-explore-omc"
+                  >
+                    Explore OMC Builder
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
@@ -245,199 +346,39 @@ export default function Intro() {
           </div>
         </section>
 
-        <section className="py-16 bg-[#CEECF2]/20 dark:bg-secondary/20">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-6 text-center">What is the OMC?</h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground">
-                <p className="mb-6">
-                  The <strong>MovieLabs Ontology for Media Creation (OMC)</strong> is an industry-standard 
-                  data model developed by MovieLabs and its member studios to improve communication about 
-                  production workflows between people, organizations, and software.
-                </p>
-                <p className="mb-6">
-                  In order for software that supports collaboration and automation in production workflows 
-                  to interoperate, common data models and schemas for data exchange are needed. The OMC 
-                  provides consistent naming and definitions of terms, as well as ways to express how 
-                  various concepts and components relate to one another in production workflows.
-                </p>
-                <p>
-                  All productions have <strong>Participants</strong> that conduct <strong>Tasks</strong>, 
-                  often involving media <strong>Assets</strong> and <strong>Infrastructure</strong> within 
-                  the realm of a workflow <strong>Context</strong>. By defining these key building blocks 
-                  and their relationships, we can design complex workflows that both humans and machines 
-                  can understand.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-white dark:bg-card">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-[#232073] dark:text-primary mb-12 text-center">Core Building Blocks</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-6">
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-creativeworks">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CreativeWorkIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Creative Works</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Films, shows, and productions with Wikidata integration
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-participants">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#232073]/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ParticipantIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Participants</h3>
-                  <p className="text-sm text-muted-foreground">
-                    People, organizations, departments with location references
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-tasks">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#3AA608]/10 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <TaskIcon className="h-8 w-8 text-[#3AA608] dark:text-green-400" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Tasks</h3>
-                  <p className="text-sm text-muted-foreground">
-                    ME-NEXUS classified work activities with scheduling
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-assets">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#D97218]/10 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AssetIcon className="h-8 w-8 text-[#D97218] dark:text-orange-400" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Assets</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Digital and physical media with file import wizard
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-locations">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg viewBox="0 0 100 100" className="h-8 w-8 text-red-500 dark:text-red-400" fill="currentColor">
-                      <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z"/>
-                    </svg>
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Locations</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Physical places with address autocomplete
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-infrastructure">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#CEECF2] dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <InfrastructureIcon className="h-8 w-8 text-[#232073] dark:text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Infrastructure</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Software, hardware, and technical resources
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-[#232073]/20 dark:border-primary/20 hover:border-[#232073]/40 dark:hover:border-primary/40 transition-colors hover:shadow-lg" data-testid="card-contexts">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-[#F2C53D]/20 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ContextIcon className="h-8 w-8 text-[#F2C53D] dark:text-yellow-400" />
-                  </div>
-                  <h3 className="font-semibold text-[#232073] dark:text-primary mb-2">Contexts</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Auto-managed workflow groupings
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-[#232073] text-white">
+        {/* CTA Section */}
+        <section className="py-24 bg-gradient-to-r from-violet-900/20 to-indigo-900/20 border-t border-white/5">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Build OMC Entities?</h2>
-            <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-              Start creating standardized metadata for your media production workflows.
+            <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+              Ready to transform your production?
+            </h2>
+            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+              Join the private beta and be among the first to experience the future of production management.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/builder?create=CreativeWork">
-                <Button size="lg" variant="secondary" data-testid="button-create-creativework" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <CreativeWorkIcon className="h-5 w-5" />
-                  Creative Work
-                </Button>
-              </Link>
-              <Link href="/builder?create=Task">
-                <Button size="lg" variant="secondary" data-testid="button-create-task" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <TaskIcon className="h-5 w-5" />
-                  Task
-                </Button>
-              </Link>
-              <Link href="/builder?create=Participant">
-                <Button size="lg" variant="secondary" data-testid="button-create-participant" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <ParticipantIcon className="h-5 w-5" />
-                  Participant
-                </Button>
-              </Link>
-              <Link href="/builder?create=Asset">
-                <Button size="lg" variant="secondary" data-testid="button-create-asset" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <AssetIcon className="h-5 w-5" />
-                  Asset
-                </Button>
-              </Link>
-              <Link href="/builder?create=Location">
-                <Button size="lg" variant="secondary" data-testid="button-create-location" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <svg viewBox="0 0 100 100" className="h-5 w-5" fill="currentColor">
-                    <path d="M50,5 C30,5 15,20 15,40 C15,60 50,95 50,95 C50,95 85,60 85,40 C85,20 70,5 50,5 Z M50,55 C40,55 32,47 32,37 C32,27 40,19 50,19 C60,19 68,27 68,37 C68,47 60,55 50,55 Z"/>
-                  </svg>
-                  Location
-                </Button>
-              </Link>
-              <Link href="/builder?create=Infrastructure">
-                <Button size="lg" variant="secondary" data-testid="button-create-infrastructure" className="bg-[#CEECF2] hover:bg-white text-[#232073] gap-2 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg border-0">
-                  <InfrastructureIcon className="h-5 w-5" />
-                  Infrastructure
-                </Button>
-              </Link>
-            </div>
+            <Link href="/builder">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 text-lg px-8"
+                data-testid="button-get-started"
+              >
+                Get Started
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </section>
       </main>
 
-      <footer className="bg-[#232073] text-white py-10">
+      <footer className="border-t border-white/10 bg-slate-950 py-8">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
-              <Logo className="h-10 w-auto" variant="dark" />
-            </a>
-            <p className="text-white/80 text-sm max-w-md text-center md:text-right">
-              We live at the intersection of art and data helping content creators entertain, influence and educate the world.
-            </p>
-          </div>
-          <div className="border-t border-white/20 pt-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/60">
-              <p>
-                The Ontology for Media Creation is developed by{" "}
-                <a href="https://movielabs.com" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">
-                  MovieLabs
-                </a>{" "}
-                and is licensed under the Creative Commons Attribution 4.0 International License.
-              </p>
-              <div className="flex items-center gap-4">
-                <a href="https://www.me-dmz.com/privacy-policy-and-terms-of-use" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white hover:underline">
-                  Privacy Policy
-                </a>
-                <span className="text-white/40">|</span>
-                <span>All rights reserved © 2025 by ME-DMZ</span>
-              </div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-slate-500">
+              project_<span className="italic">aescher</span> — The brain for production
+            </div>
+            <div className="flex items-center gap-6 text-sm text-slate-500">
+              <span>Built on MovieLabs OMC v2.8</span>
+              <span className="hidden md:inline">•</span>
+              <span>Private Beta</span>
             </div>
           </div>
         </div>

@@ -1057,9 +1057,9 @@ export default function Dashboard() {
       <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="p-4 border-b border-sidebar-border">
           <div className="mb-4 flex items-center justify-between">
-            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
-              <Logo />
-            </a>
+            <h1 className="text-lg font-light text-sidebar-foreground tracking-wide">
+              project_<span className="italic font-medium">aescher</span>
+            </h1>
             <div className="flex items-center gap-1">
               <Link href="/">
                 <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent" data-testid="button-home">
