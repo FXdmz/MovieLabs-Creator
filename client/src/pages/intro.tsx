@@ -15,15 +15,12 @@
  * - Footer: Attribution and partnership logos
  */
 
-import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Brain, Sparkles, Zap, Network, Shield, Clock, Check } from "lucide-react";
+import { ArrowRight, Brain, Sparkles, Zap, Network, Shield, Clock } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useToast } from "@/hooks/use-toast";
 
 const heroImage = "/hero-background.jpg";
 
@@ -72,25 +69,6 @@ const ContextIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Intro() {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const { toast } = useToast();
-
-  const handleBetaSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    
-    setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast({
-      title: "You're on the list!",
-      description: "We'll notify you when private beta access is available.",
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -133,43 +111,20 @@ export default function Intro() {
                 <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-6 tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-12 tracking-tight">
                 project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
               </h1>
               
-              <p className="text-2xl md:text-3xl text-muted-foreground font-light mb-4">
-                The brain for production.
-              </p>
-              
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-                An intelligent orchestration layer that connects every aspect of your production workflow—from creative vision to final delivery.
-              </p>
-
-              {!isSubmitted ? (
-                <form onSubmit={handleBetaSignup} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-background border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-violet-500"
-                    data-testid="input-beta-email"
-                  />
-                  <Button 
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 whitespace-nowrap"
-                    data-testid="button-request-access"
-                  >
-                    {isSubmitting ? "Joining..." : "Request Access"}
-                  </Button>
-                </form>
-              ) : (
-                <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400">
-                  <Check className="h-5 w-5" />
-                  <span>You're on the waitlist!</span>
-                </div>
-              )}
+              <Link href="/builder">
+                <Button 
+                  size="lg"
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 text-lg px-8"
+                  data-testid="button-get-started-hero"
+                >
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
