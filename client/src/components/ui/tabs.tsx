@@ -1,3 +1,4 @@
+/** @fileoverview Tabs component - tabbed content navigation with panel switching (shadcn/ui). */
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 

@@ -1,3 +1,4 @@
+/** @fileoverview Collapsible - expandable/collapsible content section (shadcn/ui). */
 "use client"
 
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"

@@ -1,3 +1,4 @@
+/** @fileoverview Table components - styled HTML table with header, body, row, cell variants (shadcn/ui). */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

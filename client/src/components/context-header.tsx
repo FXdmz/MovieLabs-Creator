@@ -1,5 +1,14 @@
+/**
+ * @fileoverview Header component for the Context entity form.
+ * Displays descriptive information about OMC Context entities.
+ * 
+ * @description Contexts are containers for grouping related entities
+ * within a production workflow (scenes, locations, characters, assets).
+ */
+
 import { Badge } from "@/components/ui/badge";
 
+/** Circle icon representing Context in MovieLabs visual language */
 const ContextIcon = () => (
   <svg viewBox="1375.27 1509.47 150 150" className="w-12 h-12" xmlns="http://www.w3.org/2000/svg">
     <path 

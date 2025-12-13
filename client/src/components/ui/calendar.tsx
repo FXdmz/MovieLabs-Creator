@@ -1,3 +1,4 @@
+/** @fileoverview Calendar component - date picker with month navigation (shadcn/ui). */
 "use client"
 
 import * as React from "react"

@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Participant Entity RDF Adapter
+ * 
+ * Converts OMC Participant entities (Person, Organization, Department, Service)
+ * between JSON and RDF formats. Handles structural characteristics with person
+ * names, contact info, and location references.
+ * 
+ * @exports participantToRdf - Converts Participant JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, NAMESPACES } from '../namespaces';

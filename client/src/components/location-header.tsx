@@ -1,8 +1,20 @@
+/**
+ * @fileoverview Header component for Location entity form.
+ * Includes address autocomplete via Geoapify integration.
+ * Uses the map pin icon from MovieLabs visual language.
+ * 
+ * @features
+ * - Quick name and description inputs
+ * - Address autocomplete with Geoapify
+ * - Auto-populates address fields and coordinates
+ */
+
 import { AddressSearch } from "./address-search";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+/** Address data structure from Geoapify lookup */
 interface AddressData {
   street?: string;
   locality?: string;

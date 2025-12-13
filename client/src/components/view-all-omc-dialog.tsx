@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Dialog for viewing all OMC entities in JSON and RDF/TTL formats.
+ * Provides combined export preview of the entire project.
+ * 
+ * @features
+ * - JSON tab with formatted entity array
+ * - RDF/TTL tab with Turtle serialization
+ * - Copy-to-clipboard for both formats
+ * - Entity count badge
+ * 
+ * @exports ViewAllOmcDialog - Combined OMC output viewer dialog
+ */
+
 import { useMemo } from "react";
 import { Entity } from "@/lib/store";
 import { exportEntities } from "@/lib/export";
@@ -14,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
+/** Props for ViewAllOmcDialog component */
 interface ViewAllOmcDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

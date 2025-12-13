@@ -1,5 +1,13 @@
+/**
+ * @fileoverview Task entity header component with form integration.
+ * Displays the MovieLabs OMC Task icon and description, with embedded TaskForm.
+ * 
+ * @exports TaskHeader - Task entity header with form
+ */
+
 import { TaskForm } from "./task-form";
 
+/** Props for TaskHeader component */
 interface TaskHeaderProps {
   value?: any;
   onChange?: (newValue: any) => void;

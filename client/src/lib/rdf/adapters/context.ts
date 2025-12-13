@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Context Entity RDF Adapter
+ * 
+ * Converts OMC Context entities (production/narrative contexts) between JSON
+ * and RDF formats. Handles context structural characteristics, scheduling,
+ * contributesTo relationships, and infrastructure uses.
+ * 
+ * @exports contextToRdf - Converts Context JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, OMCT, MENEXUS, NAMESPACES } from '../namespaces';

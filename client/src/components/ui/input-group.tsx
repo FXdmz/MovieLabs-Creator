@@ -1,3 +1,4 @@
+/** @fileoverview InputGroup - input with prefix/suffix addons and buttons (shadcn/ui). */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

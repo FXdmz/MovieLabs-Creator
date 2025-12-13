@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Base RDF Adapter Utilities
+ * 
+ * Core utilities and interfaces shared by all entity-specific RDF adapters.
+ * Provides common functions for identifier handling, property mapping, and
+ * base entity conversion in both directions (JSON↔RDF).
+ * 
+ * @exports AdapterContext - Shared context containing RDF store
+ * @exports jsonToRdfBase - Base JSON→RDF conversion for common entity fields
+ * @exports rdfToJsonBase - Base RDF→JSON conversion for common entity fields
+ * @exports addIdentifier - Adds identifier triples to RDF graph
+ * @exports addNameLabel - Adds name/label triples
+ * @exports extractEntityId - Extracts entity ID from JSON content
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, NAMESPACES, ns, RDF, RDFS, OMC } from '../namespaces';

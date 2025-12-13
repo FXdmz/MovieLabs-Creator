@@ -1,5 +1,13 @@
+/**
+ * @fileoverview Simple JSON viewer component.
+ * Displays formatted JSON in a scrollable container.
+ * 
+ * @note This is a read-only viewer. For full editing, Monaco editor is used.
+ */
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+/** Props for JsonEditor component */
 interface JsonEditorProps {
   value: any;
   onChange: (value: any) => void;

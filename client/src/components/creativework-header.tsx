@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Interactive header for Creative Work entity with Wikidata media lookup.
+ * Allows quick population of Creative Work fields by searching for films/TV shows.
+ * 
+ * @features
+ * - MediaSearch integration for Wikidata film/TV lookup
+ * - Auto-maps media type to OMC creativeWorkType/category
+ * - Populates title, description, and duration from selected media
+ */
+
 import { MediaSearch } from "./media-search";
 import { WikidataMedia } from "@/lib/wikidata";
 
@@ -27,11 +37,19 @@ const CreativeWorkIcon = ({ className, size = 48 }: { className?: string; size?:
   </svg>
 );
 
+/** Props for CreativeWorkHeader with optional form integration */
 interface CreativeWorkHeaderProps {
+  /** Current form value for the Creative Work entity */
   value?: any;
+  /** Callback to update form value when media is selected */
   onChange?: (newValue: any) => void;
 }
 
+/**
+ * Maps Wikidata media types to OMC creativeWorkType and category.
+ * @param mediaType - The Wikidata media type (film, tvSeries, tvEpisode)
+ * @returns Object with OMC creativeWorkType and creativeWorkCategory
+ */
 function mapMediaTypeToOMC(mediaType: WikidataMedia["mediaType"]): { 
   creativeWorkType: string; 
   creativeWorkCategory: string | null;

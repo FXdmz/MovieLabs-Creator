@@ -1,3 +1,4 @@
+/** @fileoverview Textarea component - multi-line text input field (shadcn/ui). */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

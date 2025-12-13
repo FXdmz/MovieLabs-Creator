@@ -1,3 +1,12 @@
+/**
+ * @fileoverview CreativeWork Entity RDF Adapter
+ * 
+ * Converts OMC CreativeWork entities (films, shows, productions) between JSON
+ * and RDF formats. Handles title information with multi-language support,
+ * creative work type/category, and approximate length.
+ * 
+ * @exports creativeWorkToRdf - Converts CreativeWork JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, NAMESPACES } from '../namespaces';

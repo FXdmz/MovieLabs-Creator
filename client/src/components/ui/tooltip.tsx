@@ -1,3 +1,4 @@
+/** @fileoverview Tooltip component - hover-triggered informational popup (shadcn/ui). */
 "use client"
 
 import * as React from "react"

@@ -1,3 +1,4 @@
+/** @fileoverview Skeleton component - loading placeholder with pulsing animation (shadcn/ui). */
 import { cn } from "@/lib/utils"
 
 function Skeleton({

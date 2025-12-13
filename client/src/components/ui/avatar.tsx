@@ -1,3 +1,4 @@
+/** @fileoverview Avatar component - user profile images with fallback (shadcn/ui). */
 "use client"
 
 import * as React from "react"

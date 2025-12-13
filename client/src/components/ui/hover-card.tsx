@@ -1,3 +1,4 @@
+/** @fileoverview HoverCard - mouse-hover triggered popup card (shadcn/ui). */
 import * as React from "react"
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 

@@ -1,3 +1,4 @@
+/** @fileoverview Field - form field primitives with label, description, error (shadcn/ui). */
 "use client"
 
 import { useMemo } from "react"

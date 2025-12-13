@@ -1,3 +1,4 @@
+/** @fileoverview ScrollArea - custom scrollbar container (shadcn/ui). */
 import * as React from "react"
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 

@@ -1,3 +1,4 @@
+/** @fileoverview InputOTP - one-time password input with slot-based UI (shadcn/ui). */
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 import { Minus } from "lucide-react"

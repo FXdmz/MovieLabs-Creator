@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Hierarchical Task classification component using ME-NEXUS taxonomy.
+ * Provides two-level classification: structural (L1 category) and functional (service).
+ * 
+ * @features
+ * - L1 category selector for structural classification (TaskSC)
+ * - L2/L3 service selector for functional classification (taskFC)
+ * - Hierarchical tree view with indented child services
+ * - OMC equivalent mapping display
+ * - Service description preview
+ * 
+ * @exports TaskClassifier - ME-NEXUS hierarchical classifier
+ * @exports getOMCEquivalent - Maps ME-NEXUS categories to OMC task types
+ */
+
 import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
@@ -12,6 +27,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { v4 as uuidv4 } from "uuid";
 import servicesData from "@/lib/me-nexus-services.json";
 
+/** Service hierarchy levels from ME-NEXUS taxonomy */
 interface ServiceHierarchy {
   l1: string | null;
   l2: string | null;

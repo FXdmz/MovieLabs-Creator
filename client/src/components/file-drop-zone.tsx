@@ -1,3 +1,16 @@
+/**
+ * @fileoverview File drop zone component for creating Asset entities from files.
+ * Extracts metadata from dropped files and generates OMC Asset entities.
+ * 
+ * @features
+ * - Drag-and-drop file upload
+ * - Automatic metadata extraction (dimensions, duration, MIME type)
+ * - Preview of extracted data before confirmation
+ * - Supports video, audio, image, and document files
+ * 
+ * @deprecated Use AssetWizard for more comprehensive asset creation
+ */
+
 import { useState, useCallback } from "react";
 import { Upload, FileVideo, FileAudio, FileImage, FileText, File, X, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,11 +19,18 @@ import { Badge } from "@/components/ui/badge";
 import { extractFileMetadata, mapMetadataToAsset, formatFileSize, ExtractedMetadata } from "@/lib/file-metadata";
 import { v4 as uuidv4 } from "uuid";
 
+/** Props for FileDropZone component */
 interface FileDropZoneProps {
+  /** Callback when asset is created from file */
   onAssetCreated: (asset: any, metadata: ExtractedMetadata) => void;
+  /** Callback when user cancels the upload */
   onCancel: () => void;
 }
 
+/**
+ * File drop zone for creating Asset entities from media files.
+ * Extracts metadata and allows user to confirm before creating entity.
+ */
 export function FileDropZone({ onAssetCreated, onCancel }: FileDropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);

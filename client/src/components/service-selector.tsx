@@ -1,3 +1,16 @@
+/**
+ * @fileoverview ME-NEXUS service type selector component.
+ * Provides searchable dropdown for selecting ME-NEXUS service classifications.
+ * 
+ * @features
+ * - Full-text search across service names and descriptions
+ * - Category filter buttons for L1 classification levels
+ * - Displays service count and filtered results
+ * - Clear selection button
+ * 
+ * @exports ServiceSelector - ME-NEXUS service type picker
+ */
+
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +30,7 @@ import {
   serviceMatchesSearch,
 } from "@/lib/omc-service-mapping";
 
+/** Props for ServiceSelector component */
 interface ServiceSelectorProps {
   value?: MeNexusServiceData | null;
   onChange?: (service: MeNexusServiceData | null) => void;

@@ -1,3 +1,4 @@
+/** @fileoverview Pagination - page navigation with prev/next and numbered links (shadcn/ui). */
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 

@@ -1,3 +1,4 @@
+/** @fileoverview Select - dropdown select input with search and groups (shadcn/ui). */
 "use client"
 
 import * as React from "react"

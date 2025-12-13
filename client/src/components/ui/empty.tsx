@@ -1,3 +1,4 @@
+/** @fileoverview Empty - placeholder UI for empty states with icon, title, description (shadcn/ui). */
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"

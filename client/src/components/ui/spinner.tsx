@@ -1,3 +1,4 @@
+/** @fileoverview Spinner component - animated loading indicator (shadcn/ui). */
 import { Loader2Icon } from "lucide-react"
 
 import { cn } from "@/lib/utils"

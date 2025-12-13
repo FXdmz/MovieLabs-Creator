@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Location Entity RDF Adapter
+ * 
+ * Converts OMC Location entities between JSON and RDF formats. Handles
+ * address components (street, city, country), geo coordinates (lat/lon),
+ * and location descriptions.
+ * 
+ * @exports locationToRdf - Converts Location JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, NAMESPACES } from '../namespaces';

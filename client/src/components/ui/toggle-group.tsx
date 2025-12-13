@@ -1,3 +1,4 @@
+/** @fileoverview ToggleGroup component - group of toggles for single/multiple selection (shadcn/ui). */
 "use client"
 
 import * as React from "react"

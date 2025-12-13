@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Header component for the Asset entity form.
+ * Displays descriptive information about OMC Asset entities with the MovieLabs visual icon.
+ * 
+ * @description Assets represent physical or digital objects in media production,
+ * from cameras and props to digital files and rendered footage.
+ */
+
+/**
+ * Renders the Asset entity header with icon and description.
+ * Displays the rounded rectangle icon from MovieLabs visual language.
+ */
 export function AssetHeader() {
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">

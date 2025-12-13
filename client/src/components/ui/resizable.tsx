@@ -1,3 +1,4 @@
+/** @fileoverview Resizable - draggable panel resize handles (shadcn/ui). */
 "use client"
 
 import { GripVertical } from "lucide-react"

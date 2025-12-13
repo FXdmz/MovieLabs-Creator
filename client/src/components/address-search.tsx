@@ -1,7 +1,22 @@
+/**
+ * @fileoverview Address autocomplete search component using Geoapify API.
+ * Provides a search input with dropdown suggestions for finding physical addresses.
+ * 
+ * @features
+ * - Debounced search with 300ms delay
+ * - Address suggestions dropdown with formatted results
+ * - Auto-populates street, city, state, postal code, country, and coordinates
+ * - Click-outside to close dropdown
+ * - Loading and error states
+ * 
+ * @requires GEOAPIFY_API_KEY environment variable on the server
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, AlertCircle } from "lucide-react";
 
+/** Response feature from Geoapify autocomplete API */
 interface GeoapifyFeature {
   properties: {
     formatted: string;
@@ -17,10 +32,12 @@ interface GeoapifyFeature {
   };
 }
 
+/** Full Geoapify API response structure */
 interface GeoapifyResponse {
   features: GeoapifyFeature[];
 }
 
+/** Normalized address data passed to parent component */
 interface AddressData {
   street?: string;
   locality?: string;
@@ -32,9 +49,12 @@ interface AddressData {
   formatted?: string;
 }
 
+/** Props for AddressSearch component */
 interface AddressSearchProps {
+  /** Callback when user selects an address from suggestions */
   onAddressSelect: (address: AddressData) => void;
 }
+
 
 export function AddressSearch({ onAddressSelect }: AddressSearchProps) {
   const [query, setQuery] = useState("");

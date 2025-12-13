@@ -1,3 +1,4 @@
+/** @fileoverview Sonner component - theme-aware toast notification provider (shadcn/ui). */
 "use client"
 
 import { useTheme } from "next-themes"

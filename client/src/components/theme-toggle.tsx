@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Theme toggle dropdown component.
+ * Provides light/dark/system theme switching using next-themes.
+ * 
+ * @exports ThemeToggle - Theme switcher dropdown button
+ */
+
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
@@ -8,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/** Props for ThemeToggle component */
 interface ThemeToggleProps {
   className?: string;
 }

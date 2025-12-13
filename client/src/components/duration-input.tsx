@@ -1,12 +1,30 @@
+/**
+ * @fileoverview ISO 8601 duration input component.
+ * Provides a user-friendly interface for entering durations in days/hours/minutes/seconds
+ * and outputs the value in ISO 8601 duration format (e.g., "PT1H30M").
+ * 
+ * @features
+ * - Visual inputs for days, hours, minutes, seconds
+ * - Parses existing ISO 8601 duration strings
+ * - Outputs formatted ISO 8601 duration
+ * - Displays the raw ISO format alongside inputs
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+/** Props for DurationInput component */
 interface DurationInputProps {
   value: string;
   onChange: (value: string) => void;
 }
 
+/**
+ * Parses an ISO 8601 duration string into component parts.
+ * @param duration - ISO 8601 duration string (e.g., "P1DT2H30M15S")
+ * @returns Object with days, hours, minutes, seconds
+ */
 function parseISO8601Duration(duration: string): { hours: number; minutes: number; seconds: number; days: number } {
   const result = { hours: 0, minutes: 0, seconds: 0, days: 0 };
   
@@ -24,6 +42,14 @@ function parseISO8601Duration(duration: string): { hours: number; minutes: numbe
   return result;
 }
 
+/**
+ * Formats component parts into an ISO 8601 duration string.
+ * @param days - Number of days
+ * @param hours - Number of hours
+ * @param minutes - Number of minutes
+ * @param seconds - Number of seconds
+ * @returns ISO 8601 duration string (e.g., "P1DT2H30M")
+ */
 function formatISO8601Duration(days: number, hours: number, minutes: number, seconds: number): string {
   if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
     return '';

@@ -1,3 +1,4 @@
+/** @fileoverview DropdownMenu - trigger-activated menu with submenus and shortcuts (shadcn/ui). */
 "use client"
 
 import * as React from "react"

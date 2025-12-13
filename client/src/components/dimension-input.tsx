@@ -1,7 +1,19 @@
+/**
+ * @fileoverview Dimension input component with numeric value and unit selector.
+ * Outputs OMC-compliant dimension strings (e.g., "1920px", "100cm").
+ * 
+ * @features
+ * - Numeric input with unit dropdown
+ * - Supports pixels, metric (mm, cm, m, km), and imperial (in, ft, mi) units
+ * - Parses existing dimension strings on load
+ * - Outputs combined value+unit string
+ */
+
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 
+/** Available dimension units grouped by category */
 const DIMENSION_UNITS = [
   { value: 'px', label: 'Pixels (px)', category: 'Digital' },
   { value: 'cm', label: 'Centimeters (cm)', category: 'Metric' },
@@ -13,12 +25,20 @@ const DIMENSION_UNITS = [
   { value: 'mi', label: 'Miles (mi)', category: 'Imperial' },
 ];
 
+/** Props for DimensionInput component */
 interface DimensionInputProps {
+  /** Current dimension value (e.g., "1920px") or null */
   value: string | null;
+  /** Callback when dimension changes, passes combined value+unit or null */
   onChange: (value: string | null) => void;
+  /** Placeholder text for numeric input */
   placeholder?: string;
 }
 
+/**
+ * Dimension input with value and unit selector.
+ * Combines numeric value with selected unit for OMC dimension fields.
+ */
 export function DimensionInput({ value, onChange, placeholder }: DimensionInputProps) {
   const [numericValue, setNumericValue] = useState<string>('');
   const [unit, setUnit] = useState<string>('px');

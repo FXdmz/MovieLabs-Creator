@@ -1,3 +1,4 @@
+/** @fileoverview Alert dialog component - modal for confirmations and important messages (shadcn/ui). */
 import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 

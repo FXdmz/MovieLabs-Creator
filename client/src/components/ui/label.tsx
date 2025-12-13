@@ -1,3 +1,4 @@
+/** @fileoverview Label - accessible form label element (shadcn/ui). */
 "use client"
 
 import * as React from "react"

@@ -1,3 +1,4 @@
+/** @fileoverview Progress - horizontal progress bar indicator (shadcn/ui). */
 "use client"
 
 import * as React from "react"

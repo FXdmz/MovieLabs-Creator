@@ -1,3 +1,4 @@
+/** @fileoverview Popover - click-triggered floating content panel (shadcn/ui). */
 import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 

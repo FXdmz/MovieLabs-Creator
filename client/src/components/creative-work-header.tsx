@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Static header for Creative Work entity (no Wikidata integration).
+ * Use creativework-header.tsx instead for the version with media search.
+ * 
+ * @description Displays information about OMC CreativeWork entities - uniquely
+ * identified productions like films, TV series, or episodes.
+ */
+
+/**
+ * Static Creative Work header with icon and description.
+ * Does not include Wikidata media search functionality.
+ */
 export function CreativeWorkHeader() {
   return (
     <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">

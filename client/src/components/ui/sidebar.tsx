@@ -1,3 +1,4 @@
+/** @fileoverview Sidebar component - collapsible navigation panel with responsive mobile support (shadcn/ui). */
 "use client"
 
 import * as React from "react"

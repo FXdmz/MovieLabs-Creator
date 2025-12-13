@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Infrastructure Entity RDF Adapter
+ * 
+ * Converts OMC Infrastructure entities (software, hardware, services) between
+ * JSON and RDF formats. Handles structural/functional characteristics,
+ * descriptions, and context relationships.
+ * 
+ * @exports infrastructureToRdf - Converts Infrastructure JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, NAMESPACES } from '../namespaces';

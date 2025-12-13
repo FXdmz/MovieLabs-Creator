@@ -1,3 +1,4 @@
+/** @fileoverview Carousel - embla-carousel-react based image/content slider (shadcn/ui). */
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,

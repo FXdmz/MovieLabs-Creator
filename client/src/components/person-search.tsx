@@ -1,8 +1,22 @@
+/**
+ * @fileoverview Person search component with Wikidata integration.
+ * Provides autocomplete search for notable people using the Wikidata API.
+ * 
+ * @features
+ * - Debounced search (400ms) for efficient API usage
+ * - Displays person photos, names, descriptions, and birth dates
+ * - Click-outside detection to close dropdown
+ * - Loading and error states
+ * 
+ * @exports PersonSearch - Wikidata person search with autocomplete
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, User, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { searchPeople, WikidataPerson } from "@/lib/wikidata";
 
+/** Props for PersonSearch component */
 interface PersonSearchProps {
   onPersonSelect: (person: WikidataPerson) => void;
 }

@@ -1,3 +1,4 @@
+/** @fileoverview Drawer - slide-out panel from screen edge using vaul (shadcn/ui). */
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 

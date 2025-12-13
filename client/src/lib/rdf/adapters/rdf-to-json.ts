@@ -1,3 +1,19 @@
+/**
+ * @fileoverview RDF-to-JSON Entity Adapters
+ * 
+ * Converts RDF triples back to OMC JSON entity format. Contains reverse adapters
+ * for all entity types: Asset, Task, Participant, CreativeWork, Infrastructure,
+ * Location, and Context. Used for TTL file import and round-trip verification.
+ * 
+ * @exports rdfAssetToJson - Converts Asset RDF triples to JSON
+ * @exports rdfTaskToJson - Converts Task RDF triples to JSON
+ * @exports rdfParticipantToJson - Converts Participant RDF triples to JSON
+ * @exports rdfCreativeWorkToJson - Converts CreativeWork RDF triples to JSON
+ * @exports rdfInfrastructureToJson - Converts Infrastructure RDF triples to JSON
+ * @exports rdfLocationToJson - Converts Location RDF triples to JSON
+ * @exports rdfContextToJson - Converts Context RDF triples to JSON
+ * @exports rdfEntitiesToJson - Bulk converts all entities in an RDF store
+ */
 import { NamedNode, BlankNode, Term } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, RDFS, RDF, NAMESPACES } from '../namespaces';

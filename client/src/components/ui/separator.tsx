@@ -1,3 +1,4 @@
+/** @fileoverview Separator - horizontal or vertical divider line (shadcn/ui). */
 import * as React from "react"
 import * as SeparatorPrimitive from "@radix-ui/react-separator"
 

@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Header component for Participant entity form.
+ * Includes person lookup via Wikidata integration.
+ * Uses the hexagon shape from MovieLabs visual language.
+ * 
+ * @features
+ * - Quick name and description inputs
+ * - Wikidata person search for auto-population
+ * - Sets up Person structural characteristics from selected data
+ */
+
 import { PersonSearch } from "./person-search";
 import { WikidataPerson, extractWikidataPersonData } from "@/lib/wikidata";
 import { getParticipantStructuralDefaults } from "@/lib/participant-types";
@@ -6,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+/** Hexagon icon representing Participant in MovieLabs visual language */
 const ParticipantIcon = ({ className, size = 48 }: { className?: string; size?: number }) => (
   <svg 
     viewBox="1620.35 1648.8 159.848 148.03" 

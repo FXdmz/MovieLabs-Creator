@@ -1,3 +1,4 @@
+/** @fileoverview Toaster component - renders active toast notifications from useToast hook (shadcn/ui). */
 import { useToast } from "@/hooks/use-toast"
 import {
   Toast,

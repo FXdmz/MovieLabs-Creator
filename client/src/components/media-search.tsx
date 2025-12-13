@@ -1,8 +1,20 @@
+/**
+ * @fileoverview Media search component using Wikidata API.
+ * Searches for films and TV shows to populate Creative Work entities.
+ * 
+ * @features
+ * - Debounced search with 400ms delay
+ * - Dropdown with poster images and metadata
+ * - Supports films, TV series, and episodes
+ * - Returns Wikidata media data for form population
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, Film, Tv, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { searchMedia, WikidataMedia } from "@/lib/wikidata";
 
+/** Props for MediaSearch component */
 interface MediaSearchProps {
   onMediaSelect: (media: WikidataMedia) => void;
 }

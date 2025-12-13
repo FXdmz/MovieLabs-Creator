@@ -1,3 +1,4 @@
+/** @fileoverview Alert component - displays important messages with default/destructive variants (shadcn/ui). */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

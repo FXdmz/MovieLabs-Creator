@@ -1,3 +1,4 @@
+/** @fileoverview Command - searchable command palette with keyboard navigation (shadcn/ui). */
 "use client"
 
 import * as React from "react"

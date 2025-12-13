@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Task Entity RDF Adapter
+ * 
+ * Converts OMC Task entities between JSON and RDF formats. Handles task
+ * structural/functional characteristics, work units with participant
+ * assignments, scheduling, state tracking, and context relationships.
+ * Supports ME-NEXUS classification and creative work linking.
+ * 
+ * @exports taskToRdf - Converts Task JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, OMCT, MENEXUS, NAMESPACES } from '../namespaces';

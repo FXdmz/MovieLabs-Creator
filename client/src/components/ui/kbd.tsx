@@ -1,3 +1,4 @@
+/** @fileoverview Kbd - keyboard shortcut display element (shadcn/ui). */
 import { cn } from "@/lib/utils"
 
 function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {

@@ -1,3 +1,4 @@
+/** @fileoverview Checkbox - toggle input for boolean selection (shadcn/ui). */
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { Check } from "lucide-react"

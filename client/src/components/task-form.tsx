@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Comprehensive Task entity form component.
+ * Provides full editing capabilities for OMC Task entities including:
+ * 
+ * @features
+ * - Basic info: name, description
+ * - ME-NEXUS classification via TaskClassifier
+ * - Task state and status tracking
+ * - Participant assignment via entity lookup
+ * - Creative Work linking with auto-Context creation
+ * - Scheduling (start/end dates, scheduled vs actual)
+ * - Input/output Asset relationships
+ * - Task dependencies (informs/isInformedBy)
+ * - Infrastructure references via Context
+ * 
+ * @exports TaskForm - Full Task entity editing form
+ */
+
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +53,7 @@ import { useOntologyStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 import { cn } from "@/lib/utils";
 
+/** Props for TaskForm component */
 interface TaskFormProps {
   value: any;
   onChange: (newValue: any) => void;

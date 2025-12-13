@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Help dialog with OMC documentation and entity guides.
+ * Provides tabbed interface explaining each OMC entity type.
+ * 
+ * @features
+ * - Overview of OMC concepts
+ * - Entity-specific documentation (Task, Participant, Asset, etc.)
+ * - Links to official MovieLabs resources
+ * - MovieLabs visual language icons for each type
+ */
+
 import { useState } from "react";
 import {
   Dialog,

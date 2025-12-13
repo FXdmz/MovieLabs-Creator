@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Asset Entity RDF Adapter
+ * 
+ * Converts OMC Asset entities between JSON and RDF formats. Handles structural
+ * characteristics (digital/physical assets), functional characteristics, and
+ * structural properties like media type, file size, dimensions.
+ * 
+ * @exports assetToRdf - Converts Asset JSON to RDF triples
+ */
 import { DataFactory, BlankNode, NamedNode } from 'n3';
 import { OmcRdfStore, RdfSubject } from '../store';
 import { entityUri, ns, OMC, NAMESPACES } from '../namespaces';

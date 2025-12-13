@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Single entity import dialog for JSON/TTL files.
+ * Allows importing a single OMC entity from an external file.
+ * 
+ * @features
+ * - Drag-and-drop file upload
+ * - Supports JSON and TTL (RDF/Turtle) formats
+ * - Validates entity structure before import
+ * 
+ * @see ImportMultiDialog for multi-entity project imports
+ */
+
 import { useState, useCallback } from 'react';
 import { Upload, FileJson, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';

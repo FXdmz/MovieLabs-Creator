@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Multi-entity project import dialog for JSON/TTL files.
+ * Allows importing multiple OMC entities from a single file with preview.
+ * 
+ * @features
+ * - Two-step import: upload → preview → confirm
+ * - Entity type badges with counts
+ * - Scrollable entity list preview
+ * - Warning display for non-fatal issues
+ * - Supports JSON and TTL (RDF/Turtle) formats
+ */
+
 import { useState, useCallback } from 'react';
 import { Upload, FileJson, FileText, AlertCircle, CheckCircle, Package, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,3 +1,4 @@
+/** @fileoverview Button group component - groups buttons with shared styling (shadcn/ui). */
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 

@@ -1,3 +1,4 @@
+/** @fileoverview RadioGroup - single-select radio button group (shadcn/ui). */
 import * as React from "react"
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
 import { Circle } from "lucide-react"

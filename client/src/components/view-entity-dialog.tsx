@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Dialog for viewing a single entity in JSON and RDF/TTL formats.
+ * Provides export preview for individual OMC entities.
+ * 
+ * @features
+ * - JSON tab with formatted entity content
+ * - RDF/TTL tab with Turtle serialization
+ * - Copy-to-clipboard for both formats
+ * - Entity type and name in title
+ * 
+ * @exports ViewEntityDialog - Single entity output viewer dialog
+ */
+
 import { useMemo } from "react";
 import { Entity } from "@/lib/store";
 import { entityToTurtle } from "@/lib/export/rdf/serializer";
@@ -13,6 +26,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+/** Props for ViewEntityDialog component */
 interface ViewEntityDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

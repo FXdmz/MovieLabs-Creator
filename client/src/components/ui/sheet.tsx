@@ -1,3 +1,4 @@
+/** @fileoverview Sheet component - slide-out panel overlay from edge of screen (shadcn/ui). */
 "use client"
 
 import * as React from "react"

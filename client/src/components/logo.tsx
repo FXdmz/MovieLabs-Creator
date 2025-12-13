@@ -1,6 +1,12 @@
+/**
+ * @fileoverview ME-DMZ brand logo component.
+ * Renders the SVG logo with support for light and dark variants.
+ */
+
 import React from "react";
 import { cn } from "@/lib/utils";
 
+/** Props for Logo component */
 interface LogoProps {
   className?: string;
   variant?: "light" | "dark";

@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Interactive graph visualization dialog using Cytoscape.js.
+ * Renders entity relationship graphs with MovieLabs visual language icons.
+ * 
+ * @features
+ * - Single entity mode: shows entity structure and nested components
+ * - Multi-entity mode: shows all project entities and their relationships
+ * - MovieLabs SVG icons for each entity type
+ * - Multiple layout algorithms (circle, hierarchical, force-directed, grid, concentric)
+ * - Zoom, pan, and fit controls
+ * - Node/edge selection with property inspector
+ * - Context entity toggle for cleaner views
+ * - Screenshot export (JPG) with filename dialog
+ * - Auto-screenshot mode for export packages
+ * - Legend showing entity type icons and colors
+ * 
+ * @exports VisualizeEntityDialog - Interactive Cytoscape graph viewer
+ */
+
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { Entity } from "@/lib/store";
 import { Network, ZoomIn, ZoomOut, Maximize2, RefreshCw, Info, X, Layers, Camera } from "lucide-react";
@@ -22,6 +41,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CytoscapeComponent from "react-cytoscapejs";
 import type { Core, ElementDefinition } from "cytoscape";
 
+/** State for selected graph element (node or edge) */
 interface SelectedElement {
   id: string;
   label: string;

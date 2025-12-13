@@ -1,3 +1,4 @@
+/** @fileoverview Chart - Recharts wrapper with theming and tooltip/legend support (shadcn/ui). */
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 

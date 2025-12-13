@@ -1,7 +1,14 @@
+/**
+ * @fileoverview Header component for Infrastructure entity form.
+ * Displays description and provides quick input fields for name/description.
+ * Uses the stadium/pill shape from MovieLabs visual language.
+ */
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+/** Props for InfrastructureHeader with optional form integration */
 interface InfrastructureHeaderProps {
   value?: any;
   onChange?: (newValue: any) => void;
