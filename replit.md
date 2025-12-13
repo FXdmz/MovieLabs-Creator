@@ -184,6 +184,12 @@ Preferred communication style: Simple, everyday language.
   - Entity adapters for all OMC types (Asset, Task, Participant, etc.)
   - Round-trip parity between JSON and TTL import/export
 - RDF-to-JSON adapter format fixes for workUnit, participantRef, Location refs
+- Unit test suite for RDF/JSON round-trip verification
+  - Vitest-based test framework with AJV schema validation
+  - Test fixtures for all entity types (Asset, Task, Participant, etc.)
+  - Round-trip tests: JSON → RDF → JSON parity verification
+  - Tests located at `client/src/lib/rdf/rdf-roundtrip.spec.ts`
+  - Run tests with: `npx vitest run`
 
 ### December 12, 2025
 - JSON import Task relationship transformation (workUnit, scheduling, state, assets)
