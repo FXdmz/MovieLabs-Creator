@@ -1,0 +1,171 @@
+# Landing Page Copy - Private Beta (Simplified)
+
+-----
+
+## **Header**
+
+Button: “Access Beta”
+
+-----
+
+## **Hero Section**
+
+Badge: “Private Beta”  
+Title: “project_aescher”  
+Subtitle: “Where knowledge builds production”  
+Description: “Start with industry intelligence. Export to production tools. Built on MovieLabs OMC.”  
+Button: “Get Started”
+
+-----
+
+## **Features Section**
+
+**Heading:** “Intelligence at every step”  
+**Subheading:** “A unified knowledge system for modern production workflows.”
+
+**Card 1 - Industry Knowledge Foundation**  
+Pre-loaded with 100K+ organizations, locations, and tools from ME-NEXUS—start building, not typing.
+
+**Card 2 - Connected Workflows**  
+One production graph. Export to ShotGrid, ftrack, [Frame.io](http://Frame.io), Aspera, and any OMC-compatible tool.
+
+**Card 3 - Real-time Coordination**  
+Changes propagate across your entire production ecosystem—everyone works from the same truth.
+
+**Card 4 - Built on Standards**  
+MovieLabs OMC v2.8 ensures your production knowledge works with every major industry tool.
+
+-----
+
+## **2030 Vision Section**
+
+**Heading:** “Aligned with the 2030 Vision”  
+**Description:** “Built on MovieLabs’ principles for software-defined workflows, semantic interoperability, and intelligent automation.”
+
+**Tags:** “Software-Defined Workflows” | “Cloud-Native Production” | “Semantic Interoperability”
+
+-----
+
+## **OMC Foundation Section**
+
+**Heading:** “Powered by OMC”  
+**Subheading:** “The production knowledge standard that connects every tool in your pipeline.”
+
+**What you can model:**
+
+**Participants** — People & Organizations  
+**Tasks** — Work Activities  
+**Assets** — Digital & Physical Media  
+**Contexts** — Workflow Groupings  
+**Infrastructure** — Software & Equipment  
+**Creative Works** — Shows & Episodes
+
+**Export to industry tools:**  
+ShotGrid • ftrack • [Frame.io](http://Frame.io) • Aspera • NIM • Iconik • Any OMC-compatible system
+
+Button: “Explore OMC Builder”
+
+-----
+
+## **ME-NEXUS Section**
+
+**Heading:** “Pre-loaded with ME-NEXUS intelligence”
+
+**Badge:** “Entertainment Industry DaaS”
+
+**Quick stats:**
+
+- 100,000+ Organizations
+- 35,000+ Locations
+- 300+ Infrastructure Tools
+- Ready to use, day one
+
+**The advantage:** Search “ILM” and get 15+ global locations, service taxonomy, and org relationships instantly. No manual data entry.
+
+-----
+
+## **CTA Section**
+
+**Heading:** “Ready to build production knowledge?”  
+**Description:** “Join the private beta and experience the future of connected production workflows.”
+
+Button: “Get Started”
+
+-----
+
+## **Footer**
+
+**Tagline:** “project_aescher — Where knowledge builds production”  
+**Text:** “Built on MovieLabs OMC v2.8 | Powered by ME-NEXUS | Private Beta”
+
+-----
+
+## **Even More Minimal Version** (Single-page scroll)
+
+-----
+
+## **Hero**
+
+```
+project_aescher
+Where knowledge builds production
+
+Start with industry intelligence.
+Export to every production tool.
+
+[Get Started]
+```
+
+-----
+
+## **Value Props** (3-column)
+
+**Industry Foundation**  
+Pre-loaded with 100K+ orgs, locations, tools from ME-NEXUS
+
+**Universal Export**  
+ShotGrid, ftrack, [Frame.io](http://Frame.io), Aspera—any OMC tool
+
+**Built on Standards**  
+MovieLabs OMC v2.8 for true interoperability
+
+-----
+
+## **OMC Foundation**
+
+**What you can model:**  
+Participants • Tasks • Assets • Contexts • Infrastructure • Creative Works
+
+**Export formats:**  
+OMC JSON • RDF/Turtle • Industry-standard compliant
+
+-----
+
+## **2030 Vision**
+
+Aligned with MovieLabs’ 2030 Vision for software-defined, cloud-native, semantically interoperable production.
+
+-----
+
+## **CTA**
+
+```
+Join the Private Beta
+
+Experience production knowledge that connects everything.
+
+[Get Started]
+```
+
+-----
+
+## **Footer**
+
+```
+project_aescher — Where knowledge builds production
+MovieLabs OMC v2.8 | ME-NEXUS | Private Beta
+```
+
+-----
+
+**Which level of detail feels right for your private beta?**

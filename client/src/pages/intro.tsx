@@ -1,26 +1,17 @@
 /**
  * @fileoverview Landing Page - Project Aescher Private Beta
  * 
- * The private beta launch page for project_aescher - the brain for production.
+ * The private beta launch page for project_aescher - where knowledge builds production.
  * Introduces users to the intelligent production management platform.
- * 
- * @sections
- * - Hero: Project Aescher branding with private beta messaging
- * - Features: Core capabilities of the production brain
- * - 2030 Vision: MovieLabs partnership and vision alignment
- * - OMC Foundation: Technical foundation using OMC standard
- * 
- * @navigation
- * - Header: ME-DMZ Logo, theme toggle, beta access button
- * - Footer: Attribution and partnership logos
  */
 
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Brain, Sparkles, Zap, Network, Shield, Clock } from "lucide-react";
+import { ArrowRight, Sparkles, Network, Zap, Shield, Database, Building2, MapPin, Wrench } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
 
 const heroImage = "/hero-background.jpg";
 
@@ -68,6 +59,24 @@ const ContextIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const InfrastructureIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 264.57 149.92" xmlns="http://www.w3.org/2000/svg" className={className} fill="currentColor">
+    <path d="M 207.698 5.208 C 234.978 5.208 257.087 36.529 257.087 75.167 C 257.087 113.805 234.968 145.126 207.698 145.126 L 59.538 145.126 C 32.286 145.126 10.167 113.805 10.167 75.167 C 10.167 36.529 32.286 5.208 59.538 5.208 L 207.698 5.208 Z" strokeWidth="4" stroke="currentColor"/>
+  </svg>
+);
+
+const CreativeWorkIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 46.35 45.5" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path 
+      fill="currentColor" 
+      stroke="currentColor"
+      strokeWidth="0.5"
+      d="M36,22.17a33.27,33.27,0,0,1-9.67-3.41,12.62,12.62,0,0,0,.07-4.63Q24.49,3.3,24.49,3.29A33,33,0,0,1,14,7.17a32.91,32.91,0,0,1-11.18,0S3.46,10.73,4.73,18c1.62,9.19,13.61,13.84,13.61,13.84a30.66,30.66,0,0,0,6.2-8c-.26,1.48-.57,3.25-.94,5.33C22,38.32,31.66,46.79,31.66,46.79s12-4.65,13.61-13.84q1.9-10.83,1.91-10.83A32.91,32.91,0,0,1,36,22.17Z" 
+      transform="translate(-1.82 -2.3)"
+    />
+  </svg>
+);
+
 export default function Intro() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#CEECF2]/30 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
@@ -111,9 +120,17 @@ export default function Intro() {
                 <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-12 tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-4 tracking-tight">
                 project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
               </h1>
+              
+              <p className="text-2xl md:text-3xl text-muted-foreground font-light mb-4">
+                Where knowledge builds production
+              </p>
+              
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+                Start with industry intelligence. Export to production tools. Built on MovieLabs OMC.
+              </p>
               
               <Link href="/builder">
                 <Button 
@@ -137,19 +154,19 @@ export default function Intro() {
                 Intelligence at every step
               </h2>
               <p className="text-lg text-muted-foreground">
-                A unified system that understands the full context of your production.
+                A unified knowledge system for modern production workflows.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-violet-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Brain className="h-6 w-6 text-violet-600 dark:text-violet-400" />
+                    <Database className="h-6 w-6 text-violet-600 dark:text-violet-400" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Contextual Intelligence</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Industry Knowledge Foundation</h3>
                   <p className="text-sm text-muted-foreground">
-                    Understands relationships between people, tasks, assets, and timelines to surface what matters.
+                    Pre-loaded with 100K+ organizations, locations, and tools from ME-NEXUS—start building, not typing.
                   </p>
                 </CardContent>
               </Card>
@@ -161,7 +178,7 @@ export default function Intro() {
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Connected Workflows</h3>
                   <p className="text-sm text-muted-foreground">
-                    Seamlessly integrates across departments, tools, and stages of production.
+                    One production graph. Export to ShotGrid, ftrack, Frame.io, Aspera, and any OMC-compatible tool.
                   </p>
                 </CardContent>
               </Card>
@@ -173,7 +190,7 @@ export default function Intro() {
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Real-time Coordination</h3>
                   <p className="text-sm text-muted-foreground">
-                    Instantly propagates changes and keeps everyone aligned without manual updates.
+                    Changes propagate across your entire production ecosystem—everyone works from the same truth.
                   </p>
                 </CardContent>
               </Card>
@@ -183,33 +200,9 @@ export default function Intro() {
                   <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4">
                     <Shield className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Industry Standards</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Built on Standards</h3>
                   <p className="text-sm text-muted-foreground">
-                    Built on MovieLabs OMC for true interoperability across the production ecosystem.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-2">Predictive Planning</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Anticipates bottlenecks and resource conflicts before they impact your schedule.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card border-border hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mb-4">
-                    <Sparkles className="h-6 w-6 text-rose-600 dark:text-rose-400" />
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-2">AI-Powered Insights</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Surfaces actionable recommendations based on production patterns and best practices.
+                    MovieLabs OMC v2.8 ensures your production knowledge works with every major industry tool.
                   </p>
                 </CardContent>
               </Card>
@@ -217,8 +210,53 @@ export default function Intro() {
           </div>
         </section>
 
-        {/* 2030 Vision Section */}
+        {/* ME-NEXUS Section */}
         <section className="py-24 bg-background">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <Badge variant="secondary" className="mb-4 bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-500/20">
+                  Entertainment Industry DaaS
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
+                  Pre-loaded with ME-NEXUS intelligence
+                </h2>
+              </div>
+              
+              <div className="grid md:grid-cols-4 gap-6 mb-12">
+                <div className="text-center p-6 bg-muted/50 rounded-xl border border-border">
+                  <Building2 className="h-8 w-8 text-violet-600 dark:text-violet-400 mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-foreground mb-1">100,000+</div>
+                  <div className="text-sm text-muted-foreground">Organizations</div>
+                </div>
+                <div className="text-center p-6 bg-muted/50 rounded-xl border border-border">
+                  <MapPin className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-foreground mb-1">35,000+</div>
+                  <div className="text-sm text-muted-foreground">Locations</div>
+                </div>
+                <div className="text-center p-6 bg-muted/50 rounded-xl border border-border">
+                  <Wrench className="h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-foreground mb-1">300+</div>
+                  <div className="text-sm text-muted-foreground">Infrastructure Tools</div>
+                </div>
+                <div className="text-center p-6 bg-muted/50 rounded-xl border border-border">
+                  <Sparkles className="h-8 w-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-foreground mb-1">Day One</div>
+                  <div className="text-sm text-muted-foreground">Ready to Use</div>
+                </div>
+              </div>
+              
+              <div className="bg-muted/30 rounded-xl p-6 border border-border">
+                <p className="text-center text-muted-foreground">
+                  <span className="font-semibold text-foreground">The advantage:</span> Search "ILM" and get 15+ global locations, service taxonomy, and org relationships instantly. No manual data entry.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2030 Vision Section */}
+        <section className="py-24 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center">
               <img 
@@ -231,7 +269,7 @@ export default function Intro() {
                 Aligned with the 2030 Vision
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Project Aescher is built on the principles of MovieLabs' 2030 Vision for the future of media production—enabling software-defined workflows, interoperability, and intelligent automation.
+                Built on MovieLabs' principles for software-defined workflows, semantic interoperability, and intelligent automation.
               </p>
               <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
                 <span className="px-4 py-2 bg-muted rounded-full border border-border">Software-Defined Workflows</span>
@@ -243,7 +281,7 @@ export default function Intro() {
         </section>
 
         {/* OMC Foundation Section */}
-        <section className="py-24 bg-muted/30 border-t border-border">
+        <section className="py-24 bg-background border-t border-border">
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
@@ -251,42 +289,68 @@ export default function Intro() {
                   Powered by OMC
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  The Ontology for Media Creation provides the semantic foundation for understanding production workflows.
+                  The production knowledge standard that connects every tool in your pipeline.
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-[#232073]/10 dark:bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <ParticipantIcon className="h-6 w-6 text-[#232073] dark:text-violet-400" />
+              <div className="mb-12">
+                <h3 className="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider mb-6">What you can model</h3>
+                <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-[#232073]/10 dark:bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <ParticipantIcon className="h-5 w-5 text-[#232073] dark:text-violet-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Participants</h4>
+                    <p className="text-xs text-muted-foreground mt-1">People & Organizations</p>
                   </div>
-                  <h3 className="font-medium text-foreground text-sm">Participants</h3>
-                  <p className="text-xs text-muted-foreground mt-1">People & Organizations</p>
-                </div>
-                
-                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <TaskIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <TaskIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Tasks</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Work Activities</p>
                   </div>
-                  <h3 className="font-medium text-foreground text-sm">Tasks</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Work Activities</p>
-                </div>
-                
-                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-orange-500/10 dark:bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <AssetIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                  
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-orange-500/10 dark:bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <AssetIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Assets</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Digital & Physical Media</p>
                   </div>
-                  <h3 className="font-medium text-foreground text-sm">Assets</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Digital & Physical Media</p>
-                </div>
-                
-                <div className="bg-card border border-border rounded-xl p-6 text-center hover:border-violet-500/30 transition-all">
-                  <div className="w-12 h-12 bg-yellow-500/10 dark:bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <ContextIcon className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                  
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-yellow-500/10 dark:bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <ContextIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Contexts</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Workflow Groupings</p>
                   </div>
-                  <h3 className="font-medium text-foreground text-sm">Contexts</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Workflow Groupings</p>
+                  
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-blue-500/10 dark:bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <InfrastructureIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Infrastructure</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Software & Equipment</p>
+                  </div>
+                  
+                  <div className="bg-card border border-border rounded-xl p-4 text-center hover:border-violet-500/30 transition-all">
+                    <div className="w-10 h-10 bg-purple-500/10 dark:bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <CreativeWorkIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">Creative Works</h4>
+                    <p className="text-xs text-muted-foreground mt-1">Shows & Episodes</p>
+                  </div>
                 </div>
+              </div>
+              
+              <div className="text-center mb-8">
+                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Export to industry tools</h3>
+                <p className="text-muted-foreground">
+                  ShotGrid • ftrack • Frame.io • Aspera • NIM • Iconik • Any OMC-compatible system
+                </p>
               </div>
               
               <div className="text-center">
@@ -310,10 +374,10 @@ export default function Intro() {
         <section className="py-24 bg-gradient-to-r from-violet-600/10 to-indigo-600/10 dark:from-violet-900/20 dark:to-indigo-900/20 border-t border-border">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
-              Ready to transform your production?
+              Ready to build production knowledge?
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join the private beta and be among the first to experience the future of production management.
+              Join the private beta and experience the future of connected production workflows.
             </p>
             <Link href="/builder">
               <Button 
@@ -338,12 +402,14 @@ export default function Intro() {
                 <Logo className="h-6 w-auto hidden dark:block" variant="dark" />
               </a>
               <span className="text-sm text-muted-foreground">
-                project_<span className="italic">aescher</span> — The brain for production
+                project_<span className="italic">aescher</span> — Where knowledge builds production
               </span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span>Built on MovieLabs OMC v2.8</span>
-              <span className="hidden md:inline">•</span>
+              <span className="hidden md:inline">|</span>
+              <span>Powered by ME-NEXUS</span>
+              <span className="hidden md:inline">|</span>
               <span>Private Beta</span>
             </div>
           </div>
