@@ -1697,46 +1697,70 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8 bg-muted/5">
-            <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center mb-6 ring-1 ring-primary/20 hover:ring-primary/40 transition-all">
-              <Logo className="h-16 w-auto dark:hidden" variant="light" />
-              <Logo className="h-16 w-auto hidden dark:block" variant="dark" />
-            </a>
-            <h2 className="text-2xl font-bold mb-3 text-foreground">Welcome to OMC Builder</h2>
-            <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
-              Select an entity from the sidebar or create a new one to start building your media creation ontology.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <CreativeWorkIcon className="h-4 w-4" /> Create Creative Work
-              </Button>
-              <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <TaskIcon className="h-4 w-4" /> Create Task
-              </Button>
-              <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <ParticipantIcon className="h-4 w-4" /> Create Participant
-              </Button>
-              <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <AssetIcon className="h-4 w-4" /> Create Asset
-              </Button>
-              <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
-              </Button>
-              <Button onClick={() => addEntity("Location")} variant="outline" size="lg" className="gap-2 hover:bg-[#CEECF2] hover:border-[#232073] hover:text-[#232073] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                <LocationIcon className="h-4 w-4" /> Create Location
-              </Button>
+          <div className="flex-1 flex flex-col text-muted-foreground bg-muted/5">
+            <div className="flex-1 flex flex-col items-center justify-center p-8">
+              <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="w-32 h-32 rounded-full bg-violet-500/10 flex items-center justify-center mb-6 ring-1 ring-violet-500/20 hover:ring-violet-500/40 transition-all">
+                <Logo className="h-16 w-auto dark:hidden" variant="light" />
+                <Logo className="h-16 w-auto hidden dark:block" variant="dark" />
+              </a>
+              <h2 className="text-2xl font-light mb-3 text-foreground">
+                Welcome to project_<span className="italic font-medium text-violet-600 dark:text-violet-400">aescher</span>
+              </h2>
+              <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
+                Select an entity from the sidebar or create a new one to start building your production knowledge.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <CreativeWorkIcon className="h-4 w-4" /> Create Creative Work
+                </Button>
+                <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <TaskIcon className="h-4 w-4" /> Create Task
+                </Button>
+                <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <ParticipantIcon className="h-4 w-4" /> Create Participant
+                </Button>
+                <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <AssetIcon className="h-4 w-4" /> Create Asset
+                </Button>
+                <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
+                </Button>
+                <Button onClick={() => addEntity("Location")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <LocationIcon className="h-4 w-4" /> Create Location
+                </Button>
+              </div>
+              <div className="mt-6">
+                <Button 
+                  onClick={() => setShowImportMultiDialog(true)} 
+                  variant="outline" 
+                  size="lg" 
+                  className="gap-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 hover:border-violet-600 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
+                  data-testid="button-import-entity-welcome"
+                >
+                  <Upload className="h-4 w-4" /> Import OMC File
+                </Button>
+              </div>
             </div>
-            <div className="mt-6">
-              <Button 
-                onClick={() => setShowImportMultiDialog(true)} 
-                variant="outline" 
-                size="lg" 
-                className="gap-2 border-[#D97218] text-[#D97218] hover:bg-[#D97218]/10 hover:border-[#D97218] hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
-                data-testid="button-import-entity-welcome"
-              >
-                <Upload className="h-4 w-4" /> Import OMC File
-              </Button>
-            </div>
+            <footer className="border-t border-border bg-muted/30 py-4 px-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
+                    <Logo className="h-5 w-auto dark:hidden" variant="light" />
+                    <Logo className="h-5 w-auto hidden dark:block" variant="dark" />
+                  </a>
+                  <span className="text-xs text-muted-foreground">
+                    project_<span className="italic">aescher</span> — Where productions build knowledge
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span>Built on MovieLabs OMC v2.8</span>
+                  <span className="hidden md:inline">|</span>
+                  <span>Powered by ME-NEXUS</span>
+                  <span className="hidden md:inline">|</span>
+                  <span>Private Beta</span>
+                </div>
+              </div>
+            </footer>
           </div>
         )}
       </main>
