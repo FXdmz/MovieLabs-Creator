@@ -331,26 +331,6 @@ export default function Intro() {
                 </div>
               </div>
               
-              <div className="text-center mb-8">
-                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Export to industry tools</h3>
-                <p className="text-muted-foreground">
-                  ShotGrid • ftrack • Frame.io • Aspera • NIM • Iconik • Any OMC-compatible system
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <Link href="/builder">
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="border-border text-foreground hover:bg-muted"
-                    data-testid="button-explore-omc"
-                  >
-                    Explore OMC Builder
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
             </div>
           </div>
         </section>
