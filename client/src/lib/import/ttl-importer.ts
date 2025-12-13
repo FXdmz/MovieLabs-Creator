@@ -1,7 +1,74 @@
+/**
+ * @fileoverview RDF/TTL Import Module for OMC Entities
+ * 
+ * This module provides functionality to parse and import MovieLabs OMC entities
+ * from RDF/TTL (Turtle) format. It uses the N3.js library to parse TTL syntax
+ * and converts RDF triples into OMC-JSON compliant entity objects.
+ * 
+ * @module import/ttl-importer
+ * 
+ * @description
+ * The importer performs these key operations:
+ * 1. Parses TTL text into an RDF quad store using N3.js
+ * 2. Identifies root entities by their rdf:type (omc:Asset, omc:Task, etc.)
+ * 3. Recursively builds JSON objects from RDF triples
+ * 4. Maps RDF predicates to JSON property names
+ * 5. Handles references between entities (creates CURIE strings)
+ * 6. Applies Task-specific transformations for scheduling, state, etc.
+ * 
+ * Namespace handling:
+ * - omc: MovieLabs OMC schema (v2.8)
+ * - omcT: MovieLabs tentative predicates
+ * - me: ME-NEXUS entity identifiers
+ * - menexus: ME-NEXUS custom schema extensions
+ * 
+ * @example
+ * // Import TTL file
+ * const ttlContent = await fetch('project.ttl').then(r => r.text());
+ * const result = await parseOmcTtlMulti(ttlContent);
+ * if (result.success) {
+ *   result.entities.forEach(e => store.addEntityFromContent(e.entityType, e.entityId, e.content));
+ * }
+ * 
+ * @see {@link parseOmcTtl} for single-entity import (legacy API)
+ * @see {@link parseOmcTtlMulti} for multi-entity import
+ */
+
 import * as N3 from 'n3';
 import { EntityType, ENTITY_TYPES } from '../constants';
 import { ImportResult, ImportedEntity, MultiImportResult } from './json-importer';
 
+// ============================================================================
+// TASK TRANSFORMATION
+// ============================================================================
+
+/**
+ * Transforms a Task entity to normalize RDF-specific property formats.
+ * 
+ * This function handles Task-specific transformations after RDF→JSON conversion:
+ * 
+ * 1. customData extraction:
+ *    - namespace='work' → workUnit
+ *    - namespace='workflow' → state, stateDetails
+ * 
+ * 2. State object normalization:
+ *    - state.stateDescriptor → state (string)
+ *    - state.comment → stateDetails
+ * 
+ * 3. Scheduling to Context:
+ *    - scheduledStart/scheduledEnd → Context[0].scheduling
+ * 
+ * 4. Asset references:
+ *    - uses array → Context[0].hasInputAssets
+ * 
+ * 5. Context normalization:
+ *    - Ensures contributesTo.CreativeWork is always array
+ *    - Ensures uses.Infrastructure and uses.Asset are arrays
+ *    - Sets hasInputAssets from uses.Asset
+ * 
+ * @param {any} parsed - Raw parsed Task entity from RDF
+ * @returns {any} Transformed Task entity with normalized properties
+ */
 function transformTaskEntity(parsed: any): any {
   const transformed = { ...parsed };
 
@@ -93,7 +160,6 @@ function transformTaskEntity(parsed: any): any {
         }
       }
       
-      // Normalize contributesTo.CreativeWork to always be an array
       if (ctx.contributesTo && ctx.contributesTo.CreativeWork) {
         const cwRef = ctx.contributesTo.CreativeWork;
         transformedCtx.contributesTo = {
@@ -102,7 +168,6 @@ function transformTaskEntity(parsed: any): any {
         };
       }
       
-      // Normalize uses.Infrastructure and uses.Asset to arrays
       if (ctx.uses) {
         const normalizedUses: Record<string, any> = { ...ctx.uses };
         if (ctx.uses.Infrastructure) {
@@ -117,7 +182,6 @@ function transformTaskEntity(parsed: any): any {
         }
         transformedCtx.uses = normalizedUses;
         
-        // Also set hasInputAssets from uses.Asset for backward compatibility
         if (normalizedUses.Asset && Array.isArray(normalizedUses.Asset)) {
           transformedCtx.hasInputAssets = normalizedUses.Asset;
         }
@@ -130,6 +194,15 @@ function transformTaskEntity(parsed: any): any {
   return transformed;
 }
 
+/**
+ * Dispatches entity transformation based on entity type.
+ * 
+ * Currently only Task entities receive special transformation.
+ * Other entity types are returned unchanged.
+ * 
+ * @param {any} parsed - Raw parsed entity from RDF
+ * @returns {any} Transformed entity
+ */
 function transformEntity(parsed: any): any {
   if (parsed.entityType === 'Task') {
     return transformTaskEntity(parsed);
@@ -137,6 +210,20 @@ function transformEntity(parsed: any): any {
   return parsed;
 }
 
+// ============================================================================
+// RDF NAMESPACE DEFINITIONS
+// ============================================================================
+
+/**
+ * RDF namespace prefix mappings.
+ * 
+ * These prefixes are used throughout the importer for:
+ * - Matching rdf:type values to entity types
+ * - Converting predicate URIs to JSON property names
+ * - Extracting entity IDs from me: URIs
+ * 
+ * @constant {Record<string, string>}
+ */
 const RDF_PREFIXES: Record<string, string> = {
   omc: "https://movielabs.com/omc/rdf/schema/v2.8#",
   omcT: "https://movielabs.com/omc/rdf/schema/v2.8Tentative#",
@@ -149,6 +236,14 @@ const RDF_PREFIXES: Record<string, string> = {
   menexus: "https://me-nexus.com/schema#"
 };
 
+/**
+ * Mapping from RDF class URIs to OMC entity type names.
+ * 
+ * Used to identify root entities in the RDF graph by their rdf:type.
+ * Includes both top-level entity types and structural characteristics.
+ * 
+ * @constant {Record<string, string>}
+ */
 const rdfClassToEntityType: Record<string, string> = {
   [`${RDF_PREFIXES.omc}Asset`]: "Asset",
   [`${RDF_PREFIXES.omc}Task`]: "Task",
@@ -182,6 +277,18 @@ const rdfClassToEntityType: Record<string, string> = {
   [`${RDF_PREFIXES.omc}LatLon`]: "LatLon"
 };
 
+/**
+ * Mapping from RDF predicate URIs to JSON property names.
+ * 
+ * This comprehensive mapping covers:
+ * - Standard RDF/RDFS predicates (rdfs:label → name)
+ * - OMC core predicates (omc:hasIdentifier → identifier)
+ * - Entity characteristics (omc:hasAssetStructuralCharacteristic → AssetSC)
+ * - Relationship predicates (omc:uses, omc:contributesTo)
+ * - Media-specific properties (omc:hasFrameRate → frameRate)
+ * 
+ * @constant {Record<string, string>}
+ */
 const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.rdfs}label`]: "name",
   [`${RDF_PREFIXES.rdfs}comment`]: "comment",
@@ -191,7 +298,6 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasIdentifierScope`]: "identifierScope",
   [`${RDF_PREFIXES.omc}hasIdentifierValue`]: "identifierValue",
   
-  // Task state and scheduling
   [`${RDF_PREFIXES.omc}hasScheduledStart`]: "scheduledStart",
   [`${RDF_PREFIXES.omc}hasScheduledEnd`]: "scheduledEnd",
   [`${RDF_PREFIXES.omc}hasActualStart`]: "actualStart",
@@ -348,7 +454,6 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}creativeWorkCategory`]: "creativeWorkCategory",
   [`${RDF_PREFIXES.omc}approximateLength`]: "approximateLength",
   
-  // Relationship predicates
   [`${RDF_PREFIXES.omc}uses`]: "uses",
   [`${RDF_PREFIXES.omc}contributesTo`]: "contributesTo",
   [`${RDF_PREFIXES.omc}hasWorkUnit`]: "workUnit",
@@ -357,12 +462,35 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasProduct`]: "hasProduct",
   [`${RDF_PREFIXES.omcT}aWorkUnitHas.Participant`]: "participantRef",
   
-  // Nested relationship type predicates (for uses/contributesTo objects)
   [`${RDF_PREFIXES.omc}CreativeWork`]: "CreativeWork",
   [`${RDF_PREFIXES.omc}Infrastructure`]: "Infrastructure",
   [`${RDF_PREFIXES.omc}Asset`]: "Asset"
 };
 
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Converts an RDF predicate URI to a JSON property name.
+ * 
+ * Resolution order:
+ * 1. Check explicit mapping in rdfPredicateToJsonKey
+ * 2. For omc: predicates, strip "has" prefix and lowercase first letter
+ * 3. For omcT: predicates, use local name directly
+ * 4. For menexus: predicates, use local name directly
+ * 5. Return null for unknown predicates
+ * 
+ * @param {string} predicateUri - Full predicate URI
+ * @returns {string|null} JSON property name or null if unmapped
+ * 
+ * @example
+ * predicateUriToJsonKey('https://movielabs.com/omc/rdf/schema/v2.8#hasName')
+ * // Returns: 'name'
+ * 
+ * predicateUriToJsonKey('https://movielabs.com/omc/rdf/schema/v2.8#hasFrameRate')
+ * // Returns: 'frameRate' (via "has" stripping fallback)
+ */
 function predicateUriToJsonKey(predicateUri: string): string | null {
   if (rdfPredicateToJsonKey[predicateUri]) {
     return rdfPredicateToJsonKey[predicateUri];
@@ -386,6 +514,20 @@ function predicateUriToJsonKey(predicateUri: string): string | null {
   return null;
 }
 
+/**
+ * Extracts an entity ID from a URI.
+ * 
+ * Supports two URI formats:
+ * 1. me: namespace: `https://me-nexus.com/id/{id}` → `{id}`
+ * 2. URN format: `urn:{scope}:{id}` → `{id}`
+ * 
+ * @param {string} uri - Full URI to extract ID from
+ * @returns {string|null} Extracted ID or null if not parseable
+ * 
+ * @example
+ * extractIdFromUri('https://me-nexus.com/id/550e8400-e29b-41d4-a716-446655440000')
+ * // Returns: '550e8400-e29b-41d4-a716-446655440000'
+ */
 function extractIdFromUri(uri: string): string | null {
   if (uri.startsWith(RDF_PREFIXES.me)) {
     return uri.slice(RDF_PREFIXES.me.length);
@@ -397,6 +539,19 @@ function extractIdFromUri(uri: string): string | null {
   return null;
 }
 
+/**
+ * Parses an N3 literal term into a JavaScript value.
+ * 
+ * Handles XSD datatype conversions:
+ * - xsd:integer, xsd:int → number (parseInt)
+ * - xsd:decimal, xsd:double, xsd:float → number (parseFloat)
+ * - xsd:boolean → boolean
+ * - xsd:dateTime → string (ISO format preserved)
+ * - Other/untyped → string
+ * 
+ * @param {N3.Term} term - N3.js term to parse
+ * @returns {unknown} Parsed JavaScript value
+ */
 function parseLiteral(term: N3.Term): unknown {
   if (term.termType !== 'Literal') {
     return term.value;
@@ -421,7 +576,27 @@ function parseLiteral(term: N3.Term): unknown {
   return literal.value;
 }
 
-// Backwards compatible single-entity import
+// ============================================================================
+// PUBLIC API - SINGLE ENTITY IMPORT
+// ============================================================================
+
+/**
+ * Parses OMC TTL text and returns a single entity.
+ * 
+ * This is the legacy API for backward compatibility.
+ * For multi-entity support, use parseOmcTtlMulti() instead.
+ * 
+ * If the input contains multiple entities, only the first is returned.
+ * 
+ * @param {string} ttlText - Raw TTL text to parse
+ * @returns {Promise<ImportResult>} Import result with single entity or error
+ * 
+ * @example
+ * const result = await parseOmcTtl(ttlContent);
+ * if (result.success) {
+ *   store.addEntityFromContent(result.entityType, result.entityId, result.content);
+ * }
+ */
 export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
   const result = await parseOmcTtlMulti(ttlText);
   
@@ -442,7 +617,40 @@ export async function parseOmcTtl(ttlText: string): Promise<ImportResult> {
   };
 }
 
-// Multi-entity import
+// ============================================================================
+// PUBLIC API - MULTI ENTITY IMPORT
+// ============================================================================
+
+/**
+ * Parses OMC TTL text and returns all valid entities.
+ * 
+ * The parsing process:
+ * 1. Parse TTL into N3.Store using N3.Parser
+ * 2. Find all subjects with valid omc:* rdf:type
+ * 3. For each root entity, recursively build JSON object
+ * 4. Handle references to other root entities as CURIE strings
+ * 5. Apply entity-specific transformations
+ * 6. Validate and return entities
+ * 
+ * @param {string} ttlText - Raw TTL text to parse
+ * @returns {Promise<MultiImportResult>} Import result with all entities and warnings
+ * 
+ * @example
+ * const ttl = `
+ *   @prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+ *   @prefix me: <https://me-nexus.com/id/> .
+ *   
+ *   me:task-001 a omc:Task ;
+ *     rdfs:label "Color Grading" .
+ * `;
+ * 
+ * const result = await parseOmcTtlMulti(ttl);
+ * if (result.success) {
+ *   result.entities.forEach(e => {
+ *     console.log(e.entityType, e.name); // 'Task', 'Color Grading'
+ *   });
+ * }
+ */
 export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResult> {
   return new Promise((resolve) => {
     const parser = new N3.Parser();
@@ -456,7 +664,6 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       return;
     }
     
-    // Find all subjects in the graph
     const allSubjects = new Map<string, N3.Term>();
     store.forEach((quad) => {
       if (quad.subject.termType === 'NamedNode' || quad.subject.termType === 'BlankNode') {
@@ -464,8 +671,6 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       }
     }, null, null, null, null);
     
-    // Find ALL subjects that have a valid OMC entity type (not just unreferenced ones)
-    // This ensures Participants, Infrastructure, etc. are included even when referenced by Tasks
     const entityRoots: { term: N3.Term; entityType: string; entityId: string }[] = [];
     
     allSubjects.forEach((term, subject) => {
@@ -494,22 +699,26 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       return;
     }
     
-    // Set of all root entity URIs for reference detection
     const rootUris = new Set(entityRoots.map(r => r.term.value));
     
-    // Build entity objects
     const entities: ImportedEntity[] = [];
     const warnings: string[] = [];
     
     for (const { term: rootSubjectTerm, entityType, entityId } of entityRoots) {
       const visited = new Set<string>();
       
+      /**
+       * Recursively builds a JSON object from RDF triples.
+       * 
+       * @param {N3.Term} subjectTerm - RDF subject to build from
+       * @param {number} depth - Current recursion depth (max 10)
+       * @returns {Record<string, any>} Built JSON object
+       */
       const buildObject = (subjectTerm: N3.Term, depth: number = 0): Record<string, any> => {
         if (depth > 10) return {};
         
         const subjectKey = subjectTerm.value;
         
-        // If this is another root entity, return just a reference
         if (depth > 0 && rootUris.has(subjectKey)) {
           const refId = extractIdFromUri(subjectKey);
           if (refId) {
@@ -559,10 +768,8 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           } else if (quad.object.termType === 'NamedNode' || quad.object.termType === 'BlankNode') {
             const nestedQuads = store.getQuads(quad.object, null, null, null);
             if (nestedQuads.length > 0) {
-              // Check if this is a reference to another root entity
               const isRootEntity = rootUris.has(quad.object.value);
               if (isRootEntity) {
-                // Return as a reference string for relationships
                 const refId = extractIdFromUri(quad.object.value);
                 if (refId) {
                   value = `me-nexus:${refId}`;
@@ -584,7 +791,6 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
                 }
               }
             } else {
-              // No nested quads - check if it's a me: URI reference
               const refId = extractIdFromUri(quad.object.value);
               if (refId && quad.object.value.startsWith(RDF_PREFIXES.me)) {
                 value = `me-nexus:${refId}`;
@@ -617,13 +823,12 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         }
         
         return obj;
-      }
+      };
       
       let content = buildObject(rootSubjectTerm);
       content.entityType = entityType;
       content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
       
-      // Fix identifier - ensure it's always a proper array of identifier objects
       if (!content.identifier || content.identifier.length === 0 || 
           (Array.isArray(content.identifier) && typeof content.identifier[0] === 'string')) {
         content.identifier = [{
@@ -632,7 +837,6 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           combinedForm: `${content.identifierScope || 'me-nexus'}:${content.identifierValue || entityId}`
         }];
       }
-      // Clean up loose identifier properties
       delete content.identifierScope;
       delete content.identifierValue;
       
