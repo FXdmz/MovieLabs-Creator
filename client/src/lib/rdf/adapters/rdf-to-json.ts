@@ -279,7 +279,7 @@ function rdfParticipantSCToJson(ctx: AdapterContext, scNode: RdfSubject): any {
   if (structuralType) result.structuralType = structuralType;
   
   // Infer entityType from structuralType if not already set
-  if (!result.entityType && structuralType) {
+  if (!result.entityType && structuralType && typeof structuralType === 'string') {
     const typeMap: Record<string, string> = {
       'person': 'Person',
       'organization': 'Organization',

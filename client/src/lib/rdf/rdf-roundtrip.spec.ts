@@ -138,7 +138,7 @@ describe('RDF Round-Trip Tests', () => {
       const result = rdfEntityToJson(store, entityId);
       
       expect(result.ParticipantSC?.personName?.fullName).toBe('John Smith');
-      expect(result.ParticipantSC?.personName?.givenName).toBe('John');
+      expect(result.ParticipantSC?.personName?.firstGivenName).toBe('John');
       expect(result.ParticipantSC?.personName?.familyName).toBe('Smith');
     });
 
