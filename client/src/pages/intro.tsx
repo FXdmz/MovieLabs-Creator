@@ -106,27 +106,39 @@ export default function Intro() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-[80vh] flex items-center">
-          <img 
-            src={heroImage} 
-            alt="" 
-            className="absolute inset-0 w-full h-full object-cover opacity-20 dark:opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-white/80 to-white dark:from-slate-950/50 dark:via-slate-900/80 dark:to-slate-950" />
-          <div className="relative container mx-auto px-6 py-24">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
-                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
+        <section className="relative min-h-[80vh] flex items-center bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/20">
+          <div className="container mx-auto px-6 py-24">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="text-center md:text-left order-2 md:order-1">
+                  <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-8">
+                    <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                    <span className="text-sm text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
+                  </div>
+                  
+                  <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground mb-4 tracking-tight">
+                    project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
+                  </h1>
+                  
+                  <p className="text-2xl md:text-3xl text-muted-foreground font-light mb-8">
+                    Where productions build knowledge
+                  </p>
+                  
+                  <Link href="/builder">
+                    <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300">
+                      Start Building
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+                <div className="flex justify-center md:justify-end order-1 md:order-2">
+                  <img 
+                    src="/hero-infographic.jpg" 
+                    alt="Production Knowledge Graph Blueprint" 
+                    className="w-full max-w-lg rounded-2xl shadow-2xl shadow-violet-500/20 border border-violet-500/10"
+                  />
+                </div>
               </div>
-              
-              <h1 className="text-5xl md:text-7xl font-light text-foreground mb-4 tracking-tight">
-                project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
-              </h1>
-              
-              <p className="text-2xl md:text-3xl text-muted-foreground font-light">
-                Where productions build knowledge
-              </p>
             </div>
           </div>
         </section>
