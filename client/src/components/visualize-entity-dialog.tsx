@@ -172,6 +172,9 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
         key === "entityType" ||
         key === "schemaVersion" ||
         key === "combinedForm" ||
+        key === "identifier" ||
+        key === "identifierScope" ||
+        key === "identifierValue" ||
         value === null ||
         value === undefined ||
         value === ""
@@ -237,13 +240,27 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
       } else if (typeof value === "object") {
         const nestedId = generateId();
         const nestedType = (value as any).entityType || key;
-        const nestedLabel =
-          (value as any).name ||
-          (value as any).identifierValue ||
-          (value as any).fullName ||
-          (value as any).structuralType ||
-          (value as any).functionalType ||
-          key;
+        
+        // Format address objects nicely
+        let nestedLabel: string;
+        if (key === "address") {
+          const addr = value as any;
+          const parts = [addr.street, addr.locality, addr.region, addr.postalCode, addr.country].filter(Boolean);
+          nestedLabel = parts.length > 0 ? parts.join(", ") : "Address";
+        } else if (key === "coordinates" || key === "geo") {
+          const coords = value as any;
+          nestedLabel = coords.latitude !== undefined && coords.longitude !== undefined
+            ? `${coords.latitude}, ${coords.longitude}`
+            : "Coordinates";
+        } else {
+          nestedLabel =
+            (value as any).name ||
+            (value as any).identifierValue ||
+            (value as any).fullName ||
+            (value as any).structuralType ||
+            (value as any).functionalType ||
+            key;
+        }
 
         elements.push({
           data: {
@@ -261,7 +278,10 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
           },
         });
 
-        processObject(value, nestedId, key, depth + 1);
+        // Don't recurse into address/coordinates - they're shown as formatted labels
+        if (key !== "address" && key !== "coordinates" && key !== "geo") {
+          processObject(value, nestedId, key, depth + 1);
+        }
       }
     });
   };
