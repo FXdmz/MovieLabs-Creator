@@ -187,34 +187,40 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
       if (Array.isArray(value)) {
         if (value.length === 0) return;
 
-        const arrayNodeId = generateId();
         const isComplexArray = value.some(
           (item) => typeof item === "object" && item !== null
         );
+        
+        // Identifier arrays connect directly to parent (no intermediate array node)
+        const isIdentifierArray = key === "identifier";
 
         if (isComplexArray) {
-          elements.push({
-            data: {
-              id: arrayNodeId,
-              label: key,
-              type: "array",
-              parent: parentId,
-            },
-          });
-          elements.push({
-            data: {
-              source: parentId,
-              target: arrayNodeId,
-              label: key,
-            },
-          });
+          // For identifier, connect items directly to parent; otherwise use array container
+          const arrayParentId = isIdentifierArray ? parentId : generateId();
+          
+          if (!isIdentifierArray) {
+            elements.push({
+              data: {
+                id: arrayParentId,
+                label: key,
+                type: "array",
+                parent: parentId,
+              },
+            });
+            elements.push({
+              data: {
+                source: parentId,
+                target: arrayParentId,
+                label: key,
+              },
+            });
+          }
 
           value.forEach((item, index) => {
             if (typeof item === "object" && item !== null) {
               const itemId = generateId();
               // Identifier items are leaf nodes with triangle shape
-              const isIdentifierItem = key === "identifier";
-              const itemType = isIdentifierItem ? "leaf" : ((item as any).entityType || key);
+              const itemType = isIdentifierArray ? "leaf" : ((item as any).entityType || key);
               const itemLabel =
                 (item as any).name ||
                 (item as any).identifierValue ||
@@ -232,13 +238,14 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
               });
               elements.push({
                 data: {
-                  source: arrayNodeId,
+                  source: arrayParentId,
                   target: itemId,
+                  label: isIdentifierArray ? key : undefined,
                 },
               });
 
               // Don't recurse into identifier items - they're leaf nodes
-              if (!isIdentifierItem) {
+              if (!isIdentifierArray) {
                 processObject(item, itemId, key, depth + 1);
               }
             }
