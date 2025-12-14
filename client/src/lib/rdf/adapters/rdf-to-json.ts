@@ -298,7 +298,7 @@ function rdfParticipantSCToJson(ctx: AdapterContext, scNode: RdfSubject): any {
     const firstName = ctx.store.getLiteralValue(nameNode, ns('omc', 'givenName'));
     const lastName = ctx.store.getLiteralValue(nameNode, ns('omc', 'familyName'));
     if (fullName) personName.fullName = fullName;
-    if (firstName) personName.givenName = firstName;
+    if (firstName) personName.firstGivenName = firstName;
     if (lastName) personName.familyName = lastName;
     if (Object.keys(personName).length > 0) result.personName = personName;
   }
