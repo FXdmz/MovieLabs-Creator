@@ -775,18 +775,33 @@ function entityToTriples(entity: Entity): Triple[] {
           const itemObj = item as Record<string, unknown>;
           let nestedSubject: string;
           
-          if (itemObj.identifierValue && itemObj.identifierScope) {
+          // Identifiers should ALWAYS be blank nodes, not URIs
+          if (key === "identifier") {
+            nestedSubject = generateBlankNodeId(`identifier${index}`);
+            triples.push({ subject: subj, predicate, object: nestedSubject });
+            // Only output identifierScope and identifierValue as literals
+            if (itemObj.identifierScope) {
+              triples.push({ subject: nestedSubject, predicate: "omc:hasIdentifierScope", object: formatLiteral(itemObj.identifierScope) });
+            }
+            if (itemObj.identifierValue) {
+              triples.push({ subject: nestedSubject, predicate: "omc:hasIdentifierValue", object: formatLiteral(itemObj.identifierValue) });
+            }
+            // Skip other properties like combinedForm
+          } else if (itemObj.identifierValue && itemObj.identifierScope) {
             const scope = itemObj.identifierScope as string;
             const val = itemObj.identifierValue as string;
             nestedSubject = scope === "me-nexus" ? `me:${val}` : `<urn:${scope}:${val}>`;
+            triples.push({ subject: subj, predicate, object: nestedSubject });
+            Object.entries(itemObj).forEach(([k, v]) => {
+              processValue(nestedSubject, k, v, depth + 1);
+            });
           } else {
             nestedSubject = generateBlankNodeId(`${key}${index}`);
+            triples.push({ subject: subj, predicate, object: nestedSubject });
+            Object.entries(itemObj).forEach(([k, v]) => {
+              processValue(nestedSubject, k, v, depth + 1);
+            });
           }
-          
-          triples.push({ subject: subj, predicate, object: nestedSubject });
-          Object.entries(itemObj).forEach(([k, v]) => {
-            processValue(nestedSubject, k, v, depth + 1);
-          });
         } else if (item !== undefined && item !== null && item !== "") {
           triples.push({ subject: subj, predicate, object: formatLiteral(item) });
         }
