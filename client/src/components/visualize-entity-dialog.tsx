@@ -254,8 +254,9 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
       } else if (typeof value === "object") {
         const nestedId = generateId();
         
-        // Leaf nodes: address, coordinates, participantFC, etc get triangle shape
-        const isLeafNode = key === "address" || key === "coordinates" || key === "geo" || key === "participantFC";
+        // Leaf nodes: address, coordinates, participantFC, personName, etc get triangle shape
+        const isLeafNode = key === "address" || key === "coordinates" || key === "geo" || 
+                           key === "participantFC" || key === "personName";
         const nestedType = isLeafNode ? "leaf" : ((value as any).entityType || key);
         
         // Format address objects nicely
