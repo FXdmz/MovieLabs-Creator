@@ -66,7 +66,9 @@ import {
   FolderClosed,
   FolderPlus,
   MoreHorizontal,
-  Pencil
+  Pencil,
+  Sparkles,
+  ArrowRight
 } from "lucide-react";
 
 import { FileDropZone } from "@/components/file-drop-zone";
@@ -1695,51 +1697,74 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col text-muted-foreground bg-muted/5">
-            <div className="flex-1 flex flex-col items-center justify-center p-8">
-              <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer" className="w-32 h-32 rounded-full bg-violet-500/10 flex items-center justify-center mb-6 ring-1 ring-violet-500/20 hover:ring-violet-500/40 transition-all">
-                <Logo className="h-16 w-auto dark:hidden" variant="light" />
-                <Logo className="h-16 w-auto hidden dark:block" variant="dark" />
-              </a>
-              <h2 className="text-2xl font-light mb-3 text-foreground">
-                Welcome to project_<span className="italic font-medium text-violet-600 dark:text-violet-400">aescher</span>
-              </h2>
-              <p className="max-w-md text-center text-muted-foreground mb-8 text-base">
-                Select an entity from the sidebar or create a new one to start building your production knowledge.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <CreativeWorkIcon className="h-4 w-4" /> Create Creative Work
-                </Button>
-                <Button onClick={() => addEntity("Task")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <TaskIcon className="h-4 w-4" /> Create Task
-                </Button>
-                <Button onClick={() => addEntity("Participant")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <ParticipantIcon className="h-4 w-4" /> Create Participant
-                </Button>
-                <Button onClick={() => addEntity("Asset")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <AssetIcon className="h-4 w-4" /> Create Asset
-                </Button>
-                <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <InfrastructureIcon className="h-4 w-4" /> Create Infrastructure
-                </Button>
-                <Button onClick={() => addEntity("Location")} variant="outline" size="lg" className="gap-2 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <LocationIcon className="h-4 w-4" /> Create Location
-                </Button>
-              </div>
-              <div className="mt-6">
-                <Button 
-                  onClick={() => setShowImportMultiDialog(true)} 
-                  variant="outline" 
-                  size="lg" 
-                  className="gap-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 hover:border-violet-600 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
-                  data-testid="button-import-entity-welcome"
-                >
-                  <Upload className="h-4 w-4" /> Import OMC File
-                </Button>
+          <div className="flex-1 flex flex-col bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/20 relative">
+            <div 
+              className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]"
+              style={{ backgroundImage: 'url(/pattern-bg.svg)', backgroundSize: '400px', backgroundRepeat: 'repeat' }}
+            />
+            <div className="flex-1 flex items-center justify-center p-8 relative">
+              <div className="max-w-5xl w-full">
+                <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                  <div className="text-center md:text-left order-2 md:order-1">
+                    <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-3 py-1.5 mb-6">
+                      <Sparkles className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
+                      <span className="text-xs text-violet-700 dark:text-violet-300 font-medium">Private Beta</span>
+                    </div>
+                    
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground mb-3 tracking-tight">
+                      project_<span className="italic font-medium bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">aescher</span>
+                    </h2>
+                    
+                    <p className="text-lg md:text-xl text-muted-foreground font-light mb-6">
+                      Where productions build knowledge
+                    </p>
+                    
+                    <p className="text-sm text-muted-foreground mb-8 max-w-md">
+                      Select an entity from the sidebar or create a new one to start building your production knowledge graph.
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
+                      <Button onClick={() => addEntity("CreativeWork")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <CreativeWorkIcon className="h-3.5 w-3.5" /> Creative Work
+                      </Button>
+                      <Button onClick={() => addEntity("Task")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <TaskIcon className="h-3.5 w-3.5" /> Task
+                      </Button>
+                      <Button onClick={() => addEntity("Participant")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <ParticipantIcon className="h-3.5 w-3.5" /> Participant
+                      </Button>
+                      <Button onClick={() => addEntity("Asset")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <AssetIcon className="h-3.5 w-3.5" /> Asset
+                      </Button>
+                      <Button onClick={() => addEntity("Infrastructure")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <InfrastructureIcon className="h-3.5 w-3.5" /> Infrastructure
+                      </Button>
+                      <Button onClick={() => addEntity("Location")} variant="outline" size="sm" className="gap-1.5 hover:bg-violet-500/10 hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+                        <LocationIcon className="h-3.5 w-3.5" /> Location
+                      </Button>
+                    </div>
+                    
+                    <Button 
+                      onClick={() => setShowImportMultiDialog(true)} 
+                      className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 gap-2"
+                      data-testid="button-import-entity-welcome"
+                    >
+                      <Upload className="h-4 w-4" /> Import OMC File
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex justify-center md:justify-end order-1 md:order-2">
+                    <img 
+                      src="/hero-infographic.jpg" 
+                      alt="Production Knowledge Graph Blueprint" 
+                      className="w-full max-w-sm rounded-2xl shadow-2xl shadow-violet-500/20 border border-violet-500/10"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <footer className="border-t border-border bg-muted/30 py-4 px-6">
+            <footer className="border-t border-border bg-muted/30 py-4 px-6 relative">
               <div className="flex flex-col md:flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <a href="https://www.me-dmz.com" target="_blank" rel="noopener noreferrer">
