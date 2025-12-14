@@ -420,7 +420,7 @@ export function SchemaField({ fieldKey, schema, value, onChange, path = "", leve
                 </SelectItem>
               ))
             ) : (
-              <SelectItem value="" disabled>Select a participant type first</SelectItem>
+              <SelectItem value="__placeholder__" disabled>Select a participant type first</SelectItem>
             )}
           </SelectContent>
         </Select>
