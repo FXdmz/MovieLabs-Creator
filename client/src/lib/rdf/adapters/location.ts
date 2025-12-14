@@ -35,6 +35,11 @@ export function locationToRdf(ctx: AdapterContext, entityId: string, content: an
     addLocationCoords(ctx, subject, content.location);
   }
   
+  // Handle coordinates field (form format: latitude/longitude)
+  if (content.coordinates) {
+    addCoordinates(ctx, subject, content.coordinates);
+  }
+  
   return subject;
 }
 
@@ -57,9 +62,11 @@ function addAddress(ctx: AdapterContext, parent: RdfSubject, address: any): void
     ctx.store.addLiteral(addrNode, ns('omc', 'hasCity'), city);
   }
   // Handle both field name conventions: region/state
-  const state = address.region || address.state;
-  if (state) {
-    ctx.store.addLiteral(addrNode, ns('omc', 'hasState'), state);
+  // Export as both hasState and hasRegion for compatibility
+  const region = address.region || address.state;
+  if (region) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasState'), region);
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasRegion'), region);
   }
   if (address.postalCode) {
     ctx.store.addLiteral(addrNode, ns('omc', 'hasPostalCode'), address.postalCode);
@@ -95,6 +102,19 @@ function addLocationCoords(ctx: AdapterContext, parent: RdfSubject, location: an
   }
   if (location.lon !== undefined && location.lon !== null) {
     ctx.store.addLiteral(locNode, ns('omc', 'hasLongitude'), location.lon);
+  }
+}
+
+function addCoordinates(ctx: AdapterContext, parent: RdfSubject, coordinates: any): void {
+  const coordNode = blankNode();
+  ctx.store.addQuad(parent, OMC.hasCoords, coordNode);
+  ctx.store.addQuad(coordNode, ns('rdf', 'type'), ns('omc', 'LatLon'));
+  
+  if (coordinates.latitude !== undefined && coordinates.latitude !== null) {
+    ctx.store.addLiteral(coordNode, ns('omc', 'hasLatitude'), coordinates.latitude);
+  }
+  if (coordinates.longitude !== undefined && coordinates.longitude !== null) {
+    ctx.store.addLiteral(coordNode, ns('omc', 'hasLongitude'), coordinates.longitude);
   }
 }
 

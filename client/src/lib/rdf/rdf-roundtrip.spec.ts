@@ -288,8 +288,8 @@ describe('RDF Round-Trip Tests', () => {
       const result = rdfEntityToJson(store, entityId);
       
       expect(result.address?.fullAddress).toBe('123 Film Street, Los Angeles, CA 90028');
-      expect(result.location?.lat).toBe(34.0928);
-      expect(result.location?.lon).toBe(-118.3287);
+      expect(result.coordinates?.latitude).toBe(34.0928);
+      expect(result.coordinates?.longitude).toBe(-118.3287);
     });
   });
 

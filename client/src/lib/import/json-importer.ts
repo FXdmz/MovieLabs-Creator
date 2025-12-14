@@ -231,12 +231,16 @@ function transformParticipantEntity(parsed: any): any {
 }
 
 /**
- * Transforms Location entity address field names for form compatibility.
+ * Transforms Location entity address and coordinate field names for form compatibility.
  * 
- * Normalizations:
+ * Address normalizations:
  * 1. Converts address.streetNumberAndName → address.street
  * 2. Converts address.city → address.locality
  * 3. Converts address.state → address.region
+ * 
+ * Coordinate normalizations:
+ * 1. Converts geo.latitude/longitude → coordinates.latitude/longitude
+ * 2. Converts location.lat/lon → coordinates.latitude/longitude
  * 
  * @param {any} parsed - Raw parsed Location entity
  * @returns {any} Transformed Location entity
@@ -244,6 +248,7 @@ function transformParticipantEntity(parsed: any): any {
 function transformLocationEntity(parsed: any): any {
   const transformed = { ...parsed };
   
+  // Transform address fields
   if (parsed.address) {
     const addr = { ...parsed.address };
     
@@ -266,6 +271,28 @@ function transformLocationEntity(parsed: any): any {
     }
     
     transformed.address = addr;
+  }
+  
+  // Transform coordinate fields: geo → coordinates
+  if (parsed.geo && !parsed.coordinates) {
+    const coords: any = {};
+    if (parsed.geo.latitude !== undefined) coords.latitude = parsed.geo.latitude;
+    if (parsed.geo.longitude !== undefined) coords.longitude = parsed.geo.longitude;
+    if (Object.keys(coords).length > 0) {
+      transformed.coordinates = coords;
+    }
+    delete transformed.geo;
+  }
+  
+  // Transform coordinate fields: location (lat/lon) → coordinates
+  if (parsed.location && !parsed.coordinates) {
+    const coords: any = {};
+    if (parsed.location.lat !== undefined) coords.latitude = parsed.location.lat;
+    if (parsed.location.lon !== undefined) coords.longitude = parsed.location.lon;
+    if (Object.keys(coords).length > 0) {
+      transformed.coordinates = coords;
+    }
+    delete transformed.location;
   }
   
   return transformed;

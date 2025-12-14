@@ -397,7 +397,9 @@ export function rdfLocationToJson(ctx: AdapterContext, subject: RdfSubject): any
     const locality = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasCity'));
     if (locality) address.locality = locality;
     
-    const region = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasState'));
+    // Try hasState first, then hasRegion for compatibility
+    const region = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasState')) 
+                || ctx.store.getLiteralValue(addrNode, ns('omc', 'hasRegion'));
     if (region) address.region = region;
     
     const postalCode = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasPostalCode'));
@@ -420,7 +422,11 @@ export function rdfLocationToJson(ctx: AdapterContext, subject: RdfSubject): any
     const lat = ctx.store.getLiteralValue(coordNode, ns('omc', 'hasLatitude'));
     const lon = ctx.store.getLiteralValue(coordNode, ns('omc', 'hasLongitude'));
     if (lat !== null && lon !== null) {
-      base.location = { lat, lon };
+      // Output as coordinates.latitude/longitude for form compatibility
+      base.coordinates = { 
+        latitude: typeof lat === 'number' ? lat : parseFloat(String(lat)),
+        longitude: typeof lon === 'number' ? lon : parseFloat(String(lon))
+      };
     }
   }
 

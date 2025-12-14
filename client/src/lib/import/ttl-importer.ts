@@ -347,6 +347,7 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasStreetNumberAndName`]: "streetNumberAndName",
   [`${RDF_PREFIXES.omc}hasCity`]: "city",
   [`${RDF_PREFIXES.omc}hasState`]: "state",
+  [`${RDF_PREFIXES.omc}hasRegion`]: "region",
   [`${RDF_PREFIXES.omc}hasPostalCode`]: "postalCode",
   [`${RDF_PREFIXES.omc}hasCountry`]: "country",
   [`${RDF_PREFIXES.omc}hasCountryCode`]: "countryCode",
