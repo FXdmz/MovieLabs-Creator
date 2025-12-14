@@ -831,17 +831,21 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       content.entityType = entityType;
       content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
       
+      // Get root-level identifier values (used as fallback for incomplete identifiers)
+      const rootScope = content.identifierScope || 'me-nexus';
+      const rootValue = content.identifierValue || entityId;
+      
       // Normalize identifier array - ensure proper structure with scope, value, and combinedForm
-      const normalizeIdentifier = (id: any, fallbackId: string): any => {
-        if (typeof id !== 'object' || id === null) {
+      const normalizeIdentifier = (id: any): any => {
+        if (typeof id !== 'object' || id === null || Object.keys(id).length === 0) {
           return {
-            identifierScope: 'me-nexus',
-            identifierValue: fallbackId,
-            combinedForm: `me-nexus:${fallbackId}`
+            identifierScope: rootScope,
+            identifierValue: rootValue,
+            combinedForm: `${rootScope}:${rootValue}`
           };
         }
-        const scope = id.identifierScope || 'me-nexus';
-        const value = id.identifierValue || fallbackId;
+        const scope = id.identifierScope || rootScope;
+        const value = id.identifierValue || rootValue;
         return {
           identifierScope: scope,
           identifierValue: value,
@@ -851,12 +855,9 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       
       if (!content.identifier || content.identifier.length === 0 || 
           (Array.isArray(content.identifier) && typeof content.identifier[0] === 'string')) {
-        content.identifier = [normalizeIdentifier({
-          identifierScope: content.identifierScope,
-          identifierValue: content.identifierValue
-        }, entityId)];
+        content.identifier = [normalizeIdentifier(null)];
       } else if (Array.isArray(content.identifier)) {
-        content.identifier = content.identifier.map((id: any) => normalizeIdentifier(id, entityId));
+        content.identifier = content.identifier.map((id: any) => normalizeIdentifier(id));
       }
       delete content.identifierScope;
       delete content.identifierValue;
