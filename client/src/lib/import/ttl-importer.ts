@@ -278,24 +278,6 @@ const rdfClassToEntityType: Record<string, string> = {
 };
 
 /**
- * Mapping from structural/functional subtype entity types to their parent characteristic types.
- * When a node has rdf:type omc:Person, it should be treated as entityType="ParticipantSC" in the JSON.
- * 
- * @constant {Record<string, string>}
- */
-const structuralSubtypeToParentType: Record<string, string> = {
-  "Person": "ParticipantSC",
-  "Organization": "ParticipantSC",
-  "Department": "ParticipantSC",
-  "Service": "ParticipantSC",
-  "DigitalAsset": "AssetSC",
-  "PhysicalAsset": "AssetSC",
-  "NarrativeContext": "Context",
-  "ProductionContext": "Context",
-  "MediaCreationContext": "Context"
-};
-
-/**
  * Mapping from RDF predicate URIs to JSON property names.
  * 
  * This comprehensive mapping covers:
@@ -769,8 +751,7 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
         }, subjectTerm, null, null, null);
         
         if (nestedEntityType && depth > 0) {
-          const parentType = structuralSubtypeToParentType[nestedEntityType];
-          obj.entityType = parentType || nestedEntityType;
+          obj.entityType = nestedEntityType;
           obj.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
         }
         
