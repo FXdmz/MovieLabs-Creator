@@ -117,6 +117,10 @@ const ENTITY_SVG_SHAPES: Record<string, string> = {
   array: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 95,50 50,95 5,50" fill="#BDC3C7" stroke="#5e5e5e" stroke-width="2"/>
   </svg>`),
+  
+  leaf: createSvgDataUri(`<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 95,95 5,95" fill="#78909C" stroke="#5e5e5e" stroke-width="2"/>
+  </svg>`),
 };
 
 const ENTITY_TYPE_COLORS: Record<string, string> = {
@@ -172,9 +176,7 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
         key === "entityType" ||
         key === "schemaVersion" ||
         key === "combinedForm" ||
-        key === "identifier" ||
         key === "identifierScope" ||
-        key === "identifierValue" ||
         value === null ||
         value === undefined ||
         value === ""
@@ -210,7 +212,9 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
           value.forEach((item, index) => {
             if (typeof item === "object" && item !== null) {
               const itemId = generateId();
-              const itemType = (item as any).entityType || key;
+              // Identifier items are leaf nodes with triangle shape
+              const isIdentifierItem = key === "identifier";
+              const itemType = isIdentifierItem ? "leaf" : ((item as any).entityType || key);
               const itemLabel =
                 (item as any).name ||
                 (item as any).identifierValue ||
@@ -233,13 +237,19 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
                 },
               });
 
-              processObject(item, itemId, key, depth + 1);
+              // Don't recurse into identifier items - they're leaf nodes
+              if (!isIdentifierItem) {
+                processObject(item, itemId, key, depth + 1);
+              }
             }
           });
         }
       } else if (typeof value === "object") {
         const nestedId = generateId();
-        const nestedType = (value as any).entityType || key;
+        
+        // Leaf nodes: address, coordinates, identifier get triangle shape
+        const isLeafNode = key === "address" || key === "coordinates" || key === "geo";
+        const nestedType = isLeafNode ? "leaf" : ((value as any).entityType || key);
         
         // Format address objects nicely
         let nestedLabel: string;
@@ -278,8 +288,8 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
           },
         });
 
-        // Don't recurse into address/coordinates - they're shown as formatted labels
-        if (key !== "address" && key !== "coordinates" && key !== "geo") {
+        // Don't recurse into leaf nodes - they're shown as formatted labels
+        if (!isLeafNode) {
           processObject(value, nestedId, key, depth + 1);
         }
       }
