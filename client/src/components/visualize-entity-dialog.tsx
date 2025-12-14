@@ -192,7 +192,7 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
         );
         
         // These arrays connect directly to parent as leaf triangles (no intermediate array node)
-        const isLeafArray = key === "identifier" || key === "personName" || key === "title";
+        const isLeafArray = key === "identifier" || key === "personName" || key === "creativeWorkTitle";
 
         if (isComplexArray) {
           // For leaf arrays, connect items directly to parent; otherwise use array container
