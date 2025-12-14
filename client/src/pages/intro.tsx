@@ -106,8 +106,12 @@ export default function Intro() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-[80vh] flex items-center bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/20">
-          <div className="container mx-auto px-6 py-24">
+        <section className="relative min-h-[70vh] flex items-center bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/20">
+          <div 
+            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]"
+            style={{ backgroundImage: 'url(/pattern-bg.svg)', backgroundSize: '400px', backgroundRepeat: 'repeat' }}
+          />
+          <div className="relative container mx-auto px-6 py-16">
             <div className="max-w-6xl mx-auto">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="text-center md:text-left order-2 md:order-1">
@@ -144,7 +148,7 @@ export default function Intro() {
         </section>
 
         {/* Features Section */}
-        <section className="py-24 bg-muted/50">
+        <section className="py-16 bg-muted/50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
