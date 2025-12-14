@@ -246,6 +246,7 @@ function transformParticipantEntity(parsed: any): any {
  * @returns {any} Transformed Location entity
  */
 function transformLocationEntity(parsed: any): any {
+  console.log('[LOCATION-TRANSFORM DEBUG] Input:', JSON.stringify(parsed, null, 2));
   const transformed = { ...parsed };
   
   // Transform address fields
@@ -295,6 +296,9 @@ function transformLocationEntity(parsed: any): any {
     delete transformed.location;
   }
   
+  console.log('[LOCATION-TRANSFORM DEBUG] Output:', JSON.stringify(transformed, null, 2));
+  console.log('[LOCATION-TRANSFORM DEBUG] address:', JSON.stringify(transformed.address, null, 2));
+  console.log('[LOCATION-TRANSFORM DEBUG] coordinates:', JSON.stringify(transformed.coordinates, null, 2));
   return transformed;
 }
 

@@ -764,6 +764,16 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           const jsonKey = predicateUriToJsonKey(predicateUri);
           if (!jsonKey) return;
           
+          // DEBUG: Log address and geo blank node processing
+          if (jsonKey === 'address' || jsonKey === 'geo') {
+            console.log(`[TTL-IMPORT DEBUG] Processing ${jsonKey} blank node:`, quad.object.value);
+            const nestedQuads = store.getQuads(quad.object, null, null, null);
+            console.log(`[TTL-IMPORT DEBUG] ${jsonKey} has ${nestedQuads.length} nested quads:`);
+            nestedQuads.forEach(nq => {
+              console.log(`  - ${nq.predicate.value} = ${nq.object.value}`);
+            });
+          }
+          
           let value: any;
           
           if (quad.object.termType === 'Literal') {
@@ -830,6 +840,11 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
       
       let content = buildObject(rootSubjectTerm);
       content.entityType = entityType;
+      
+      // DEBUG: Log Location entity before transform
+      if (entityType === 'Location') {
+        console.log('[TTL-IMPORT DEBUG] Raw Location entity before transform:', JSON.stringify(content, null, 2));
+      }
       content.schemaVersion = "https://movielabs.com/omc/json/schema/v2.8";
       
       // Get root-level identifier values (used as fallback for incomplete identifiers)
