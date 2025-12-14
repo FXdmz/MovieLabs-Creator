@@ -1,0 +1,74 @@
+@prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+@prefix omcT: <https://movielabs.com/omc/rdf/schema/v2.8Tentative#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix me: <https://me-nexus.com/id/> .
+@prefix menexus: <https://me-nexus.com/schema#> .
+
+me:7263c440-5c3e-4e29-80b8-ebf7329b7ab8
+    rdf:type omc:CreativeWork ;
+    rdfs:label "Avatar" ;
+    omc:hasIdentifier me:7263c440-5c3e-4e29-80b8-ebf7329b7ab8 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "7263c440-5c3e-4e29-80b8-ebf7329b7ab8" ;
+    omc:hasTitle _:creativeWorkTitle0_1 ;
+    skos:definition "2009 film directed by James Cameron" ;
+    omc:creativeWorkType "creativeWork" ;
+    omc:creativeWorkCategory "movie" ;
+    omc:approximateLength "PT2H42M" .
+
+_:creativeWorkTitle0_1
+    omc:hasTitleName "Avatar" ;
+    omc:hasTitleType "release" ;
+    omc:titleLanguage "en" .
+
+me:237ec274-4b65-4b37-8a74-080f739ed1fc
+    rdf:type omc:Location ;
+    rdfs:label "home" ;
+    omc:hasIdentifier me:237ec274-4b65-4b37-8a74-080f739ed1fc ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "237ec274-4b65-4b37-8a74-080f739ed1fc" ;
+    omc:hasAddress _:address_2 ;
+    omc:hasCoords _:coordinates_3 .
+
+_:address_2
+    rdf:type omc:Address ;
+    omc:hasStreetNumberAndName "2231 Rue Quesnel" ;
+    omc:hasCity "Montreal" ;
+    omc:hasPostalCode "H3J 1G3" ;
+    omc:hasCountry "CA" .
+
+_:coordinates_3
+    rdf:type omc:LatLon ;
+    omc:hasLatitude "45.4873433"^^xsd:decimal ;
+    omc:hasLongitude "-73.5754635"^^xsd:decimal .
+
+me:c3a33ded-daa8-4ac9-8c0f-073bf5f01def
+    rdf:type omc:Participant ;
+    rdfs:label "James Cameron" ;
+    omc:hasIdentifier me:c3a33ded-daa8-4ac9-8c0f-073bf5f01def ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "c3a33ded-daa8-4ac9-8c0f-073bf5f01def" ;
+    omc:hasParticipantStructuralCharacteristic me:aef3f933-ad1e-4499-8d74-bc0b9a7e09a2 ;
+    omc:hasParticipantFunctionalCharacteristic _:participantFC_5 .
+
+me:aef3f933-ad1e-4499-8d74-bc0b9a7e09a2
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_4 ;
+    omc:hasIdentifier me:aef3f933-ad1e-4499-8d74-bc0b9a7e09a2 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "aef3f933-ad1e-4499-8d74-bc0b9a7e09a2" ;
+    omc:hasLocation me:237ec274-4b65-4b37-8a74-080f739ed1fc .
+
+_:personName_4
+    omc:hasFullName "James Cameron" ;
+    omc:hasFirstName "James" ;
+    omc:hasLastName "Cameron" .
+
+_:participantFC_5
+    omc:hasFunctionalType "crew" ;
+    omc:hasJobTitle "Director" .
