@@ -1,0 +1,30 @@
+@prefix omc: <https://movielabs.com/omc/rdf/schema/v2.8#> .
+@prefix omcT: <https://movielabs.com/omc/rdf/schema/v2.8Tentative#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix me: <https://me-nexus.com/id/> .
+@prefix menexus: <https://me-nexus.com/schema#> .
+
+me:5d272fab-5347-43e8-a616-5b0e96a56109
+    rdf:type omc:Participant ;
+    rdfs:label "James Cameron" ;
+    omc:hasIdentifier me:5d272fab-5347-43e8-a616-5b0e96a56109 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "5d272fab-5347-43e8-a616-5b0e96a56109" ;
+    omc:hasParticipantStructuralCharacteristic me:71baeb8d-e007-4b89-a7ab-ae4d40595a43 .
+
+me:71baeb8d-e007-4b89-a7ab-ae4d40595a43
+    rdf:type omc:Person ;
+    omc:hasStructuralType "person" ;
+    omc:hasPersonName _:personName_1 ;
+    omc:hasIdentifier me:71baeb8d-e007-4b89-a7ab-ae4d40595a43 ;
+    omc:hasIdentifierScope "me-nexus" ;
+    omc:hasIdentifierValue "71baeb8d-e007-4b89-a7ab-ae4d40595a43" .
+
+_:personName_1
+    omc:hasFullName "James Cameron" ;
+    omc:givenName "James" ;
+    omc:familyName "Cameron" .
