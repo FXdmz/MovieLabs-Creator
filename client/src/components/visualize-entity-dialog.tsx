@@ -191,14 +191,14 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
           (item) => typeof item === "object" && item !== null
         );
         
-        // Identifier arrays connect directly to parent (no intermediate array node)
-        const isIdentifierArray = key === "identifier";
+        // These arrays connect directly to parent as leaf triangles (no intermediate array node)
+        const isLeafArray = key === "identifier" || key === "personName";
 
         if (isComplexArray) {
-          // For identifier, connect items directly to parent; otherwise use array container
-          const arrayParentId = isIdentifierArray ? parentId : generateId();
+          // For leaf arrays, connect items directly to parent; otherwise use array container
+          const arrayParentId = isLeafArray ? parentId : generateId();
           
-          if (!isIdentifierArray) {
+          if (!isLeafArray) {
             elements.push({
               data: {
                 id: arrayParentId,
@@ -219,8 +219,8 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
           value.forEach((item, index) => {
             if (typeof item === "object" && item !== null) {
               const itemId = generateId();
-              // Identifier items are leaf nodes with triangle shape
-              const itemType = isIdentifierArray ? "leaf" : ((item as any).entityType || key);
+              // Leaf array items are leaf nodes with triangle shape
+              const itemType = isLeafArray ? "leaf" : ((item as any).entityType || key);
               const itemLabel =
                 (item as any).name ||
                 (item as any).identifierValue ||
@@ -240,12 +240,12 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
                 data: {
                   source: arrayParentId,
                   target: itemId,
-                  label: isIdentifierArray ? key : undefined,
+                  label: isLeafArray ? key : undefined,
                 },
               });
 
-              // Don't recurse into identifier items - they're leaf nodes
-              if (!isIdentifierArray) {
+              // Don't recurse into leaf items - they're leaf nodes
+              if (!isLeafArray) {
                 processObject(item, itemId, key, depth + 1);
               }
             }
@@ -254,8 +254,8 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
       } else if (typeof value === "object") {
         const nestedId = generateId();
         
-        // Leaf nodes: address, coordinates, identifier get triangle shape
-        const isLeafNode = key === "address" || key === "coordinates" || key === "geo";
+        // Leaf nodes: address, coordinates, participantFC, etc get triangle shape
+        const isLeafNode = key === "address" || key === "coordinates" || key === "geo" || key === "participantFC";
         const nestedType = isLeafNode ? "leaf" : ((value as any).entityType || key);
         
         // Format address objects nicely
