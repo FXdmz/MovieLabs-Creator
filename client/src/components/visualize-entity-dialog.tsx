@@ -301,6 +301,24 @@ function entityToGraphElements(entity: Entity): ElementDefinition[] {
         if (!isLeafNode) {
           processObject(value, nestedId, key, depth + 1);
         }
+      } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        // Create leaf triangle node for primitive values
+        const primitiveId = generateId();
+        elements.push({
+          data: {
+            id: primitiveId,
+            label: String(value),
+            type: "leaf",
+            rawData: { [key]: value },
+          },
+        });
+        elements.push({
+          data: {
+            source: parentId,
+            target: primitiveId,
+            label: key,
+          },
+        });
       }
     });
   };
