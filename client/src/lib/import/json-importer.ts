@@ -187,9 +187,55 @@ function transformTaskEntity(parsed: any): any {
  * @param {any} parsed - Raw parsed entity
  * @returns {any} Transformed entity
  */
+/**
+ * Transforms a Participant entity to normalize field names and ensure
+ * required fields are present for form binding.
+ * 
+ * Normalizations:
+ * 1. Ensures ParticipantSC.entityType is set based on structuralType
+ * 2. Converts personName.givenName → personName.firstGivenName
+ * 
+ * @param {any} parsed - Raw parsed Participant entity
+ * @returns {any} Transformed Participant entity
+ */
+function transformParticipantEntity(parsed: any): any {
+  const transformed = { ...parsed };
+  
+  if (parsed.ParticipantSC) {
+    const sc = { ...parsed.ParticipantSC };
+    
+    // Ensure entityType is set based on structuralType
+    if (!sc.entityType && sc.structuralType) {
+      const typeMap: Record<string, string> = {
+        'person': 'Person',
+        'organization': 'Organization',
+        'department': 'Department',
+        'service': 'Service'
+      };
+      sc.entityType = typeMap[sc.structuralType.toLowerCase()] || 'Person';
+    }
+    
+    // Normalize personName.givenName → personName.firstGivenName
+    if (sc.personName && sc.personName.givenName && !sc.personName.firstGivenName) {
+      sc.personName = {
+        ...sc.personName,
+        firstGivenName: sc.personName.givenName
+      };
+      delete sc.personName.givenName;
+    }
+    
+    transformed.ParticipantSC = sc;
+  }
+  
+  return transformed;
+}
+
 function transformEntity(parsed: any): any {
   if (parsed.entityType === 'Task') {
     return transformTaskEntity(parsed);
+  }
+  if (parsed.entityType === 'Participant') {
+    return transformParticipantEntity(parsed);
   }
   return parsed;
 }

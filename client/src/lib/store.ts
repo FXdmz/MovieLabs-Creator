@@ -406,6 +406,10 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
       content,
       folder
     };
+    
+    // Debug: Log the complete entity object being saved
+    console.log('[Store] Saved entity:', JSON.stringify(newEntity, null, 2));
+    
     set((state) => ({
       past: saveToHistory(state),
       future: [],
