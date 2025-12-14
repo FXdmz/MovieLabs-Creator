@@ -838,6 +838,17 @@ export async function parseOmcTtlMulti(ttlText: string): Promise<MultiImportResu
           identifierValue: content.identifierValue || entityId,
           combinedForm: `${content.identifierScope || 'me-nexus'}:${content.identifierValue || entityId}`
         }];
+      } else if (Array.isArray(content.identifier)) {
+        // Ensure each identifier object has combinedForm set
+        content.identifier = content.identifier.map((id: any) => {
+          if (typeof id === 'object' && id.identifierScope && id.identifierValue && !id.combinedForm) {
+            return {
+              ...id,
+              combinedForm: `${id.identifierScope}:${id.identifierValue}`
+            };
+          }
+          return id;
+        });
       }
       delete content.identifierScope;
       delete content.identifierValue;
