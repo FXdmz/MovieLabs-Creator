@@ -311,14 +311,6 @@ function validateAndExtractEntity(parsed: any): { valid: boolean; entity?: Impor
 
   const transformedContent = transformEntity(parsed);
 
-  // Debug: Log imported entity structure
-  console.log('[JSON Import] Entity:', entityType, entityId);
-  console.log('[JSON Import] Content structure:', Object.keys(transformedContent));
-  if (entityType === 'Participant') {
-    console.log('[JSON Import] ParticipantSC:', transformedContent.ParticipantSC);
-    console.log('[JSON Import] participantFC:', transformedContent.participantFC);
-  }
-
   return {
     valid: true,
     entity: {

@@ -536,12 +536,6 @@ function LocationEntityPicker({ value, onChange }: { value: string | undefined; 
 
 // Wrapper to handle definition lookups
 export function DynamicForm({ schema, value, onChange }: { schema: any, value: any, onChange: (val: any) => void }) {
-  // Debug: Log what value the form receives
-  if (value?.entityType === 'Participant') {
-    console.log('[DynamicForm] Participant value:', JSON.stringify(value, null, 2));
-    console.log('[DynamicForm] ParticipantSC:', value.ParticipantSC);
-  }
-  
   // Helper to dereference schemas (shallow)
   // We use a cache to prevent infinite recursion on circular refs
   const resolveRef = (node: any, visited = new Set<string>()): any => {
