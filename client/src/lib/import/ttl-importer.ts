@@ -328,6 +328,8 @@ const rdfPredicateToJsonKey: Record<string, string> = {
   [`${RDF_PREFIXES.omc}hasFullName`]: "fullName",
   [`${RDF_PREFIXES.omc}hasFirstName`]: "firstName",
   [`${RDF_PREFIXES.omc}hasLastName`]: "lastName",
+  [`${RDF_PREFIXES.omc}givenName`]: "firstName",
+  [`${RDF_PREFIXES.omc}familyName`]: "lastName",
   [`${RDF_PREFIXES.omc}hasGender`]: "gender",
   [`${RDF_PREFIXES.omc}hasContact`]: "contact",
   [`${RDF_PREFIXES.omc}hasEmail`]: "email",
