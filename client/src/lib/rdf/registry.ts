@@ -73,8 +73,8 @@ const jsonToRdf: Record<string, PropertyMapping> = {
   
   personName: { predicate: OMC.hasPersonName, nestedType: 'PersonName' },
   fullName: { predicate: OMC.hasFullName },
-  firstName: { predicate: OMC.hasFirstName },
-  lastName: { predicate: OMC.hasLastName },
+  firstName: { predicate: OMC.givenName },
+  lastName: { predicate: OMC.familyName },
   organizationName: { predicate: OMC.hasOrganizationName },
   departmentName: { predicate: OMC.hasDepartmentName },
   serviceName: { predicate: OMC.hasServiceName },

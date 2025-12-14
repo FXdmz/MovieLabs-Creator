@@ -98,10 +98,10 @@ function addPersonName(ctx: AdapterContext, parent: RdfSubject, personName: any)
     ctx.store.addLiteral(nameNode, OMC.hasFullName, personName.fullName);
   }
   if (personName.firstName) {
-    ctx.store.addLiteral(nameNode, OMC.hasFirstName, personName.firstName);
+    ctx.store.addLiteral(nameNode, OMC.givenName, personName.firstName);
   }
   if (personName.lastName) {
-    ctx.store.addLiteral(nameNode, OMC.hasLastName, personName.lastName);
+    ctx.store.addLiteral(nameNode, OMC.familyName, personName.lastName);
   }
 }
 

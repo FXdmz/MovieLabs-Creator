@@ -344,6 +344,8 @@ export const OMC = {
   hasFullName: ns('omc', 'hasFullName'),
   hasFirstName: ns('omc', 'hasFirstName'),
   hasLastName: ns('omc', 'hasLastName'),
+  givenName: ns('omc', 'givenName'),
+  familyName: ns('omc', 'familyName'),
   hasOrganizationName: ns('omc', 'hasOrganizationName'),
   hasDepartmentName: ns('omc', 'hasDepartmentName'),
   hasServiceName: ns('omc', 'hasServiceName'),
