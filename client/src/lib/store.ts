@@ -392,6 +392,13 @@ export const useOntologyStore = create<OntologyStore>((set, get) => ({
    * @param {any} content - Full OMC-compliant entity content
    */
   addEntityFromContent: (type, id, content, folder = null) => {
+    // Debug: Log what content arrives at the store
+    console.log('[Store] addEntityFromContent:', type, id);
+    console.log('[Store] Content keys:', Object.keys(content));
+    if (type === 'Participant') {
+      console.log('[Store] ParticipantSC:', content.ParticipantSC);
+    }
+    
     const newEntity: Entity = {
       id,
       type,
