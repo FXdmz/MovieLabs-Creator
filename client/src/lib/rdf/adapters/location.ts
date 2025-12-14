@@ -46,14 +46,20 @@ function addAddress(ctx: AdapterContext, parent: RdfSubject, address: any): void
   if (address.fullAddress) {
     ctx.store.addLiteral(addrNode, ns('omc', 'hasFullAddress'), address.fullAddress);
   }
-  if (address.streetNumberAndName) {
-    ctx.store.addLiteral(addrNode, ns('omc', 'hasStreetNumberAndName'), address.streetNumberAndName);
+  // Handle both field name conventions: street/streetNumberAndName
+  const street = address.street || address.streetNumberAndName;
+  if (street) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasStreetNumberAndName'), street);
   }
-  if (address.city) {
-    ctx.store.addLiteral(addrNode, ns('omc', 'hasCity'), address.city);
+  // Handle both field name conventions: locality/city
+  const city = address.locality || address.city;
+  if (city) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasCity'), city);
   }
-  if (address.state) {
-    ctx.store.addLiteral(addrNode, ns('omc', 'hasState'), address.state);
+  // Handle both field name conventions: region/state
+  const state = address.region || address.state;
+  if (state) {
+    ctx.store.addLiteral(addrNode, ns('omc', 'hasState'), state);
   }
   if (address.postalCode) {
     ctx.store.addLiteral(addrNode, ns('omc', 'hasPostalCode'), address.postalCode);

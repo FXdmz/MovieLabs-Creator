@@ -230,12 +230,56 @@ function transformParticipantEntity(parsed: any): any {
   return transformed;
 }
 
+/**
+ * Transforms Location entity address field names for form compatibility.
+ * 
+ * Normalizations:
+ * 1. Converts address.streetNumberAndName → address.street
+ * 2. Converts address.city → address.locality
+ * 3. Converts address.state → address.region
+ * 
+ * @param {any} parsed - Raw parsed Location entity
+ * @returns {any} Transformed Location entity
+ */
+function transformLocationEntity(parsed: any): any {
+  const transformed = { ...parsed };
+  
+  if (parsed.address) {
+    const addr = { ...parsed.address };
+    
+    // Normalize streetNumberAndName → street
+    if (addr.streetNumberAndName && !addr.street) {
+      addr.street = addr.streetNumberAndName;
+      delete addr.streetNumberAndName;
+    }
+    
+    // Normalize city → locality
+    if (addr.city && !addr.locality) {
+      addr.locality = addr.city;
+      delete addr.city;
+    }
+    
+    // Normalize state → region
+    if (addr.state && !addr.region) {
+      addr.region = addr.state;
+      delete addr.state;
+    }
+    
+    transformed.address = addr;
+  }
+  
+  return transformed;
+}
+
 function transformEntity(parsed: any): any {
   if (parsed.entityType === 'Task') {
     return transformTaskEntity(parsed);
   }
   if (parsed.entityType === 'Participant') {
     return transformParticipantEntity(parsed);
+  }
+  if (parsed.entityType === 'Location') {
+    return transformLocationEntity(parsed);
   }
   return parsed;
 }

@@ -386,9 +386,31 @@ export function rdfLocationToJson(ctx: AdapterContext, subject: RdfSubject): any
   const addressNodes = ctx.store.getObjects(subject, ns('omc', 'hasAddress'));
   if (addressNodes.length > 0) {
     const addrNode = addressNodes[0] as RdfSubject;
+    const address: any = {};
+    
     const fullAddress = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasFullAddress'));
-    if (fullAddress) {
-      base.address = { fullAddress };
+    if (fullAddress) address.fullAddress = fullAddress;
+    
+    const street = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasStreetNumberAndName'));
+    if (street) address.street = street;
+    
+    const locality = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasCity'));
+    if (locality) address.locality = locality;
+    
+    const region = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasState'));
+    if (region) address.region = region;
+    
+    const postalCode = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasPostalCode'));
+    if (postalCode) address.postalCode = postalCode;
+    
+    const country = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasCountry'));
+    if (country) address.country = country;
+    
+    const countryCode = ctx.store.getLiteralValue(addrNode, ns('omc', 'hasCountryCode'));
+    if (countryCode) address.countryCode = countryCode;
+    
+    if (Object.keys(address).length > 0) {
+      base.address = address;
     }
   }
 
